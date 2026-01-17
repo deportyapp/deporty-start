@@ -74,13 +74,11 @@ body {
     transform: scale(1.1); /* Crece un 10% */
 }
 
-h1 {
-    font-family: var(--font-display); /* Cambiado de primary a display (Anton) */
-}
 
 .hero__title { 
     font-family: var(--font-primary);
     font-size: 4rem; 
+    font-style: italic;
     color: black; 
     margin-bottom: 0.25em; 
     line-height: 1;
