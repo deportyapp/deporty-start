@@ -11,6 +11,7 @@ Mejoras aplicadas (2026 best practices):
 - `prefers-reduced-motion` soportado en CSS y JS.
 - `focus-visible` styles para mejor navegación por teclado.
 - JavaScript modularizado en `assets/js/main.js` y cargado con `defer`.
+- Rotador de deportes actualizado: añadido `Waterpolo` y velocidad de rotación ajustada a 2s.
 
 Cómo probar localmente:
 

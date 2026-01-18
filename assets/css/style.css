@@ -10,6 +10,7 @@
     /* --- NUEVO: Colores para mensajes de estado --- */
     --color-error: #D32F2F;
     --color-success: #388E3C;
+    --color-waterpolo: #ffc400;
     --font-primary:'Quantico', sans-serif;
     --font-display: sans-serif; /* Nueva variable para títulos impactantes */
     --shadow-soft: 0 6px 20px rgba(0,0,0,0.08);
@@ -67,10 +68,11 @@ header {
 
     /* Rotador de texto en el header */
     .brand-rotator { display: block; margin-left: 120px; margin-top: -10px; }
-    .brand-text { font-family: var(--font-primary); font-size: 0.95rem; font-weight: 700; transition: color 180ms ease, transform 160ms ease, opacity 160ms ease; }
+    .brand-text { font-family: var(--font-primary); font-size: 0.95rem; font-weight: 700; transition: color 180ms ease, transform 160ms ease, opacity 160ms ease; margin-left: 10px;}
     .brand-text.hidden { opacity: 0; transform: translateY(-4px); }
     .brand-text.futbol { color: var(--color-success); }
     .brand-text.natacion { color: var(--color-primary); }
+    .brand-text.waterpolo { color: var(--color-waterpolo); }
     .brand-text.app { color: var(--color-text-primary); }
 
 @media (min-width: 768px) {
@@ -124,7 +126,7 @@ header {
 .hero__title { 
     font-family: var(--font-primary);
     /* Responsive typography: mobile-first smaller, grows with viewport */
-    font-size: clamp(1.6rem, 8vw, 4rem);
+    font-size: clamp(2.8rem, 8vw, 4rem);
     font-style: italic;
     color: black; 
     margin-bottom: 0.25em; 
@@ -204,6 +206,8 @@ header {
     .hero__title { font-size: clamp(4.2rem, 10vw, 8rem); letter-spacing: -7px; }
     .hero__actions { flex-direction: row; justify-content: center; }
     .form-container { padding: 40px; max-width: 600px; }
+    /* Desktop: increase brand-rotator size for visibility */
+    .brand-text { font-size: 2rem; margin-left: 300px; margin-top: -20px;}
 }
 
 /* --- Mobile: mostrar CTAs en hero y ocultar nav del header --- */
@@ -231,3 +235,13 @@ header {
 /* Ensure buttons have good contrast and larger hit area */
 .button { padding: 14px 20px; min-height: 44px; }
 .button--primary { box-shadow: 0 6px 18px rgba(0,189,255,0.08); }
+
+/* Brand color mappings for signup button based on rotator */
+.brand-btn--futbol { background-color: var(--color-success) !important; color: var(--color-surface) !important; border-color: var(--color-success) !important; }
+.brand-btn--futbol:hover { background-color: color-mix(in srgb, var(--color-success) 85%, black 15%); }
+.brand-btn--natacion { background-color: var(--color-primary) !important; color: var(--color-surface) !important; border-color: var(--color-primary) !important; }
+.brand-btn--natacion:hover { background-color: color-mix(in srgb, var(--color-primary) 85%, black 15%); }
+.brand-btn--app { background-color: var(--color-text-primary) !important; color: var(--color-surface) !important; border-color: var(--color-text-primary) !important; }
+.brand-btn--app:hover { background-color: color-mix(in srgb, var(--color-text-primary) 85%, black 15%); }
+.brand-btn--waterpolo { background-color: var(--color-waterpolo) !important; color: var(--color-surface) !important; border-color: var(--color-waterpolo) !important; }
+.brand-btn--waterpolo:hover { background-color: color-mix(in srgb, var(--color-waterpolo) 85%, black 15%); }
