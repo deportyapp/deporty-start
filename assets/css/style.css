@@ -10,8 +10,8 @@
     /* --- NUEVO: Colores para mensajes de estado --- */
     --color-error: #D32F2F;
     --color-success: #388E3C;
-    --font-primary: 'Quantico', sans-serif;
-    --font-display: 'Anton', sans-serif; /* Nueva variable para títulos impactantes */
+    --font-primary:'Quantico', sans-serif;
+    --font-display: sans-serif; /* Nueva variable para títulos impactantes */
     --shadow-soft: 0 6px 20px rgba(0,0,0,0.08);
 }
 
@@ -23,13 +23,50 @@
 }
 
 body {
-    font-family: var(--font-primary);
+    font-family: var(--font-display);
     background-color: var(--color-background);
     color: var(--color-text-primary);
     line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+}
+
+/* --- Header --- */
+header { 
+    width: 100%; 
+    background: transparent; }
+    .site-header { 
+        max-width: 1100px; 
+        margin: 0 auto; 
+        padding: 18px 20px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        gap: 16px; }
+    .site-header__brand { 
+        text-decoration: none; 
+        color: inherit; 
+        display: flex; 
+        align-items: center; 
+        gap: 10px; }
+    .site-header__title { 
+        font-family: var(--font-display); 
+        font-size: 1.4rem; 
+        color: var(--color-text-primary); 
+        margin: 0; }
+    .site-header__nav { 
+        display: flex; 
+        gap: 10px; 
+        align-items: center; }
+    .site-header__nav .button { 
+        padding: 8px 16px; 
+        border-radius: 999px; 
+        font-size: 0.95rem; }
+
+@media (min-width: 768px) {
+    .site-header__title { font-size: 1.6rem; }
+    .site-header { padding: 18px 16px; }
 }
 
 /* --- Contenedor Principal de Página --- */
@@ -66,6 +103,7 @@ body {
     height: auto;
     color: var(--color-primary); /* Color inicial (celeste) */
     transition: color 0.4s ease, transform 0.4s ease; /* Suaviza el cambio */
+    margin-left: 20px;
 }
 
 /* Cuando el mouse entra en la sección hero, el logo reacciona */
