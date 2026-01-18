@@ -103,7 +103,6 @@ header {
     height: auto;
     color: black; /* Color inicial (celeste) */
     transition: color 0.4s ease, transform 0.4s ease; /* Suaviza el cambio */
-    margin-left: 20px;
 }
 
 /* Cuando el mouse entra en la sección hero, el logo reacciona */
