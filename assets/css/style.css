@@ -47,9 +47,10 @@ header {
     .site-header__brand { 
         text-decoration: none; 
         color: inherit; 
-        display: flex; 
+        display: inline-flex; 
         align-items: center; 
         gap: 10px; }
+    .site-header__brand-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .site-header__title { 
         font-family: var(--font-display); 
         font-size: 1.4rem; 
@@ -63,6 +64,14 @@ header {
         padding: 8px 16px; 
         border-radius: 999px; 
         font-size: 0.95rem; }
+
+    /* Rotador de texto en el header */
+    .brand-rotator { display: block; margin-left: 120px; margin-top: -10px; }
+    .brand-text { font-family: var(--font-primary); font-size: 0.95rem; font-weight: 700; transition: color 180ms ease, transform 160ms ease, opacity 160ms ease; }
+    .brand-text.hidden { opacity: 0; transform: translateY(-4px); }
+    .brand-text.futbol { color: var(--color-success); }
+    .brand-text.natacion { color: var(--color-primary); }
+    .brand-text.app { color: var(--color-text-primary); }
 
 @media (min-width: 768px) {
     .site-header__title { font-size: 1.6rem; }
@@ -89,7 +98,7 @@ header {
 }
 
 .hero__logo { 
-    width: clamp(120px, 20vw, 220px); /* Tamaño responsivo: mínimo 120px, máximo 180px */
+    width: clamp(80px, 22vw, 180px); /* Mobile-first: menor tamaño inicial, escala en pantallas mayores */
     height: auto;
     margin-bottom: 20px;
     display: block; /* Cambiamos de flex a block para evitar estiramientos raros */
@@ -114,21 +123,22 @@ header {
 
 .hero__title { 
     font-family: var(--font-primary);
-    font-size: 4rem; 
+    /* Responsive typography: mobile-first smaller, grows with viewport */
+    font-size: clamp(1.6rem, 8vw, 4rem);
     font-style: italic;
     color: black; 
     margin-bottom: 0.25em; 
     line-height: 1;
     text-transform: none; /* Para respetar las minúsculas de tu HTML */
-    transition: letter-spacing 0.4s ease, margin-right 0.4s ease; 
+    transition: letter-spacing 0.28s ease, margin-right 0.28s ease; 
     text-align: center; /* Asegura el centrado interno */
     display: inline-block; /* Permite que el margen negativo funcione correctamente */
-    letter-spacing: -7px;
+    letter-spacing: -2px; /* menos agresivo en móvil */
 }
 
 .hero:hover .hero__title {
-    letter-spacing: 2px;
-    margin-right: -2px; /* Compensa el espacio extra para que el centro no se mueva */
+    letter-spacing: 1px;
+    margin-right: 0; /* evitar saltos en móvil */
 }
 
 .hero__subtitle { 
@@ -191,7 +201,7 @@ header {
 
 /* --- Media Queries (Responsive Design) --- */
 @media (min-width: 768px) {
-    .hero__title { font-size: 8rem; }
+    .hero__title { font-size: clamp(4.2rem, 10vw, 8rem); letter-spacing: -7px; }
     .hero__actions { flex-direction: row; justify-content: center; }
     .form-container { padding: 40px; max-width: 600px; }
 }
@@ -201,6 +211,23 @@ header {
 
 @media (max-width: 767px) {
     .site-header__nav { display: none; }
+    .site-header { padding: 12px 14px; }
+    .site-header { align-items: center; }
+    .site-header__brand svg { width: 40px; height: auto; }
     .mobile-cta { display: flex; flex-direction: column; gap: 12px; margin-top: 1rem; align-items: center; width: 100%; }
     .mobile-cta .button { width: 90%; max-width: 360px; padding: 12px 18px; border-radius: 10px; }
 }
+
+/* --- Accessibility & Modern UX --- */
+/* Visible focus (uses newer color-mix if available) */
+:focus { outline: none; }
+:focus-visible { outline-offset: 3px; outline: 3px solid rgba(0,189,255,0.9); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}
+
+/* Ensure buttons have good contrast and larger hit area */
+.button { padding: 14px 20px; min-height: 44px; }
+.button--primary { box-shadow: 0 6px 18px rgba(0,189,255,0.08); }

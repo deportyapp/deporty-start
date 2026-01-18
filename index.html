@@ -11,10 +11,15 @@
         <!-- Favicons: primary with cache-bust, sizes and platform variants -->
         <link rel="icon" href="/assets/images/icon.png?v=2" type="image/png">
         <link rel="shortcut icon" href="/assets/images/icon.png?v=2">
-        <link rel="icon" href="/assets/images/logo.svg" sizes="192x192" type="image/jpeg">
+        <link rel="icon" href="/assets/images/logo.svg" sizes="192x192" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/assets/images/icon.png?v=2">
         <link rel="mask-icon" href="/assets/images/logo.svg" color="#00BDFF">
         <meta name="theme-color" content="#00BDFF">
+        <link rel="manifest" href="/site.webmanifest">
+        <meta name="color-scheme" content="light dark">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="Deporty">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
         <!-- Open Graph / Facebook -->
         <meta property="og:title" content="Deporty — Gestión de actividades deportivas">
@@ -58,14 +63,17 @@
 <body>
     <header>
         <div class="site-header">
-            <a href="index.html" class="site-header__brand" aria-label="Deporty">
-                <svg viewBox="0 0 1158 965" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                    <g fill="currentColor">
-                        <path d="M216.608,712.538l-167.481,249.401c532.349,17.301 898.868,-227.524 1105.964,-710.239l-172.383,-0.384c-188.314,264.745 -441.859,429.494 -766.1,461.222Z"/>
-                        <path d="M2.083,710.35l492.089,-708.267l617.658,0l-131.258,244.622l-452.267,-5.689l-314.339,467.424l-211.883,1.909Z"/>
-                    </g>
-                </svg>
-            </a>
+            <div class="site-header__brand-wrap">
+                <!-- <a href="index.html" class="site-header__brand" aria-label="Deporty">
+                    <svg viewBox="0 0 1158 965" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="currentColor">
+                            <path d="M216.608,712.538l-167.481,249.401c532.349,17.301 898.868,-227.524 1105.964,-710.239l-172.383,-0.384c-188.314,264.745 -441.859,429.494 -766.1,461.222Z"/>
+                            <path d="M2.083,710.35l492.089,-708.267l617.658,0l-131.258,244.622l-452.267,-5.689l-314.339,467.424l-211.883,1.909Z"/>
+                        </g>
+                    </svg>
+                </a> -->
+            </div>
+            
 
             <nav class="site-header__nav" role="navigation" aria-label="Acciones principales">
                 <a href="login.html" class="button button--secondary">Iniciar Sesión</a>
@@ -73,7 +81,6 @@
             </nav>
         </div>
     </header>
-
     <main class="landing-page" data-page="home">
         <section class="hero">            
             <div class="hero__logo">
@@ -85,6 +92,9 @@
                 </svg>
             </div>
             <h1 class="hero__title">Deporty</h1>
+            <span class="brand-rotator" aria-live="polite">
+                <span class="brand-text">Futbol</span>
+            </span>
             <p class="hero__subtitle">Tu plataforma para gestionar actividades deportivas de manera fácil y eficiente.</p>
             <div class="hero__actions mobile-cta">
                 <a href="login.html" class="button button--secondary">Iniciar Sesión</a>
@@ -93,6 +103,7 @@
         </section>
     </main>
 
+    <script src="assets/js/main.js" defer></script>
 </body>
 
 </html>
