@@ -247,3 +247,26 @@ header {
 .brand-btn--app:hover { background-color: color-mix(in srgb, var(--color-text-primary) 85%, black 15%); }
 .brand-btn--waterpolo { background-color: var(--color-waterpolo) !important; color: var(--color-surface) !important; border-color: var(--color-waterpolo) !important; }
 .brand-btn--waterpolo:hover { background-color: color-mix(in srgb, var(--color-waterpolo) 85%, black 15%); }
+
+/* --- Install CTA (manual) --- */
+.install-button {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    padding: 10px 14px;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 9999;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-primary);
+    transition: transform 160ms ease, opacity 160ms ease;
+}
+.install-button[hidden] { opacity: 0; pointer-events: none; transform: translateY(8px); }
+@media (min-width: 768px) {
+    /* hide manual CTA on larger screens where native prompts are preferred */
+    .install-button { display: none; }
+}

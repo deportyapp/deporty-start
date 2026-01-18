@@ -65,4 +65,62 @@ if ('serviceWorker' in navigator) {
 	});
 }
 
+// Listen for beforeinstallprompt but do NOT call preventDefault so browser can show native install UI
+window.addEventListener('beforeinstallprompt', (e) => {
+	console.log('beforeinstallprompt event fired');
+	// store event for optional later use, but do not prevent default
+	window.deferredPWAInstallEvent = e;
+});
+
+// Optional: react to appinstalled
+window.addEventListener('appinstalled', (evt) => {
+	console.log('PWA was installed.', evt);
+	// Clear stored event
+	window.deferredPWAInstallEvent = null;
+});
+
+// --- Manual install CTA handling ---
+function __updateInstallUI() {
+	const btn = document.getElementById('install-button');
+	if (!btn) return;
+	if (window.deferredPWAInstallEvent) {
+		btn.hidden = false;
+		btn.setAttribute('aria-hidden', 'false');
+	} else {
+		btn.hidden = true;
+		btn.setAttribute('aria-hidden', 'true');
+	}
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+	// store event for optional later use, but do not prevent default
+	console.log('beforeinstallprompt event fired (stored)');
+	window.deferredPWAInstallEvent = e;
+	// update any UI if present
+	try { __updateInstallUI(); } catch (err) { /* ignore */ }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+	const btn = document.getElementById('install-button');
+	if (!btn) return;
+	btn.addEventListener('click', async (ev) => {
+		const evt = window.deferredPWAInstallEvent;
+		if (!evt) return;
+		try {
+			// Show the browser install prompt
+			evt.prompt();
+			const choice = await evt.userChoice;
+			console.log('UserChoice', choice);
+		} catch (e) {
+			console.warn('Install prompt failed', e);
+		} finally {
+			// Clear stored event and update UI
+			window.deferredPWAInstallEvent = null;
+			__updateInstallUI();
+		}
+	});
+	// initial sync in case event already fired
+	__updateInstallUI();
+});
+
 
