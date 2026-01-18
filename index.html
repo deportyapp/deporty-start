@@ -16,6 +16,9 @@
         <link rel="mask-icon" href="/assets/images/logo.svg" color="#00BDFF">
         <meta name="theme-color" content="#00BDFF">
         <link rel="manifest" href="/site.webmanifest">
+        <!-- Preload main app image for faster first paint -->
+        <link rel="preload" href="/assets/images/logo-variants.jpg" as="image" type="image/jpeg">
+        <link rel="preload" href="/assets/images/logo.svg" as="image" type="image/svg+xml">
         <meta name="color-scheme" content="light dark">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-title" content="Deporty">
@@ -64,14 +67,9 @@
     <header>
         <div class="site-header">
             <div class="site-header__brand-wrap">
-                <!-- <a href="index.html" class="site-header__brand" aria-label="Deporty">
-                    <svg viewBox="0 0 1158 965" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                        <g fill="currentColor">
-                            <path d="M216.608,712.538l-167.481,249.401c532.349,17.301 898.868,-227.524 1105.964,-710.239l-172.383,-0.384c-188.314,264.745 -441.859,429.494 -766.1,461.222Z"/>
-                            <path d="M2.083,710.35l492.089,-708.267l617.658,0l-131.258,244.622l-452.267,-5.689l-314.339,467.424l-211.883,1.909Z"/>
-                        </g>
-                    </svg>
-                </a> -->
+                <a href="index.html" class="site-header__brand" aria-label="Deporty">
+                    <img src="assets/images/logo.svg" srcset="assets/images/logo-variants.jpg 1x, assets/images/logo-swimming.png 2x" alt="Deporty" class="site-logo" decoding="async" loading="eager">
+                </a>
             </div>
             
 
@@ -84,12 +82,7 @@
     <main class="landing-page" data-page="home">
         <section class="hero">            
             <div class="hero__logo">
-                <svg role="img" aria-label="Logotipo de Deporty" viewBox="0 0 1158 965" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                    <g fill="currentColor">
-                        <path d="M216.608,712.538l-167.481,249.401c532.349,17.301 898.868,-227.524 1105.964,-710.239l-172.383,-0.384c-188.314,264.745 -441.859,429.494 -766.1,461.222Z"/>
-                        <path d="M2.083,710.35l492.089,-708.267l617.658,0l-131.258,244.622l-452.267,-5.689l-314.339,467.424l-211.883,1.909Z"/>
-                    </g>
-                </svg>
+                <img src="assets/images/logo-variants.jpg" srcset="assets/images/logo-variants.jpg 1x, assets/images/logo-swimming.png 2x" alt="Logotipo de Deporty" class="hero-logo-img" decoding="async" loading="eager">
             </div>
             <h1 class="hero__title">Deporty</h1>
             <span class="brand-rotator" aria-live="polite">

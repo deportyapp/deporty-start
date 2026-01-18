@@ -103,9 +103,9 @@ header {
     width: clamp(80px, 22vw, 180px); /* Mobile-first: menor tamaño inicial, escala en pantallas mayores */
     height: auto;
     margin-bottom: 20px;
-    display: block; /* Cambiamos de flex a block para evitar estiramientos raros */
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .hero__logo svg {
@@ -115,6 +115,9 @@ header {
     color: black; /* Color inicial (celeste) */
     transition: color 0.4s ease, transform 0.4s ease; /* Suaviza el cambio */
 }
+
+.hero__logo .hero-logo-img { display: block; width: 100%; height: auto; max-width: 280px; }
+.site-header__brand-wrap .site-logo { width: 48px; height: auto; display: block; }
 
 /* Cuando el mouse entra en la sección hero, el logo reacciona */
 .hero:hover .hero__logo svg {
