@@ -267,12 +267,34 @@
 
 				<div class="space-y-1">
 					<label for="fecha" class="text-sm font-semibold text-gray-700">Fecha de Nacimiento</label>
-					<input 
-						id="fecha"
-						type="date" 
-						bind:value={fechaNacimiento}
-						class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-					/>
+					<div class="relative">
+						<!-- Input visual (Formateado a gusto) -->
+						<input 
+							type="text" 
+							placeholder="dd/mm/aaaa"
+							readonly
+							value={fechaNacimiento ? new Date(fechaNacimiento + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
+							class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white cursor-pointer relative z-10"
+							onclick={(e) => {
+								// @ts-ignore
+								e.currentTarget.nextElementSibling?.showPicker();
+							}}
+						/>
+						<!-- Input real (Nativo, invisible pero funcional) -->
+						<input 
+							id="fecha"
+							type="date" 
+							bind:value={fechaNacimiento}
+							class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0"
+							onchange={(e) => {
+                                // Forzar actualización visual si es necesario
+                            }}
+						/>
+						<!-- Icono calendario (opcional, decorativo) -->
+						<div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-20 pointer-events-none">
+							📅
+						</div>
+					</div>
 				</div>
 			</div>
 
