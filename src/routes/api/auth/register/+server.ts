@@ -5,39 +5,42 @@ import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcryptjs';
 
 export async function POST({ request }) {
-    const { nombres, apellidos, email, password, fechaNacimiento, pais, ciudad, roles, deportes } = await request.json();
+    const { nombres, apellidos, email, password } = await request.json();
 
-    // 1. Validaciones Básicas (Backend First)
+    // Validaciones básicas
     if (!email || !password || !nombres || !apellidos) {
         return error(400, 'Faltan campos obligatorios');
     }
 
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return error(400, 'Formato de email inválido');
+    }
+
+    // Validar longitud de contraseña
+    if (password.length < 8) {
+        return error(400, 'La contraseña debe tener al menos 8 caracteres');
+    }
+
     try {
-        // 2. Verificar si el usuario ya existe
+        // Verificar si el usuario ya existe
         const existingUser = await db.select().from(users).where(eq(users.email, email));
 
         if (existingUser.length > 0) {
             return error(409, 'El correo electrónico ya está registrado');
         }
 
-        // 3. Hash del Password
+        // Hash del password
         const passwordHash = await bcrypt.hash(password, 10);
 
-        // 4. Crear Usuario
-        // Nota: Por ahora guardamos todo en una estructura plana o JSON simplificado si es necesario.
-        // Dado que el schema original era simple, vamos a insertar lo básico y dejar los otros campos preparados
-        // para cuando ampliemos el schema a incluir 'profiles' o campos JSON.
-
-        // Vamos a asumir que actualizaremos el schema muy pronto, pero por ahora insertamos lo que cabe.
-        // Espera, el schema actual NO tiene roles, deporte, etc. Solo tiene: id, firstName, lastName, email, passwordHash, role.
-        // Voy a mapear 'roles' (array) al campo 'role' (string) uniendolos por coma por ahora para no romper.
-
+        // Crear usuario
         await db.insert(users).values({
             firstName: nombres,
             lastName: apellidos,
             email,
             passwordHash,
-            role: roles.join(','), // Simple hack temporero hasta tener tabla de roles o columna JSON
+            role: 'user' // Rol por defecto
         });
 
         return json({ success: true, message: 'Usuario registrado exitosamente' });

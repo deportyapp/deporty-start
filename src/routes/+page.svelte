@@ -1,72 +1,323 @@
 <script lang="ts">
-	// Landing Page Logic (si se necesita alguna animación simple)
+	import { authStore } from '$lib/authStore';
+	import { onMount } from 'svelte';
+
+	let currentTime = $state(new Date());
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			currentTime = new Date();
+		}, 1000);
+
+		return () => clearInterval(interval);
+	});
+
+	function getGreeting() {
+		const hour = currentTime.getHours();
+		if (hour < 12) return 'Buenos días';
+		if (hour < 18) return 'Buenas tardes';
+		return 'Buenas noches';
+	}
+
+	// Datos de ejemplo para el dashboard
+	let stats = [
+		{ label: 'Torneos Activos', value: '3', icon: '🏆', color: 'from-blue-500 to-cyan-400' },
+		{ label: 'Partidos Hoy', value: '5', icon: '⚽', color: 'from-green-500 to-emerald-400' },
+		{ label: 'Equipos Registrados', value: '12', icon: '👥', color: 'from-purple-500 to-pink-400' },
+		{
+			label: 'Próximo Partido',
+			value: '2h',
+			icon: '⏰',
+			color: 'from-orange-500 to-yellow-400'
+		}
+	];
+
+	let recentActivity = [
+		{ title: 'Liga de Fútbol 5', action: 'Nuevo resultado registrado', time: '5 min' },
+		{ title: 'Torneo de Basketball', action: 'Equipo "Los Leones" inscrito', time: '1 hora' },
+		{ title: 'Copa de Verano', action: 'Fixture actualizado', time: '3 horas' }
+	];
+
+	let quickActions = [
+		{ label: 'Crear Torneo', icon: '➕', href: '/torneos/crear', color: 'bg-blue-600' },
+		{ label: 'Ver Torneos', icon: '📋', href: '/torneos', color: 'bg-green-600' },
+		{ label: 'Registrar Resultado', icon: '📊', href: '/resultados', color: 'bg-purple-600' },
+		{ label: 'Gestionar Equipos', icon: '⚙️', href: '/equipos', color: 'bg-orange-600' }
+	];
 </script>
 
-<main class="relative overflow-hidden">
-	<!-- Hero Section -->
-	<section class="relative px-4 py-16 sm:px-6 sm:py-24 lg:px-8" aria-labelledby="hero-heading">
-		<div class="relative z-10 mx-auto max-w-4xl text-center">
-			<!-- Badge -->
-			<div
-				class="mb-8 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-sm font-semibold tracking-wide text-blue-600"
-			>
-				<span class="h-2 w-2 animate-pulse rounded-full bg-blue-500"></span>
-				La nueva era del deporte amateur
+{#if $authStore}
+	<!-- Dashboard para usuarios autenticados -->
+	<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+		<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<!-- Header del Dashboard -->
+			<div class="mb-8">
+				<div class="flex items-center justify-between">
+					<div>
+						<h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">
+							{getGreeting()}, {$authStore.firstName}! 👋
+						</h1>
+						<p class="mt-2 text-gray-600">
+							{currentTime.toLocaleDateString('es-ES', {
+								weekday: 'long',
+								year: 'numeric',
+								month: 'long',
+								day: 'numeric'
+							})}
+						</p>
+					</div>
+					<div class="hidden md:block">
+						<div class="text-right">
+							<div class="text-2xl font-bold text-blue-600">
+								{currentTime.toLocaleTimeString('es-ES')}
+							</div>
+							<div class="text-sm text-gray-500">Hora actual</div>
+						</div>
+					</div>
+				</div>
 			</div>
 
-			<!-- Main Heading -->
-			<h1
-				id="hero-heading"
-				class="mb-6 text-4xl leading-tight font-bold text-gray-900 sm:text-5xl lg:text-6xl"
-			>
-				Gestiona tus torneos con
-				<span
-					class="font-brand mt-2 block bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 bg-clip-text text-5xl text-transparent uppercase sm:text-6xl lg:text-7xl"
-				>
-					Deporty
-				</span>
-			</h1>
+			<!-- Estadísticas -->
+			<div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+				{#each stats as stat}
+					<div
+						class="relative overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all hover:scale-105 hover:shadow-xl"
+					>
+						<div class="flex items-center justify-between">
+							<div>
+								<p class="text-sm font-medium text-gray-600">{stat.label}</p>
+								<p class="mt-2 text-3xl font-bold text-gray-900">{stat.value}</p>
+							</div>
+							<div
+								class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br {stat.color} text-4xl shadow-lg"
+							>
+								{stat.icon}
+							</div>
+						</div>
+						<div class="mt-4 h-1 w-full rounded-full bg-gray-100">
+							<div class="h-1 w-2/3 rounded-full bg-gradient-to-r {stat.color}"></div>
+						</div>
+					</div>
+				{/each}
+			</div>
 
-			<!-- Subtitle -->
-			<p class="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-gray-600 sm:text-xl">
-				Organiza ligas, gestiona equipos y sigue los resultados en tiempo real. Todo lo que
-				necesitas para llevar tu pasión al siguiente nivel.
-			</p>
+			<!-- Acciones Rápidas y Actividad Reciente -->
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+				<!-- Acciones Rápidas -->
+				<div class="lg:col-span-2">
+					<div class="rounded-2xl bg-white p-6 shadow-md">
+						<div class="mb-6 flex items-center justify-between">
+							<h2 class="text-xl font-bold text-gray-900">Acciones Rápidas</h2>
+							<span class="text-2xl">⚡</span>
+						</div>
+						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+							{#each quickActions as action}
+								<a
+									href={action.href}
+									class="group flex items-center gap-4 rounded-xl border-2 border-gray-100 bg-gradient-to-br from-gray-50 to-white p-4 transition-all hover:scale-105 hover:border-blue-200 hover:shadow-lg"
+								>
+									<div
+										class="{action.color} flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-2xl shadow-md transition-transform group-hover:scale-110"
+									>
+										{action.icon}
+									</div>
+									<div>
+										<p class="font-semibold text-gray-900">{action.label}</p>
+										<p class="text-sm text-gray-500">Click para comenzar</p>
+									</div>
+								</a>
+							{/each}
+						</div>
+					</div>
+				</div>
 
-			<!-- CTA Buttons -->
-			<div class="mx-auto flex w-full max-w-md flex-col gap-3 sm:max-w-lg sm:flex-row sm:gap-4">
-				<a
-					href="/register"
-					class="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-base font-bold text-white shadow-lg shadow-blue-200 transition-all hover:scale-105 hover:bg-blue-700 sm:px-8 sm:text-lg"
-				>
-					🚀 Empezar Gratis
-				</a>
-				<a
-					href="/login"
-					class="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-4 text-base font-bold text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50 sm:px-8 sm:text-lg"
-				>
-					🔐 Iniciar Sesión
-				</a>
+				<!-- Actividad Reciente -->
+				<div class="lg:col-span-1">
+					<div class="rounded-2xl bg-white p-6 shadow-md">
+						<div class="mb-6 flex items-center justify-between">
+							<h2 class="text-xl font-bold text-gray-900">Actividad Reciente</h2>
+							<span class="text-2xl">📱</span>
+						</div>
+						<div class="space-y-4">
+							{#each recentActivity as activity}
+								<div
+									class="group cursor-pointer rounded-xl border border-gray-100 bg-gray-50 p-4 transition-all hover:border-blue-200 hover:bg-blue-50"
+								>
+									<div class="flex items-start justify-between">
+										<div class="flex-1">
+											<p class="font-semibold text-gray-900">{activity.title}</p>
+											<p class="mt-1 text-sm text-gray-600">{activity.action}</p>
+										</div>
+										<span
+											class="ml-2 flex-shrink-0 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
+										>
+											{activity.time}
+										</span>
+									</div>
+								</div>
+							{/each}
+						</div>
+						<button
+							class="mt-6 w-full rounded-xl border-2 border-gray-200 py-3 font-semibold text-gray-700 transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600"
+						>
+							Ver todo
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Sección de Torneos Destacados -->
+			<div class="mt-8">
+				<div class="mb-6 flex items-center justify-between">
+					<h2 class="text-2xl font-bold text-gray-900">Torneos Destacados</h2>
+					<a
+						href="/torneos"
+						class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-blue-700"
+					>
+						Ver todos
+					</a>
+				</div>
+				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+					{#each [
+						{ name: 'Liga de Fútbol 5', teams: 8, matches: 24, status: 'En curso' },
+						{ name: 'Torneo de Basketball', teams: 6, matches: 15, status: 'Por comenzar' },
+						{ name: 'Copa de Verano', teams: 12, matches: 36, status: 'En curso' }
+					] as torneo}
+						<div
+							class="group overflow-hidden rounded-2xl bg-white shadow-md transition-all hover:scale-105 hover:shadow-xl"
+						>
+							<div
+								class="h-32 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 p-6 text-white"
+							>
+								<h3 class="text-xl font-bold">{torneo.name}</h3>
+								<span
+									class="mt-2 inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur-sm"
+								>
+									{torneo.status}
+								</span>
+							</div>
+							<div class="p-6">
+								<div class="grid grid-cols-2 gap-4">
+									<div>
+										<p class="text-sm text-gray-500">Equipos</p>
+										<p class="text-2xl font-bold text-gray-900">{torneo.teams}</p>
+									</div>
+									<div>
+										<p class="text-sm text-gray-500">Partidos</p>
+										<p class="text-2xl font-bold text-gray-900">{torneo.matches}</p>
+									</div>
+								</div>
+								<button
+									class="mt-4 w-full rounded-lg bg-gray-100 py-2 font-semibold text-gray-700 transition-all group-hover:bg-blue-600 group-hover:text-white"
+								>
+									Ver detalles
+								</button>
+							</div>
+						</div>
+					{/each}
+				</div>
 			</div>
 		</div>
+	</div>
+{:else}
+	<!-- Landing Page para usuarios no autenticados -->
+	<main class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
+		<!-- Grid Background Pattern -->
+		<div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+		
+		<!-- Hero Section -->
+		<section class="relative px-4 py-20 sm:px-6 sm:py-32 lg:px-8">
+			<div class="relative z-10 mx-auto max-w-6xl">
+				<!-- Badge -->
+				<div class="mb-8 flex justify-center">
+					<div
+						class="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-300 backdrop-blur-sm"
+					>
+						<span class="relative flex h-2 w-2">
+							<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+							<span class="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
+						</span>
+						La nueva era del deporte amateur
+					</div>
+				</div>
 
-		<!-- Decorative Background Elements -->
-		<div
-			class="pointer-events-none absolute top-0 left-1/2 -z-10 h-full w-full -translate-x-1/2 overflow-hidden"
-			aria-hidden="true"
-		>
-			<div
-				class="animate-blob absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-100 opacity-30 mix-blend-multiply blur-3xl filter"
-			></div>
-			<div
-				class="animate-blob animation-delay-2000 absolute top-0 right-1/4 h-96 w-96 rounded-full bg-cyan-100 opacity-30 mix-blend-multiply blur-3xl filter"
-			></div>
-			<div
-				class="animate-blob animation-delay-4000 absolute -bottom-32 left-1/2 h-96 w-96 rounded-full bg-purple-100 opacity-30 mix-blend-multiply blur-3xl filter"
-			></div>
-		</div>
-	</section>
-</main>
+				<!-- Main Heading -->
+				<h1
+					class="mb-8 text-center text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl lg:text-7xl"
+				>
+					Gestiona tus torneos
+					<br />
+					<span
+						class="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent"
+					>
+						como un profesional
+					</span>
+				</h1>
+
+				<!-- Subtitle -->
+				<p class="mx-auto mb-12 max-w-2xl text-center text-lg leading-relaxed text-slate-300 sm:text-xl">
+					Organiza ligas, gestiona equipos y sigue los resultados en tiempo real.
+					<span class="text-blue-400">Todo lo que necesitas</span> para llevar tu pasión al siguiente nivel.
+				</p>
+
+				<!-- CTA Buttons -->
+				<div class="mb-16 flex justify-center">
+					<div class="flex w-full max-w-md flex-col gap-4 sm:flex-row">
+						<a
+							href="/register"
+							class="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-4 font-bold text-white shadow-2xl shadow-blue-500/50 transition-all hover:scale-105 hover:shadow-blue-500/70"
+						>
+							<span class="relative flex items-center gap-2">
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+								</svg>
+								Empezar Gratis
+							</span>
+						</a>
+						<a
+							href="/login"
+							class="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border-2 border-slate-700 bg-slate-900/50 px-8 py-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:border-blue-500 hover:bg-slate-800/50"
+						>
+							<span class="relative flex items-center gap-2">
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+								</svg>
+								Iniciar Sesión
+							</span>
+						</a>
+					</div>
+				</div>
+
+				<!-- Features Grid -->
+				<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+					{#each [
+						{ icon: '🏆', title: 'Torneos Ilimitados', desc: 'Crea y gestiona todos los torneos que necesites' },
+						{ icon: '📊', title: 'Estadísticas en Vivo', desc: 'Sigue los resultados y estadísticas en tiempo real' },
+						{ icon: '👥', title: 'Gestión de Equipos', desc: 'Administra equipos, jugadores y resultados' }
+					] as feature}
+						<div
+							class="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur-sm transition-all hover:border-blue-500/50 hover:bg-slate-800/50"
+						>
+							<div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+							<div class="relative">
+								<div class="mb-4 text-5xl">{feature.icon}</div>
+								<h3 class="mb-2 text-xl font-bold text-white">{feature.title}</h3>
+								<p class="text-slate-400">{feature.desc}</p>
+							</div>
+						</div>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Animated Gradient Orbs -->
+			<div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+				<div class="absolute -top-40 -right-40 h-96 w-96 animate-pulse rounded-full bg-blue-600/20 blur-3xl"></div>
+				<div class="absolute -bottom-40 -left-40 h-96 w-96 animate-pulse rounded-full bg-cyan-600/20 blur-3xl" style="animation-delay: 2s;"></div>
+				<div class="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-purple-600/10 blur-3xl" style="animation-delay: 4s;"></div>
+			</div>
+		</section>
+	</main>
+{/if}
 
 <style>
 	/* Animaciones Custom */

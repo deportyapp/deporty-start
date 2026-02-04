@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import logo from '$lib/assets/icon.png';
+	import { authStore, logout } from '$lib/authStore';
 	let { children } = $props();
 </script>
 
@@ -19,7 +20,7 @@
 		aria-label="Navegación principal"
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="flex h-16 items-center justify-center md:justify-between">
+			<div class="flex h-16 items-center justify-between">
 				<!-- Logo -->
 				<a
 					href="/"
@@ -39,19 +40,54 @@
 					</span>
 				</a>
 
-				<!-- Desktop Nav Links -->
-				<div class="hidden items-center space-x-4 md:flex">
-					<a
-						href="/login"
-						class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-						>Iniciar Sesión</a
-					>
-					<a
-						href="/register"
-						class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:bg-gray-800 hover:shadow-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 focus:outline-none"
-					>
-						Registrarse
-					</a>
+				<!-- Navigation -->
+				<div class="flex items-center space-x-4">
+					{#if $authStore}
+						<div class="flex items-center gap-2 sm:gap-4">
+							<!-- Enlaces de navegación cuando está autenticado -->
+							<nav class="hidden md:flex items-center gap-2">
+								<a
+									href="/"
+									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
+								>
+									Dashboard
+								</a>
+								<a
+									href="/torneos"
+									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
+								>
+									Torneos
+								</a>
+								<a
+									href="/equipos"
+									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
+								>
+									Equipos
+								</a>
+								<a
+									href="/resultados"
+									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
+								>
+									Resultados
+								</a>
+							</nav>
+							
+							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
+							
+							<div class="flex items-center gap-3">
+								<div class="hidden sm:flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
+									<span class="text-xl">👤</span>
+									<span class="text-sm font-bold text-blue-600">{$authStore.firstName}</span>
+								</div>
+								<button
+									onclick={logout}
+									class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
+								>
+									Salir
+								</button>
+							</div>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -63,7 +99,7 @@
 	</main>
 
 	<!-- Footer -->
-	<footer class="mt-auto border-t border-gray-100 bg-white py-8" role="contentinfo">
+	<footer class="mt-auto border-t border-gray-100 bg-white py-8">
 		<div class="mx-auto max-w-7xl px-4 text-center">
 			<p class="text-sm text-gray-400">© 2026 Deporty. Hecho con 💙 para el deporte.</p>
 		</div>
