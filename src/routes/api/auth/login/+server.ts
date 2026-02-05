@@ -26,9 +26,8 @@ export async function POST({ request }) {
             return error(401, 'Credenciales incorrectas');
         }
 
-        // 3. TODO: Implementar sesiones/JWT
-        // Por ahora retornamos éxito para que el frontend redirija.
-
+        // 3. Retornar información del usuario
+        // Nota: En producción, implementar sesiones JWT/cookies seguras
         return json({
             success: true,
             message: 'Sesión iniciada correctamente',

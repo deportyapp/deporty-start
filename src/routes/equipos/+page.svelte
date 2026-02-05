@@ -9,56 +9,8 @@
 		}
 	});
 
-	let equipos = $state([
-		{
-			id: 1,
-			nombre: 'Los Leones',
-			torneo: 'Liga de Fútbol 5',
-			jugadores: 12,
-			partidos: 8,
-			victorias: 5,
-			derrotas: 2,
-			empates: 1,
-			color: 'from-yellow-500 to-orange-400',
-			logo: '🦁'
-		},
-		{
-			id: 2,
-			nombre: 'Águilas FC',
-			torneo: 'Liga de Fútbol 5',
-			jugadores: 10,
-			partidos: 8,
-			victorias: 6,
-			derrotas: 1,
-			empates: 1,
-			color: 'from-blue-500 to-cyan-400',
-			logo: '🦅'
-		},
-		{
-			id: 3,
-			nombre: 'Tigres United',
-			torneo: 'Copa de Verano',
-			jugadores: 14,
-			partidos: 6,
-			victorias: 4,
-			derrotas: 2,
-			empates: 0,
-			color: 'from-orange-500 to-red-400',
-			logo: '🐯'
-		},
-		{
-			id: 4,
-			nombre: 'Lobos Basketball',
-			torneo: 'Torneo de Basketball',
-			jugadores: 8,
-			partidos: 5,
-			victorias: 3,
-			derrotas: 2,
-			empates: 0,
-			color: 'from-purple-500 to-pink-400',
-			logo: '🐺'
-		}
-	]);
+	// Datos de equipos (vacío hasta que los usuarios creen equipos)
+	let equipos = $state<any[]>([]);
 
 	let showModal = $state(false);
 	let nuevoEquipo = $state({ nombre: '', torneo: '', logo: '⚽' });

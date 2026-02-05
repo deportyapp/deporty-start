@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { authStore } from '$lib/authStore';
 	import { goto } from '$app/navigation';
+	import { 
+		validateEmail, 
+		validatePasswordStrength, 
+		getPasswordStrengthText, 
+		getPasswordStrengthColor 
+	} from '$lib/validation';
 
 	// Form State
 	let nombres = $state('');
@@ -16,29 +22,9 @@
 	let errorMessage = $state('');
 	
 	// Password Strength
-	let passwordStrength = $derived.by(() => {
-		let score = 0;
-		if (password.length >= 8) score++;
-		if (/[A-Z]/.test(password)) score++;
-		if (/[a-z]/.test(password)) score++;
-		if (/[0-9]/.test(password)) score++;
-		if (/[^A-Za-z0-9]/.test(password)) score++;
-		return score;
-	});
-	
-	function getStrengthColor() {
-		if (passwordStrength <= 2) return 'bg-red-500';
-		if (passwordStrength === 3) return 'bg-yellow-500';
-		if (passwordStrength === 4) return 'bg-blue-500';
-		return 'bg-green-500';
-	}
-	
-	function getStrengthText() {
-		if (passwordStrength <= 2) return 'Débil';
-		if (passwordStrength === 3) return 'Media';
-		if (passwordStrength === 4) return 'Fuerte';
-		return 'Muy Fuerte';
-	}
+	let passwordStrength = $derived(validatePasswordStrength(password));
+	let strengthColor = $derived(getPasswordStrengthColor(passwordStrength));
+	let strengthText = $derived(getPasswordStrengthText(passwordStrength));
 
 	async function handleRegister(e: SubmitEvent) {
 		e.preventDefault();
@@ -176,7 +162,7 @@
 								bind:value={email}
 								oninput={(e) => (email = e.currentTarget.value.toLowerCase())}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="yourname@email.com"
+							placeholder="tunombre@email.com"
 								required
 							/>
 						</div>
@@ -191,7 +177,7 @@
 							bind:value={confirmEmail}
 							oninput={(e) => (confirmEmail = e.currentTarget.value.toLowerCase())}
 							class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 {confirmEmail && email !== confirmEmail ? 'border-red-500/50' : ''}"
-							placeholder="yourname@email.com"
+					placeholder="tunombre@email.com"
 							required
 						/>
 						{#if confirmEmail && email !== confirmEmail}
@@ -236,9 +222,9 @@
 						{#if password}
 							<div class="flex items-center gap-2">
 								<div class="h-1 flex-1 rounded-full bg-slate-700">
-									<div class="h-1 rounded-full transition-all {getStrengthColor()}" style="width: {(passwordStrength / 5) * 100}%"></div>
+									<div class="h-1 rounded-full transition-all {strengthColor}" style="width: {(passwordStrength / 5) * 100}%"></div>
 								</div>
-								<span class="text-xs text-slate-400">{getStrengthText()}</span>
+								<span class="text-xs text-slate-400">{strengthText}</span>
 							</div>
 						{/if}
 					</div>

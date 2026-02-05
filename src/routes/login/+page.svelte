@@ -7,6 +7,11 @@
 	let showPassword = $state(false);
 	let isSubmitting = $state(false);
 	let errorMessage = $state('');
+	let showForgotPasswordModal = $state(false);
+	let forgotEmail = $state('');
+	let isSendingReset = $state(false);
+	let resetSuccessMessage = $state('');
+	let resetErrorMessage = $state('');
 
 	async function handleLogin(e: SubmitEvent) {
 		e.preventDefault();
@@ -37,6 +42,57 @@
 			errorMessage = 'Error de conexión. Inténtalo más tarde.';
 		} finally {
 			isSubmitting = false;
+		}
+	}
+
+	function openForgotPasswordModal() {
+		showForgotPasswordModal = true;
+		forgotEmail = email; // Pre-llenar con el email si existe
+		resetSuccessMessage = '';
+		resetErrorMessage = '';
+	}
+
+	function closeForgotPasswordModal() {
+		showForgotPasswordModal = false;
+		forgotEmail = '';
+		resetSuccessMessage = '';
+		resetErrorMessage = '';
+	}
+
+	async function handleForgotPassword(e: SubmitEvent) {
+		e.preventDefault();
+		resetErrorMessage = '';
+		resetSuccessMessage = '';
+
+		if (!forgotEmail) {
+			resetErrorMessage = 'Por favor ingresa tu email';
+			return;
+		}
+
+		isSendingReset = true;
+
+		try {
+			const res = await fetch('/api/auth/forgot-password', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email: forgotEmail })
+			});
+
+			const data = await res.json();
+
+			if (res.ok) {
+				resetSuccessMessage = data.message;
+				// En desarrollo, mostrar el link
+				if (data.resetUrl) {
+					console.log('🔗 Link de reset:', data.resetUrl);
+				}
+			} else {
+				resetErrorMessage = data.message || 'Error al enviar el correo';
+			}
+		} catch (error) {
+			resetErrorMessage = 'Error de conexión. Inténtalo más tarde.';
+		} finally {
+			isSendingReset = false;
 		}
 	}
 </script>
@@ -92,7 +148,7 @@
 								bind:value={email}
 								oninput={(e) => (email = e.currentTarget.value.toLowerCase())}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="yourname@email.com"
+							placeholder="tunombre@email.com"
 								required
 							/>
 						</div>
@@ -101,9 +157,13 @@
 					<!-- Password -->
 					<div class="space-y-2">
 						<div class="flex items-center justify-between">
-							<label for="password" class="text-sm font-semibold text-slate-300">Password</label>
-							<button type="button" class="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-								Forgot?
+							<label for="password" class="text-sm font-semibold text-slate-300">Contraseña</label>
+							<button 
+								type="button" 
+								onclick={openForgotPasswordModal}
+								class="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+							>
+								¿Recordar Contraseña?
 							</button>
 						</div>
 						<div class="relative">
@@ -152,12 +212,12 @@
 									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 								</svg>
-								Signing in...
-							{:else}
-								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-								</svg>
-								Sign In
+							Iniciando sesión...
+						{:else}
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+							</svg>
+							Iniciar Sesión
 							{/if}
 						</span>
 					</button>
@@ -166,7 +226,7 @@
 				<!-- Divider -->
 				<div class="my-8 flex items-center gap-4">
 					<div class="h-px flex-1 bg-slate-700"></div>
-					<span class="text-xs uppercase text-slate-500">or continue with</span>
+					<span class="text-xs uppercase text-slate-500">o continuar con</span>
 					<div class="h-px flex-1 bg-slate-700"></div>
 				</div>
 
@@ -197,9 +257,9 @@
 
 				<!-- Footer -->
 				<p class="mt-8 text-center text-sm text-slate-400">
-					Don't have an account?
+					¿No tienes una cuenta?
 					<a href="/register" class="font-semibold text-blue-400 hover:text-blue-300 transition-colors">
-						Sign Up
+						Registrarse
 					</a>
 				</p>
 			</div>
@@ -213,7 +273,141 @@
 			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 			</svg>
-			Back to home
+			Volver al inicio
 		</a>
 	</div>
 </div>
+
+<!-- Forgot Password Modal -->
+{#if showForgotPasswordModal}
+	<div 
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+		role="dialog"
+		aria-modal="true"
+		tabindex="-1"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) closeForgotPasswordModal();
+		}}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') closeForgotPasswordModal();
+		}}
+	>
+		<div class="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/95 shadow-2xl">
+			<div class="p-8">
+				<!-- Header -->
+				<div class="mb-6 text-center">
+					<div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500/10">
+						<svg class="h-7 w-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+						</svg>
+					</div>
+					<h3 class="mb-2 text-2xl font-bold text-white">¿Olvidaste tu contraseña?</h3>
+					<p class="text-sm text-slate-400">
+						Ingresa tu email y te enviaremos instrucciones para restablecerla
+					</p>
+				</div>
+
+				<!-- Success Message -->
+				{#if resetSuccessMessage}
+					<div class="mb-6 rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-400">
+						<div class="flex items-start gap-2">
+							<svg class="mt-0.5 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							<div>
+								<p>{resetSuccessMessage}</p>
+								<p class="mt-1 text-xs text-green-400/80">Revisa tu bandeja de entrada y spam.</p>
+							</div>
+						</div>
+					</div>
+				{/if}
+
+				<!-- Error Message -->
+				{#if resetErrorMessage}
+					<div class="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
+						<div class="flex items-center gap-2">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							{resetErrorMessage}
+						</div>
+					</div>
+				{/if}
+
+				<!-- Form -->
+				{#if !resetSuccessMessage}
+					<form onsubmit={handleForgotPassword} class="space-y-4">
+						<div class="space-y-2">
+							<label for="forgotEmail" class="text-sm font-semibold text-slate-300">Email</label>
+							<div class="relative">
+								<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+									<svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+									</svg>
+								</div>
+								<input
+									id="forgotEmail"
+									type="email"
+									bind:value={forgotEmail}
+									oninput={(e) => (forgotEmail = e.currentTarget.value.toLowerCase())}
+									class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+									placeholder="tunombre@email.com"
+									required
+								/>
+							</div>
+						</div>
+
+						<div class="flex gap-3">
+							<button
+								type="button"
+								onclick={closeForgotPasswordModal}
+								class="flex-1 rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 font-semibold text-slate-300 transition-all hover:border-slate-600 hover:bg-slate-800"
+							>
+								Cancelar
+							</button>
+							<button
+								type="submit"
+								disabled={isSendingReset}
+								class="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-3.5 font-bold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-[1.02] hover:shadow-blue-500/70 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+							>
+								<div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform group-hover:translate-x-full group-hover:duration-1000"></div>
+								<span class="relative flex items-center justify-center gap-2">
+									{#if isSendingReset}
+										<svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+											<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+										</svg>
+										Enviando...
+									{:else}
+										<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+										</svg>
+										Enviar
+									{/if}
+								</span>
+							</button>
+						</div>
+					</form>
+				{:else}
+					<button
+						onclick={closeForgotPasswordModal}
+						class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-3.5 font-bold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-[1.02] hover:shadow-blue-500/70"
+					>
+						Cerrar
+					</button>
+				{/if}
+			</div>
+
+			<!-- Close Button -->
+			<button
+				onclick={closeForgotPasswordModal}
+				aria-label="Cerrar modal"
+				class="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200"
+			>
+				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
+		</div>
+	</div>
+{/if}

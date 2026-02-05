@@ -9,44 +9,8 @@
 		}
 	});
 
-	let resultados = $state([
-		{
-			id: 1,
-			fecha: '2026-02-03',
-			torneo: 'Liga de Fútbol 5',
-			equipoLocal: 'Los Leones',
-			equipoVisitante: 'Águilas FC',
-			golesLocal: 3,
-			golesVisitante: 2,
-			estado: 'Finalizado',
-			logoLocal: '🦁',
-			logoVisitante: '🦅'
-		},
-		{
-			id: 2,
-			fecha: '2026-02-02',
-			torneo: 'Copa de Verano',
-			equipoLocal: 'Tigres United',
-			equipoVisitante: 'Lobos Basketball',
-			golesLocal: 1,
-			golesVisitante: 1,
-			estado: 'Finalizado',
-			logoLocal: '🐯',
-			logoVisitante: '🐺'
-		},
-		{
-			id: 3,
-			fecha: '2026-02-04',
-			torneo: 'Liga de Fútbol 5',
-			equipoLocal: 'Los Leones',
-			equipoVisitante: 'Tigres United',
-			golesLocal: 0,
-			golesVisitante: 0,
-			estado: 'Programado',
-			logoLocal: '🦁',
-			logoVisitante: '🐯'
-		}
-	]);
+	// Datos de resultados (vacío hasta que los usuarios registren resultados)
+	let resultados = $state<any[]>([]);
 
 	let showModal = $state(false);
 	let nuevoResultado = $state({

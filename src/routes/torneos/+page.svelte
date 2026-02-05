@@ -10,53 +10,8 @@
 		}
 	});
 
-	// Datos de ejemplo de torneos
-	let torneos = $state([
-		{
-			id: 1,
-			nombre: 'Liga de Fútbol 5',
-			deporte: 'Fútbol',
-			equipos: 8,
-			partidos: 24,
-			estado: 'En curso',
-			fechaInicio: '2026-01-15',
-			imagen: '⚽',
-			color: 'from-green-500 to-emerald-400'
-		},
-		{
-			id: 2,
-			nombre: 'Torneo de Basketball',
-			deporte: 'Basketball',
-			equipos: 6,
-			partidos: 15,
-			estado: 'Por comenzar',
-			fechaInicio: '2026-02-10',
-			imagen: '🏀',
-			color: 'from-orange-500 to-red-400'
-		},
-		{
-			id: 3,
-			nombre: 'Copa de Verano',
-			deporte: 'Fútbol',
-			equipos: 12,
-			partidos: 36,
-			estado: 'En curso',
-			fechaInicio: '2026-01-20',
-			imagen: '🏆',
-			color: 'from-blue-500 to-cyan-400'
-		},
-		{
-			id: 4,
-			nombre: 'Liga de Voleibol',
-			deporte: 'Voleibol',
-			equipos: 8,
-			partidos: 20,
-			estado: 'Finalizado',
-			fechaInicio: '2025-12-01',
-			imagen: '🏐',
-			color: 'from-purple-500 to-pink-400'
-		}
-	]);
+	// Datos de torneos (vacío hasta que los usuarios creen torneos)
+	let torneos = $state<any[]>([]);
 
 	let filtroEstado = $state('Todos');
 	let filtroDeporte = $state('Todos');
