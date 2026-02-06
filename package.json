@@ -19,6 +19,8 @@
 		"db:push": "drizzle-kit push",
 		"db:migrate": "drizzle-kit migrate",
 		"db:seed": "node ./scripts/seed-locations.mjs",
+		"db:seed:geodb": "node ./scripts/seed-cities-geodb.mjs",
+		"db:seed:admin": "node ./scripts/seed-admin.mjs",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest --coverage"
