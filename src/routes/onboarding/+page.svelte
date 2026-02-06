@@ -127,7 +127,7 @@
                             class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                             disabled={isLoadingCountries}
                             bind:value={selectedCountry}
-                            on:change={(e) => handleCountryChange((e.currentTarget as HTMLSelectElement).value)}
+                            onchange={(e) => handleCountryChange((e.currentTarget as HTMLSelectElement).value)}
                         >
                             <option value="" disabled selected>{$t('onboarding.selectCountry')}</option>
                             {#each countries as country}
@@ -142,7 +142,7 @@
                             class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                             disabled={!selectedCountry || isLoadingCities}
                             bind:value={selectedCity}
-                            on:change={(e) => handleCityChange((e.currentTarget as HTMLSelectElement).value)}
+                            onchange={(e) => handleCityChange((e.currentTarget as HTMLSelectElement).value)}
                         >
                             <option value="" disabled selected>
                                 {isLoadingCities ? $t('onboarding.loadingCities') : $t('onboarding.selectCity')}
