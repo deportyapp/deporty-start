@@ -2,6 +2,9 @@
 	import './layout.css';
 	import logo from '$lib/assets/icon.png';
 	import { authStore, logout } from '$lib/authStore';
+	import { t } from '$lib/i18n';
+	import CountrySelector from '$lib/components/CountrySelector.svelte';
+	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
 	let { children } = $props();
 </script>
 
@@ -10,14 +13,14 @@
 	href="#main-content"
 	class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
 >
-	Saltar al contenido principal
+	{$t('nav.skipToContent')}
 </a>
 
 <div class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900">
 	<!-- Navbar -->
 	<nav
 		class="sticky top-0 z-50 border-b border-gray-100 bg-white/80 backdrop-blur-md"
-		aria-label="Navegación principal"
+		aria-label={$t('nav.mainNav')}
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<div class="flex h-16 items-center justify-between">
@@ -25,7 +28,7 @@
 				<a
 					href="/"
 					class="flex flex-shrink-0 cursor-pointer content-center items-center gap-3 rounded-lg transition-all hover:opacity-80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-					aria-label="Deporty - Ir a página principal"
+					aria-label={$t('nav.goHome')}
 				>
 					<img
 						src={logo}
@@ -41,40 +44,48 @@
 				</a>
 
 				<!-- Navigation -->
-				<div class="flex items-center space-x-4">
+				<div class="flex items-center space-x-3">
 					{#if $authStore}
-						<div class="flex items-center gap-2 sm:gap-4">
+						<div class="flex items-center gap-2 sm:gap-3">
 							<!-- Enlaces de navegación cuando está autenticado -->
-							<nav class="hidden md:flex items-center gap-2">
+							<nav class="hidden md:flex items-center gap-1">
 								<a
 									href="/"
 									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
 								>
-									Dashboard
+									{$t('nav.dashboard')}
 								</a>
 								<a
 									href="/torneos"
 									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
 								>
-									Torneos
+									{$t('nav.tournaments')}
 								</a>
 								<a
 									href="/equipos"
 									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
 								>
-									Equipos
+									{$t('nav.teams')}
 								</a>
 								<a
 									href="/resultados"
 									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
 								>
-									Resultados
+									{$t('nav.results')}
 								</a>
 							</nav>
 							
 							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
 							
-							<div class="flex items-center gap-3">
+							<!-- Región e idioma -->
+							<div class="hidden lg:flex items-center gap-2">
+								<CountrySelector />
+								<LanguageToggle />
+							</div>
+
+							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
+
+							<div class="flex items-center gap-2">
 								<div class="hidden sm:flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
 									<span class="text-xl">👤</span>
 									<span class="text-sm font-bold text-blue-600">{$authStore.firstName}</span>
@@ -83,24 +94,32 @@
 									onclick={logout}
 									class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
 								>
-									Salir
+									{$t('nav.logout')}
 								</button>
 							</div>
 						</div>
 					{/if}
 					{#if !$authStore}
-						<div class="flex items-center gap-3">
+						<div class="flex items-center gap-2">
+							<!-- Región e idioma (también visible sin login) -->
+							<div class="hidden sm:flex items-center gap-2">
+								<CountrySelector />
+								<LanguageToggle />
+							</div>
+
+							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
+
 							<a
 								href="/login"
 								class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
 							>
-								Iniciar Sesión
+								{$t('nav.login')}
 							</a>
 							<a
 								href="/register"
 								class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-blue-700"
 							>
-								Registrarse
+								{$t('nav.register')}
 							</a>
 						</div>
 					{/if}
@@ -117,7 +136,7 @@
 	<!-- Footer -->
 	<footer class="mt-auto border-t border-gray-100 bg-white py-8">
 		<div class="mx-auto max-w-7xl px-4 text-center">
-			<p class="text-sm text-gray-400">© 2026 Deporty. Hecho con 💙 para el deporte.</p>
+			<p class="text-sm text-gray-400">{$t('app.copyright')}</p>
 		</div>
 	</footer>
 </div>

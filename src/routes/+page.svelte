@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { authStore } from '$lib/authStore';
+	import { t } from '$lib/i18n';
+	import { countryConfig, formatDate, formatTime } from '$lib/stores/locale';
 	import { onMount } from 'svelte';
 
 	let currentTime = $state(new Date());
@@ -21,23 +23,23 @@
 
 	function getGreeting() {
 		const hour = currentTime.getHours();
-		if (hour < 12) return 'Buenos días';
-		if (hour < 18) return 'Buenas tardes';
-		return 'Buenas noches';
+		if (hour < 12) return $t('greeting.morning');
+		if (hour < 18) return $t('greeting.afternoon');
+		return $t('greeting.evening');
 	}
 
 	// Datos de ejemplo para el dashboard
-	let stats = [
-		{ label: 'Torneos Activos', value: '3', icon: '🏆', color: 'from-blue-500 to-cyan-400' },
-		{ label: 'Partidos Hoy', value: '5', icon: '⚽', color: 'from-green-500 to-emerald-400' },
-		{ label: 'Equipos Registrados', value: '12', icon: '👥', color: 'from-purple-500 to-pink-400' },
+	let stats = $derived([
+		{ label: $t('dashboard.activeTournaments'), value: '3', icon: '🏆', color: 'from-blue-500 to-cyan-400' },
+		{ label: $t('dashboard.matchesToday'), value: '5', icon: '⚽', color: 'from-green-500 to-emerald-400' },
+		{ label: $t('dashboard.registeredTeams'), value: '12', icon: '👥', color: 'from-purple-500 to-pink-400' },
 		{
-			label: 'Próximo Partido',
+			label: $t('dashboard.nextMatch'),
 			value: '2h',
 			icon: '⏰',
 			color: 'from-orange-500 to-yellow-400'
 		}
-	];
+	]);
 
 	let recentActivity = [
 		{ title: 'Liga de Fútbol 5', action: 'Nuevo resultado registrado', time: '5 min' },
@@ -45,12 +47,12 @@
 		{ title: 'Copa de Verano', action: 'Fixture actualizado', time: '3 horas' }
 	];
 
-	let quickActions = [
-		{ label: 'Crear Torneo', icon: '➕', href: '/torneos/crear', color: 'bg-blue-600' },
-		{ label: 'Ver Torneos', icon: '📋', href: '/torneos', color: 'bg-green-600' },
-		{ label: 'Registrar Resultado', icon: '📊', href: '/resultados', color: 'bg-purple-600' },
-		{ label: 'Gestionar Equipos', icon: '⚙️', href: '/equipos', color: 'bg-orange-600' }
-	];
+	let quickActions = $derived([
+		{ label: $t('action.createTournament'), icon: '➕', href: '/torneos/crear', color: 'bg-blue-600' },
+		{ label: $t('action.viewTournaments'), icon: '📋', href: '/torneos', color: 'bg-green-600' },
+		{ label: $t('action.registerResult'), icon: '📊', href: '/resultados', color: 'bg-purple-600' },
+		{ label: $t('action.manageTeams'), icon: '⚙️', href: '/equipos', color: 'bg-orange-600' }
+	]);
 </script>
 
 {#if $authStore}
@@ -65,20 +67,15 @@
 							{getGreeting()}, {$authStore.firstName}! 👋
 						</h1>
 						<p class="mt-2 text-gray-600">
-							{currentTime.toLocaleDateString('es-ES', {
-								weekday: 'long',
-								year: 'numeric',
-								month: 'long',
-								day: 'numeric'
-							})}
+							{formatDate(currentTime, $countryConfig)}
 						</p>
 					</div>
 					<div class="hidden md:block">
 						<div class="text-right">
 							<div class="text-2xl font-bold text-blue-600">
-								{currentTime.toLocaleTimeString('es-ES')}
+								{formatTime(currentTime, $countryConfig)}
 							</div>
-							<div class="text-sm text-gray-500">Hora actual</div>
+							<div class="text-sm text-gray-500">{$t('dashboard.currentTime')} ({$countryConfig.timezone.split('/').pop()})</div>
 						</div>
 					</div>
 				</div>
@@ -114,7 +111,7 @@
 				<div class="lg:col-span-2">
 					<div class="rounded-2xl bg-white p-6 shadow-md">
 						<div class="mb-6 flex items-center justify-between">
-							<h2 class="text-xl font-bold text-gray-900">Acciones Rápidas</h2>
+							<h2 class="text-xl font-bold text-gray-900">{$t('dashboard.quickActions')}</h2>
 							<span class="text-2xl">⚡</span>
 						</div>
 						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -130,7 +127,7 @@
 									</div>
 									<div>
 										<p class="font-semibold text-gray-900">{action.label}</p>
-										<p class="text-sm text-gray-500">Click para comenzar</p>
+										<p class="text-sm text-gray-500">{$t('dashboard.clickToStart')}</p>
 									</div>
 								</a>
 							{/each}
@@ -142,7 +139,7 @@
 				<div class="lg:col-span-1">
 					<div class="rounded-2xl bg-white p-6 shadow-md">
 						<div class="mb-6 flex items-center justify-between">
-							<h2 class="text-xl font-bold text-gray-900">Actividad Reciente</h2>
+							<h2 class="text-xl font-bold text-gray-900">{$t('dashboard.recentActivity')}</h2>
 							<span class="text-2xl">📱</span>
 						</div>
 						<div class="space-y-4">
@@ -167,7 +164,7 @@
 						<button
 							class="mt-6 w-full rounded-xl border-2 border-gray-200 py-3 font-semibold text-gray-700 transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600"
 						>
-							Ver todo
+							{$t('dashboard.seeAll')}
 						</button>
 					</div>
 				</div>
@@ -176,12 +173,12 @@
 			<!-- Sección de Torneos Destacados -->
 			<div class="mt-8">
 				<div class="mb-6 flex items-center justify-between">
-					<h2 class="text-2xl font-bold text-gray-900">Torneos Destacados</h2>
+					<h2 class="text-2xl font-bold text-gray-900">{$t('dashboard.featuredTournaments')}</h2>
 					<a
 						href="/torneos"
 						class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-blue-700"
 					>
-						Ver todos
+						{$t('dashboard.viewAll')}
 					</a>
 				</div>
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -206,18 +203,18 @@
 							<div class="p-6">
 								<div class="grid grid-cols-2 gap-4">
 									<div>
-										<p class="text-sm text-gray-500">Equipos</p>
+										<p class="text-sm text-gray-500">{$t('tournaments.teams')}</p>
 										<p class="text-2xl font-bold text-gray-900">{torneo.teams}</p>
 									</div>
 									<div>
-										<p class="text-sm text-gray-500">Partidos</p>
+										<p class="text-sm text-gray-500">{$t('tournaments.matches')}</p>
 										<p class="text-2xl font-bold text-gray-900">{torneo.matches}</p>
 									</div>
 								</div>
 								<button
 									class="mt-4 w-full rounded-lg bg-gray-100 py-2 font-semibold text-gray-700 transition-all group-hover:bg-blue-600 group-hover:text-white"
 								>
-									Ver detalles
+									{$t('dashboard.viewDetails')}
 								</button>
 							</div>
 						</div>
@@ -244,7 +241,7 @@
 							<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
 							<span class="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
 						</span>
-						La nueva era del deporte amateur
+						{$t('landing.badge')}
 					</div>
 				</div>
 
@@ -252,19 +249,19 @@
 				<h1
 					class="mb-8 text-center text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl lg:text-7xl"
 				>
-					Gestiona tus torneos
+					{$t('landing.heroTitle1')}
 					<br />
 					<span
 						class="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent"
 					>
-						como un profesional
+						{$t('landing.heroTitle2')}
 					</span>
 				</h1>
 
 				<!-- Subtitle -->
 				<p class="mx-auto mb-12 max-w-2xl text-center text-lg leading-relaxed text-slate-300 sm:text-xl">
-					Organiza ligas, gestiona equipos y sigue los resultados en tiempo real.
-					<span class="text-blue-400">Todo lo que necesitas</span> para llevar tu pasión al siguiente nivel.
+					{$t('landing.subtitle')}
+					<span class="text-blue-400">{$t('landing.subtitleHighlight')}</span> {$t('landing.subtitleEnd')}
 				</p>
 
 				<!-- CTA Buttons -->
@@ -278,7 +275,7 @@
 								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 								</svg>
-								Empezar Gratis
+								{$t('landing.ctaStart')}
 							</span>
 						</a>
 						<a
@@ -289,7 +286,7 @@
 								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
 								</svg>
-								Iniciar Sesión
+								{$t('landing.ctaLogin')}
 							</span>
 						</a>
 					</div>
@@ -298,9 +295,9 @@
 				<!-- Features Grid -->
 				<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
 					{#each [
-						{ icon: '🏆', title: 'Torneos Ilimitados', desc: 'Crea y gestiona todos los torneos que necesites' },
-						{ icon: '📊', title: 'Estadísticas en Vivo', desc: 'Sigue los resultados y estadísticas en tiempo real' },
-						{ icon: '👥', title: 'Gestión de Equipos', desc: 'Administra equipos, jugadores y resultados' }
+						{ icon: '🏆', title: $t('landing.feature1Title'), desc: $t('landing.feature1Desc') },
+						{ icon: '📊', title: $t('landing.feature2Title'), desc: $t('landing.feature2Desc') },
+						{ icon: '👥', title: $t('landing.feature3Title'), desc: $t('landing.feature3Desc') }
 					] as feature}
 						<div
 							class="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur-sm transition-all hover:border-blue-500/50 hover:bg-slate-800/50"
