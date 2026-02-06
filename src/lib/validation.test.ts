@@ -1,27 +1,5 @@
 import { describe, it, expect } from 'vitest';
-
-// Utilidades de validación extraídas del componente de registro
-export function validateEmail(email: string): boolean {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	return emailRegex.test(email);
-}
-
-export function validatePasswordStrength(password: string): number {
-	let score = 0;
-	if (password.length >= 8) score++;
-	if (/[A-Z]/.test(password)) score++;
-	if (/[a-z]/.test(password)) score++;
-	if (/[0-9]/.test(password)) score++;
-	if (/[^A-Za-z0-9]/.test(password)) score++;
-	return score;
-}
-
-export function getPasswordStrengthText(score: number): string {
-	if (score <= 2) return 'Débil';
-	if (score === 3) return 'Media';
-	if (score === 4) return 'Fuerte';
-	return 'Muy Fuerte';
-}
+import { validateEmail, validatePasswordStrength, getPasswordStrengthText } from './validation';
 
 describe('Validación de Email', () => {
 	it('debería validar emails correctos', () => {

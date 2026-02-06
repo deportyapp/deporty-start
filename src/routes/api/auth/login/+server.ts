@@ -1,33 +1,35 @@
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/schema';
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 import { eq } from 'drizzle-orm';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
-export async function POST({ request }) {
+export const POST: RequestHandler = async ({ request }) => {
     try {
-        const { email, password } = await request.json();
+        const body = await request.json();
+        const { email, password } = body;
 
-        if (!email || !password) {
-            return error(400, 'Correo y contraseña son obligatorios');
+        if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
+            return json({ success: false, message: 'Correo y contraseña son obligatorios' }, { status: 400 });
         }
 
-        // 1. Buscar usuario por email
-        const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+        const emailLower = email.toLowerCase().trim();
+
+        const [user] = await db.select().from(users).where(eq(users.email, emailLower)).limit(1);
 
         if (!user) {
-            return error(401, 'Credenciales incorrectas');
+            // Hash ficticio para prevenir timing attacks
+            await bcrypt.hash(password, 10);
+            return json({ success: false, message: 'Credenciales incorrectas' }, { status: 401 });
         }
 
-        // 2. Verificar contraseña
         const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
         if (!passwordMatch) {
-            return error(401, 'Credenciales incorrectas');
+            return json({ success: false, message: 'Credenciales incorrectas' }, { status: 401 });
         }
 
-        // 3. Retornar información del usuario
-        // Nota: En producción, implementar sesiones JWT/cookies seguras
         return json({
             success: true,
             message: 'Sesión iniciada correctamente',
@@ -41,6 +43,6 @@ export async function POST({ request }) {
 
     } catch (err) {
         console.error('Error en login:', err);
-        return error(500, 'Error interno del servidor al procesar el inicio de sesión');
+        return json({ success: false, message: 'Error interno del servidor' }, { status: 500 });
     }
-}
+};

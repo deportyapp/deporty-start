@@ -3,13 +3,20 @@
 	import { onMount } from 'svelte';
 
 	let currentTime = $state(new Date());
+	let timerActive = $state(false);
 
 	onMount(() => {
+		timerActive = true;
 		const interval = setInterval(() => {
-			currentTime = new Date();
-		}, 1000);
+			if (timerActive) {
+				currentTime = new Date();
+			}
+		}, 60000); // Actualizar cada minuto en vez de cada segundo
 
-		return () => clearInterval(interval);
+		return () => {
+			timerActive = false;
+			clearInterval(interval);
+		};
 	});
 
 	function getGreeting() {

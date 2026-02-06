@@ -16,10 +16,13 @@
 	let filtroEstado = $state('Todos');
 	let filtroDeporte = $state('Todos');
 
-	$effect(() => {
-		// Aquí podrías implementar la lógica de filtrado
-		// Por ahora solo mostramos todos los torneos
-	});
+	let torneosFiltrados = $derived(
+		torneos.filter((torneo) => {
+			const matchEstado = filtroEstado === 'Todos' || torneo.estado === filtroEstado;
+			const matchDeporte = filtroDeporte === 'Todos' || torneo.deporte === filtroDeporte;
+			return matchEstado && matchDeporte;
+		})
+	);
 
 	function getEstadoColor(estado: string) {
 		switch (estado) {
@@ -99,7 +102,7 @@
 
 		<!-- Grid de Torneos -->
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-			{#each torneos as torneo (torneo.id)}
+			{#each torneosFiltrados as torneo (torneo.id)}
 				<div
 					class="group overflow-hidden rounded-2xl bg-white shadow-md transition-all hover:scale-105 hover:shadow-xl"
 				>
@@ -161,7 +164,7 @@
 		</div>
 
 		<!-- Empty State -->
-		{#if torneos.length === 0}
+		{#if torneosFiltrados.length === 0}
 			<div class="rounded-2xl bg-white p-12 text-center shadow-md">
 				<div class="text-6xl mb-4">🏆</div>
 				<h3 class="mb-2 text-xl font-bold text-gray-900">No hay torneos todavía</h3>

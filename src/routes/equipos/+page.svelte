@@ -164,19 +164,15 @@
 {#if showModal}
 	<div
 		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-		onclick={() => (showModal = false)}
-		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
-		role="button"
-		tabindex="0"
-		aria-label="Cerrar modal"
+		onclick={(e) => { if (e.target === e.currentTarget) showModal = false; }}
+		onkeydown={(e) => { if (e.key === 'Escape') showModal = false; }}
+		role="dialog"
+		aria-modal="true"
+		aria-label="Crear nuevo equipo"
+		tabindex="-1"
 	>
 		<div
 			class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl"
-			onclick={(e) => e.stopPropagation()}
-			onkeydown={(e) => e.stopPropagation()}
-			role="dialog"
-			aria-modal="true"
-			tabindex="-1"
 		>
 			<h2 class="mb-6 text-2xl font-bold text-gray-900">Crear Nuevo Equipo</h2>
 			<form class="space-y-4">

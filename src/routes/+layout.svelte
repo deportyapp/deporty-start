@@ -88,6 +88,22 @@
 							</div>
 						</div>
 					{/if}
+					{#if !$authStore}
+						<div class="flex items-center gap-3">
+							<a
+								href="/login"
+								class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
+							>
+								Iniciar Sesión
+							</a>
+							<a
+								href="/register"
+								class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-blue-700"
+							>
+								Registrarse
+							</a>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>

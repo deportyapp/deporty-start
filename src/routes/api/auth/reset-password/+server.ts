@@ -21,6 +21,13 @@ export const POST: RequestHandler = async ({ request }) => {
             }, { status: 400 });
         }
 
+        if (newPassword.length > 72) {
+            return json({ 
+                success: false, 
+                message: 'La contraseña no puede exceder 72 caracteres' 
+            }, { status: 400 });
+        }
+
         // Buscar token válido (no expirado)
         const [resetToken] = await db
             .select()
@@ -41,8 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         // Hashear nueva contraseña
-        const saltRounds = 10;
-        const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+        const passwordHash = await bcrypt.hash(newPassword, 12);
 
         // Actualizar contraseña del usuario
         await db

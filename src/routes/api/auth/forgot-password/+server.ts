@@ -9,7 +9,7 @@ import { RESEND_API_KEY } from '$env/static/private';
 
 const resend = new Resend(RESEND_API_KEY);
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, url }) => {
     try {
         const { email } = await request.json();
 
@@ -38,6 +38,9 @@ export const POST: RequestHandler = async ({ request }) => {
         // Token expira en 1 hora
         const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
+        // Eliminar tokens previos del usuario para evitar acumulación
+        await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, user.id));
+
         // Insertar token en la base de datos
         await db.insert(passwordResetTokens).values({
             userId: user.id,
@@ -46,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
         // Construir URL de reset
-        const resetUrl = `${request.url.split('/api')[0]}/reset-password/${token}`;
+        const resetUrl = `${url.origin}/reset-password/${token}`;
         
         // Intentar enviar email con Resend (solo si la API key está configurada)
         if (RESEND_API_KEY && !RESEND_API_KEY.includes('TuAPIKeyAqui')) {

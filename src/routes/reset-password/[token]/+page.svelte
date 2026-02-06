@@ -165,7 +165,7 @@
 								<div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-700">
 									<div
 										class="h-full transition-all duration-300 {getPasswordStrengthColor(passwordStrength)}"
-										style="width: {(passwordStrength / 3) * 100}%"
+										style="width: {(passwordStrength / 5) * 100}%"
 									></div>
 								</div>
 								<p class="text-xs {passwordStrength >= 2 ? 'text-green-400' : 'text-yellow-400'}">
