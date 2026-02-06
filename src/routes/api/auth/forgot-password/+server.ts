@@ -5,9 +5,7 @@ import { users, passwordResetTokens } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
 import { randomBytes } from 'crypto';
 import { Resend } from 'resend';
-import { RESEND_API_KEY } from '$env/static/private';
-
-const resend = new Resend(RESEND_API_KEY);
+import { env } from '$env/dynamic/private';
 
 export const POST: RequestHandler = async ({ request, url }) => {
     try {
@@ -52,8 +50,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const resetUrl = `${url.origin}/reset-password/${token}`;
         
         // Intentar enviar email con Resend (solo si la API key está configurada)
-        if (RESEND_API_KEY && !RESEND_API_KEY.includes('TuAPIKeyAqui')) {
+        const resendApiKey = env.RESEND_API_KEY;
+        if (resendApiKey && !resendApiKey.includes('TuAPIKeyAqui')) {
             try {
+                const resend = new Resend(resendApiKey);
                 await resend.emails.send({
                     from: 'DeportyApp <noreply@resend.dev>', // Cambiar a tu dominio verificado
                     to: [emailLower],
