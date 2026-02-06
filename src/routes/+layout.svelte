@@ -3,8 +3,6 @@
 	import logo from '$lib/assets/icon.png';
 	import { authStore, logout } from '$lib/authStore';
 	import { t } from '$lib/i18n';
-	import CountrySelector from '$lib/components/CountrySelector.svelte';
-	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
 	let { children } = $props();
 </script>
 
@@ -46,69 +44,21 @@
 				<!-- Navigation -->
 				<div class="flex items-center space-x-3">
 					{#if $authStore}
-						<div class="flex items-center gap-2 sm:gap-3">
-							<!-- Enlaces de navegación cuando está autenticado -->
-							<nav class="hidden md:flex items-center gap-1">
-								<a
-									href="/"
-									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
-								>
-									{$t('nav.dashboard')}
-								</a>
-								<a
-									href="/torneos"
-									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
-								>
-									{$t('nav.tournaments')}
-								</a>
-								<a
-									href="/equipos"
-									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
-								>
-									{$t('nav.teams')}
-								</a>
-								<a
-									href="/resultados"
-									class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
-								>
-									{$t('nav.results')}
-								</a>
-							</nav>
-							
-							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
-							
-							<!-- Región e idioma -->
-							<div class="hidden lg:flex items-center gap-2">
-								<CountrySelector />
-								<LanguageToggle />
+						<div class="flex items-center gap-2">
+							<div class="hidden sm:flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
+								<span class="text-xl">👤</span>
+								<span class="text-sm font-bold text-blue-600">{$authStore.firstName}</span>
 							</div>
-
-							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
-
-							<div class="flex items-center gap-2">
-								<div class="hidden sm:flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
-									<span class="text-xl">👤</span>
-									<span class="text-sm font-bold text-blue-600">{$authStore.firstName}</span>
-								</div>
-								<button
-									onclick={logout}
-									class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
-								>
-									{$t('nav.logout')}
-								</button>
-							</div>
+							<button
+								onclick={logout}
+								class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
+							>
+								{$t('nav.logout')}
+							</button>
 						</div>
 					{/if}
 					{#if !$authStore}
 						<div class="flex items-center gap-2">
-							<!-- Región e idioma (también visible sin login) -->
-							<div class="hidden sm:flex items-center gap-2">
-								<CountrySelector />
-								<LanguageToggle />
-							</div>
-
-							<div class="hidden sm:block h-8 w-px bg-gray-200"></div>
-
 							<a
 								href="/login"
 								class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"

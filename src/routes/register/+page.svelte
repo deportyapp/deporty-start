@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { authStore } from '$lib/authStore';
 	import { goto } from '$app/navigation';
+	import { setUserCountry } from '$lib/stores/locale';
+	import { setUserCity, clearLocation } from '$lib/stores/location';
 	import { 
 		validateEmail, 
 		validatePasswordStrength, 
@@ -72,7 +74,16 @@
 				const loginData = await loginRes.json();
 				if (loginRes.ok) {
 					authStore.set(loginData.user);
-					goto('/');
+					const hasCity = Boolean(loginData.user?.city);
+					if (loginData.user?.countryCode) {
+						setUserCountry(loginData.user.countryCode);
+					}
+					if (loginData.user?.city) {
+						setUserCity(loginData.user.city);
+					} else {
+						clearLocation();
+					}
+					goto(hasCity ? '/' : '/onboarding');
 				}
 			} else {
 				errorMessage = data.message || 'Error al crear la cuenta';

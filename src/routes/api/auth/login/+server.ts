@@ -37,7 +37,9 @@ export const POST: RequestHandler = async ({ request }) => {
                 id: user.id,
                 email: user.email,
                 firstName: user.firstName,
-                lastName: user.lastName
+                lastName: user.lastName,
+                countryCode: user.countryCode ?? null,
+                city: user.city ?? null
             }
         });
 

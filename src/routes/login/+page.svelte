@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { authStore } from '$lib/authStore';
 	import { goto } from '$app/navigation';
+	import { setUserCountry } from '$lib/stores/locale';
+	import { setUserCity, clearLocation } from '$lib/stores/location';
 
 	let email = $state('');
 	let password = $state('');
@@ -34,7 +36,16 @@
 
 			if (res.ok) {
 				authStore.set(data.user);
-				goto('/');
+				const hasCity = Boolean(data.user?.city);
+				if (data.user?.countryCode) {
+					setUserCountry(data.user.countryCode);
+				}
+				if (data.user?.city) {
+					setUserCity(data.user.city);
+				} else {
+					clearLocation();
+				}
+				goto(hasCity ? '/' : '/onboarding');
 			} else {
 				errorMessage = data.message || 'Credenciales incorrectas';
 			}

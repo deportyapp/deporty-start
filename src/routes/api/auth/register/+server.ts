@@ -8,7 +8,7 @@ import bcrypt from 'bcryptjs';
 export const POST: RequestHandler = async ({ request }) => {
     try {
         const body = await request.json();
-        const { nombres, apellidos, email, password } = body;
+        const { nombres, apellidos, email, password, countryCode, city } = body;
 
         if (
             !email || typeof email !== 'string' ||
@@ -54,7 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
             lastName: apellidosTrim,
             email: emailLower,
             passwordHash,
-            role: 'user'
+            role: 'user',
+            countryCode: typeof countryCode === 'string' ? countryCode : null,
+            city: typeof city === 'string' ? city : null
         });
 
         return json({ success: true, message: 'Usuario registrado exitosamente' });

@@ -65,6 +65,16 @@ const es = {
     'landing.feature3Title': 'Gestión de Equipos',
     'landing.feature3Desc': 'Administra equipos, jugadores y resultados',
 
+    // ─── Onboarding ───────────────────────────────────
+    'onboarding.title': 'Configura tu ubicacion',
+    'onboarding.subtitle': 'Elige tu pais y ciudad para personalizar la experiencia.',
+    'onboarding.countryLabel': 'Pais',
+    'onboarding.cityLabel': 'Ciudad',
+    'onboarding.selectCountry': 'Selecciona un pais',
+    'onboarding.selectCity': 'Selecciona una ciudad',
+    'onboarding.loadingCities': 'Cargando ciudades...',
+    'onboarding.continue': 'Continuar',
+
     // ─── Torneos ──────────────────────────────────────
     'tournaments.myTournaments': 'Mis Torneos',
     'tournaments.manage': 'Gestiona y supervisa todos tus torneos deportivos',

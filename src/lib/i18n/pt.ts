@@ -64,6 +64,16 @@ const pt: Record<string, string> = {
     'landing.feature3Title': 'Gestão de Equipes',
     'landing.feature3Desc': 'Administre equipes, jogadores e resultados',
 
+    // ─── Onboarding ───────────────────────────────────
+    'onboarding.title': 'Configure sua localizacao',
+    'onboarding.subtitle': 'Escolha seu pais e cidade para personalizar a experiencia.',
+    'onboarding.countryLabel': 'Pais',
+    'onboarding.cityLabel': 'Cidade',
+    'onboarding.selectCountry': 'Selecione um pais',
+    'onboarding.selectCity': 'Selecione uma cidade',
+    'onboarding.loadingCities': 'Carregando cidades...',
+    'onboarding.continue': 'Continuar',
+
     // ─── Torneios ─────────────────────────────────────
     'tournaments.myTournaments': 'Meus Torneios',
     'tournaments.manage': 'Gerencie e acompanhe todos os seus torneios esportivos',

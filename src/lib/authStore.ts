@@ -6,6 +6,8 @@ export interface User {
     email: string;
     firstName: string;
     lastName: string;
+    countryCode?: string | null;
+    city?: string | null;
 }
 
 function loadStoredUser(): User | null {
@@ -49,4 +51,8 @@ export const authStore = createAuthStore();
 
 export const logout = () => {
     authStore.set(null);
+    if (browser) {
+        localStorage.removeItem('deporty_city');
+        localStorage.removeItem('deporty_country');
+    }
 };
