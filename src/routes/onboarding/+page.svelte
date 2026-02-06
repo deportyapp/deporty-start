@@ -4,7 +4,7 @@
     import { authStore } from '$lib/authStore';
     import { t } from '$lib/i18n';
     import { setUserCountry } from '$lib/stores/locale';
-    import { setUserCity, isLocationComplete } from '$lib/stores/location';
+    import { setUserCity, clearLocation, isLocationComplete } from '$lib/stores/location';
 
     type Country = { code: string; name: string };
 
@@ -14,7 +14,9 @@
     let isLoadingCities = $state(false);
     let selectedCountry = $state('');
     let selectedCity = $state<string | null>(null);
+    let cityQuery = $state('');
     let errorMessage = $state('');
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
     onMount(async () => {
         if (!$authStore) {
@@ -42,12 +44,22 @@
         }
     }
 
-    async function loadCities(countryCode: string) {
+    async function loadCities(countryCode: string, query = '') {
+        if (query.length > 0 && query.length < 2) {
+            cities = [];
+            isLoadingCities = false;
+            return;
+        }
         isLoadingCities = true;
         errorMessage = '';
         cities = [];
         try {
-            const res = await fetch(`/api/locations/cities?country=${countryCode}`);
+            const params = new URLSearchParams({
+                country: countryCode,
+                q: query,
+                limit: '50'
+            });
+            const res = await fetch(`/api/locations/cities?${params.toString()}`);
             const data = await res.json();
             cities = data.cities ?? [];
         } catch {
@@ -60,6 +72,8 @@
     function handleCountryChange(code: string) {
         selectedCountry = code;
         selectedCity = null;
+        cityQuery = '';
+        clearLocation();
         setUserCountry(code);
         loadCities(code);
     }
@@ -67,6 +81,19 @@
     function handleCityChange(city: string) {
         selectedCity = city;
         setUserCity(city);
+    }
+
+    function handleCityQueryChange(value: string) {
+        cityQuery = value;
+        selectedCity = null;
+        clearLocation();
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        debounceTimer = setTimeout(() => {
+            if (!selectedCountry) return;
+            loadCities(selectedCountry, cityQuery.trim());
+        }, 400);
     }
 
     async function handleContinue() {
@@ -138,6 +165,15 @@
 
                     <div class="space-y-2">
                         <label class="text-sm font-semibold text-slate-300">{$t('onboarding.cityLabel')}</label>
+                        <input
+                            type="text"
+                            class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                            placeholder={$t('onboarding.citySearchPlaceholder')}
+                            disabled={!selectedCountry}
+                            bind:value={cityQuery}
+                            oninput={(e) => handleCityQueryChange((e.currentTarget as HTMLInputElement).value)}
+                        />
+                        <p class="text-xs text-slate-400">{$t('onboarding.citySearchHint')}</p>
                         <select
                             class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                             disabled={!selectedCountry || isLoadingCities}
