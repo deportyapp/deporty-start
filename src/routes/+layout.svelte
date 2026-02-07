@@ -41,39 +41,7 @@
 					</span>
 				</a>
 
-				<!-- Navigation -->
-				<div class="flex items-center space-x-3">
-					{#if $authStore}
-						<div class="flex items-center gap-2">
-							<div class="hidden sm:flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
-								<span class="text-xl">👤</span>
-								<span class="text-sm font-bold text-blue-600">{$authStore.firstName}</span>
-							</div>
-							<button
-								onclick={logout}
-								class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
-							>
-								{$t('nav.logout')}
-							</button>
-						</div>
-					{/if}
-					{#if !$authStore}
-						<div class="flex items-center gap-2">
-							<a
-								href="/login"
-								class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
-							>
-								{$t('nav.login')}
-							</a>
-							<a
-								href="/register"
-								class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-blue-700"
-							>
-								{$t('nav.register')}
-							</a>
-						</div>
-					{/if}
-				</div>
+				
 			</div>
 		</div>
 	</nav>
