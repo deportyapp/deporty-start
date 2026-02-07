@@ -23,6 +23,8 @@
 		"db:seed:admin": "node ./scripts/seed-admin.mjs",
 		"dev:local": "npm run db:migrate && npm run db:seed && npm run db:seed:admin && npm run dev",
 		"dev:local:clean": "node --input-type=module -e \"import { neon } from '@neondatabase/serverless'; if (!process.env.DATABASE_URL) { console.error('DATABASE_URL is not set'); process.exit(1); } const sql = neon(process.env.DATABASE_URL); await sql('drop schema public cascade'); await sql('create schema public'); console.log('DB reset complete');\" && npm run db:migrate && npm run db:seed && npm run db:seed:admin && npm run dev",
+		"git:push": "node ./scripts/git-push.mjs",
+		"git:push:now": "node ./scripts/git-push.mjs --message \"update\"",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest --coverage"
