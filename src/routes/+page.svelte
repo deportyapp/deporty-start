@@ -1,73 +1,9 @@
 <script lang="ts">
-	import { authStore, logout } from '$lib/authStore';
 	import { t } from '$lib/i18n';
-	import { countryConfig, formatDate, formatTime } from '$lib/stores/locale';
-	import { isLocationComplete } from '$lib/stores/location';
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-
-	let currentTime = $state(new Date());
-	let timerActive = $state(false);
-
-	onMount(() => {
-		timerActive = true;
-		const interval = setInterval(() => {
-			if (timerActive) {
-				currentTime = new Date();
-			}
-		}, 60000);
-
-		if ($authStore && !$isLocationComplete) {
-			goto('/onboarding');
-		}
-
-		return () => {
-			timerActive = false;
-			clearInterval(interval);
-		};
-	});
-
-	function getGreeting() {
-		const hour = currentTime.getHours();
-		if (hour < 12) return $t('greeting.morning');
-		if (hour < 18) return $t('greeting.afternoon');
-		return $t('greeting.evening');
-	}
-
 </script>
 
-{#if $authStore && $isLocationComplete}
-	<!-- Dashboard para usuarios autenticados -->
-	<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-		<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			<!-- Header del Dashboard -->
-			<div class="mb-8">
-				<div class="flex items-center justify-between">
-					<div>
-						<h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">
-							{getGreeting()}, {$authStore.firstName}! 👋
-						</h1>
-						<p class="mt-2 text-gray-600">
-							{formatDate(currentTime, $countryConfig)}
-						</p>
-					</div>
-					<div class="flex items-center gap-4">
-						<div class="hidden md:block text-right">
-							<div class="text-2xl font-bold text-blue-600">
-								{formatTime(currentTime, $countryConfig)}
-							</div>
-							<div class="text-sm text-gray-500">
-								{$t('dashboard.currentTime')} ({$countryConfig.timezone.split('/').pop()})
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-{:else}
-	<!-- Landing Page para usuarios no autenticados -->
-	<main class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
+<!-- Landing Page visual -->
+<main class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
 		<!-- Grid Background Pattern -->
 		<div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
 		
@@ -110,7 +46,7 @@
 				<div class="mb-16 flex justify-center">
 					<div class="flex w-full max-w-md flex-col gap-4 sm:flex-row">
 						<a
-							href="/register"
+								href="/login"
 							class="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-4 font-bold text-white shadow-2xl shadow-blue-500/50 transition-all hover:scale-105 hover:shadow-blue-500/70"
 						>
 							<span class="relative flex items-center gap-2">
@@ -121,7 +57,7 @@
 							</span>
 						</a>
 						<a
-							href="/login"
+								href="/login"
 							class="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border-2 border-slate-700 bg-slate-900/50 px-8 py-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:border-blue-500 hover:bg-slate-800/50"
 						>
 							<span class="relative flex items-center gap-2">
@@ -163,33 +99,4 @@
 			</div>
 		</section>
 	</main>
-{/if}
 
-<style>
-	@keyframes blob {
-		0% {
-			transform: translate(0px, 0px) scale(1);
-		}
-		33% {
-			transform: translate(30px, -50px) scale(1.1);
-		}
-		66% {
-			transform: translate(-20px, 20px) scale(0.9);
-		}
-		100% {
-			transform: translate(0px, 0px) scale(1);
-		}
-	}
-
-	.animate-blob {
-		animation: blob 7s infinite;
-	}
-
-	.animation-delay-2000 {
-		animation-delay: 2s;
-	}
-
-	.animation-delay-4000 {
-		animation-delay: 4s;
-	}
-</style>

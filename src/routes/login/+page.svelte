@@ -1,9 +1,4 @@
 <script lang="ts">
-	import { authStore } from '$lib/authStore';
-	import { goto } from '$app/navigation';
-	import { setUserCountry } from '$lib/stores/locale';
-	import { setUserCity, clearLocation } from '$lib/stores/location';
-
 	let email = $state('');
 	let password = $state('');
 	let showPassword = $state(false);
@@ -25,35 +20,9 @@
 		isSubmitting = true;
 		errorMessage = '';
 
-		try {
-			const res = await fetch('/api/auth/login', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password })
-			});
-
-			const data = await res.json();
-
-			if (res.ok) {
-				authStore.set(data.user);
-				const hasCity = Boolean(data.user?.city);
-				if (data.user?.countryCode) {
-					setUserCountry(data.user.countryCode);
-				}
-				if (data.user?.city) {
-					setUserCity(data.user.city);
-				} else {
-					clearLocation();
-				}
-				goto(hasCity ? '/' : '/onboarding');
-			} else {
-				errorMessage = data.message || 'Credenciales incorrectas';
-			}
-		} catch (error) {
-			errorMessage = 'Error de conexión. Inténtalo más tarde.';
-		} finally {
-			isSubmitting = false;
-		}
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		errorMessage = 'Esta pantalla es solo visual (sin backend).';
+		isSubmitting = false;
 	}
 
 	function openForgotPasswordModal() {
@@ -81,30 +50,9 @@
 		}
 
 		isSendingReset = true;
-
-		try {
-			const res = await fetch('/api/auth/forgot-password', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email: forgotEmail })
-			});
-
-			const data = await res.json();
-
-			if (res.ok) {
-				resetSuccessMessage = data.message;
-				// En desarrollo, mostrar el link
-				if (data.resetUrl) {
-					console.log('🔗 Link de reset:', data.resetUrl);
-				}
-			} else {
-				resetErrorMessage = data.message || 'Error al enviar el correo';
-			}
-		} catch (error) {
-			resetErrorMessage = 'Error de conexión. Inténtalo más tarde.';
-		} finally {
-			isSendingReset = false;
-		}
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		resetSuccessMessage = 'Funcionalidad deshabilitada en modo solo UI.';
+		isSendingReset = false;
 	}
 </script>
 
@@ -269,8 +217,8 @@
 				<!-- Footer -->
 				<p class="mt-8 text-center text-sm text-slate-400">
 					¿No tienes una cuenta?
-					<a href="/register" class="font-semibold text-blue-400 hover:text-blue-300 transition-colors">
-						Registrarse
+					<a href="/" class="font-semibold text-blue-400 hover:text-blue-300 transition-colors">
+						Ver inicio
 					</a>
 				</p>
 			</div>

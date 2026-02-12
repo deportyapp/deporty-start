@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"engines": {
-		"node": ">=20.0.0 <25.0.0"
+		"node": ">=20.0.0"
 	},
 	"scripts": {
 		"dev": "vite dev",
@@ -14,28 +14,10 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
-		"db:generate": "drizzle-kit generate",
-		"db:push": "drizzle-kit push",
-		"db:migrate": "drizzle-kit migrate",
-		"db:seed": "node ./scripts/seed-locations.mjs",
-		"db:seed:geodb": "node ./scripts/seed-cities-geodb.mjs",
-		"db:seed:admin": "node ./scripts/seed-admin.mjs",
-		"dev:local": "npm run db:migrate && npm run db:seed && npm run db:seed:admin && npm run dev",
-		"dev:local:clean": "node --input-type=module -e \"import { neon } from '@neondatabase/serverless'; if (!process.env.DATABASE_URL) { console.error('DATABASE_URL is not set'); process.exit(1); } const sql = neon(process.env.DATABASE_URL); await sql('drop schema public cascade'); await sql('create schema public'); console.log('DB reset complete');\" && npm run db:migrate && npm run db:seed && npm run db:seed:admin && npm run dev",
-		"git:push": "node ./scripts/git-push.mjs",
-		"git:push:now": "node ./scripts/git-push.mjs --message \"update\"",
-		"test": "vitest",
-		"test:ui": "vitest --ui",
-		"test:coverage": "vitest --coverage"
+		"format": "prettier --write ."
 	},
 	"dependencies": {
-		"@neondatabase/serverless": "^0.10.4",
-		"@sveltejs/adapter-vercel": "^6.3.1",
-		"bcryptjs": "^3.0.3",
-		"drizzle-orm": "^0.39.1",
-		"jose": "^5.9.6",
-		"resend": "^6.9.1"
+		"@sveltejs/adapter-vercel": "^6.3.1"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.1",
@@ -45,19 +27,11 @@
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/vite": "^4.1.18",
-		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/svelte": "^5.3.1",
-		"@types/bcryptjs": "^2.4.6",
 		"@types/node": "^24",
-		"@vitest/ui": "^4.0.18",
-		"dotenv": "^16.4.7",
-		"drizzle-kit": "^0.30.4",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.14.0",
 		"globals": "^17.1.0",
-		"happy-dom": "^20.5.0",
-		"jsdom": "^28.0.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
@@ -66,7 +40,6 @@
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.53.1",
-		"vite": "^7.3.1",
-		"vitest": "^4.0.18"
+		"vite": "^7.3.1"
 	}
 }
