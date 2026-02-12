@@ -10,37 +10,12 @@ export interface User {
     city?: string | null;
 }
 
-function loadStoredUser(): User | null {
-    if (!browser) return null;
-    try {
-        const stored = localStorage.getItem('deporty_user');
-        if (!stored) return null;
-        const parsed = JSON.parse(stored);
-        // Validar que el objeto tiene la forma esperada
-        if (parsed && typeof parsed.id === 'string' && typeof parsed.email === 'string') {
-            return parsed as User;
-        }
-        localStorage.removeItem('deporty_user');
-        return null;
-    } catch {
-        localStorage.removeItem('deporty_user');
-        return null;
-    }
-}
-
 function createAuthStore() {
-    const { subscribe, set, update } = writable<User | null>(loadStoredUser());
+    const { subscribe, set, update } = writable<User | null>(null);
 
     return {
         subscribe,
         set(value: User | null) {
-            if (browser) {
-                if (value) {
-                    localStorage.setItem('deporty_user', JSON.stringify(value));
-                } else {
-                    localStorage.removeItem('deporty_user');
-                }
-            }
             set(value);
         },
         update
@@ -49,10 +24,39 @@ function createAuthStore() {
 
 export const authStore = createAuthStore();
 
-export const logout = () => {
+export async function initAuth(): Promise<void> {
+    if (!browser) return;
+    try {
+        const res = await fetch('/api/auth/me');
+        if (!res.ok) {
+            const refreshRes = await fetch('/api/auth/refresh', { method: 'POST' });
+            if (!refreshRes.ok) {
+                authStore.set(null);
+                return;
+            }
+        }
+
+        const meRes = await fetch('/api/auth/me');
+        if (!meRes.ok) {
+            authStore.set(null);
+            return;
+        }
+        const data = await meRes.json();
+        authStore.set(data.user ?? null);
+    } catch {
+        authStore.set(null);
+    }
+}
+
+export async function logout(): Promise<void> {
+    try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+        // Ignore network errors on logout.
+    }
     authStore.set(null);
     if (browser) {
         localStorage.removeItem('deporty_city');
         localStorage.removeItem('deporty_country');
     }
-};
+}

@@ -4,13 +4,13 @@ import { db } from '$lib/server/db';
 import { users, countries, cities } from '$lib/server/schema';
 import { eq, and } from 'drizzle-orm';
 
-export const PATCH: RequestHandler = async ({ request }) => {
+export const PATCH: RequestHandler = async ({ request, locals }) => {
     try {
         const body = await request.json();
-        const { userId, countryCode, city } = body;
+        const { countryCode, city } = body;
 
-        if (!userId || typeof userId !== 'string') {
-            return json({ success: false, message: 'Usuario invalido' }, { status: 400 });
+        if (!locals.user?.id) {
+            return json({ success: false, message: 'No autorizado' }, { status: 401 });
         }
         if (!countryCode || typeof countryCode !== 'string') {
             return json({ success: false, message: 'Pais invalido' }, { status: 400 });
@@ -42,7 +42,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
         await db
             .update(users)
             .set({ countryCode, city })
-            .where(eq(users.id, userId));
+            .where(eq(users.id, locals.user.id));
 
         return json({ success: true });
     } catch (error) {

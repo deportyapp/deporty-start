@@ -1,9 +1,19 @@
 <script lang="ts">
 	import './layout.css';
 	import logo from '$lib/assets/icon.png';
-	import { authStore, logout } from '$lib/authStore';
+	import { authStore, initAuth, logout } from '$lib/authStore';
 	import { t } from '$lib/i18n';
+	import { page } from '$app/state';
+	import { onMount } from 'svelte';
 	let { children } = $props();
+
+	$effect(() => {
+		authStore.set($page.data.user ?? null);
+	});
+
+	onMount(() => {
+		initAuth();
+	});
 </script>
 
 <!-- Skip to main content (Accessibility) -->

@@ -131,6 +131,16 @@ npm run lint         # Linting
 npm run format       # Formatear código
 ```
 
+## 🧭 Producción (Base de Datos)
+
+Guía de fuente de verdad y políticas de migración en [DB-PROD.md](DB-PROD.md).
+
+Checklist rápido para despliegues:
+- Usar solo `db:migrate` en producción
+- Verificar backup/snapshot antes de migrar
+- Validar la migración en staging
+- Confirmar que triggers/views/funciones se mantienen desde SQL
+
 ## 📝 Mejoras Implementadas
 
 ### Dashboard Principal

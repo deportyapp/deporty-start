@@ -34,6 +34,7 @@
 		"@sveltejs/adapter-vercel": "^6.3.1",
 		"bcryptjs": "^3.0.3",
 		"drizzle-orm": "^0.39.1",
+		"jose": "^5.9.6",
 		"resend": "^6.9.1"
 	},
 	"devDependencies": {

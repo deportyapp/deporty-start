@@ -1,4 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
+import { verifyAccessToken, ACCESS_COOKIE_NAME } from '$lib/server/jwt';
 
 const securityHeaders: Record<string, string> = {
     'X-Frame-Options': 'DENY',
@@ -21,6 +22,19 @@ const csp = [
 
 export const handle: Handle = async ({ event, resolve }) => {
     const start = Date.now();
+
+    const token = event.cookies.get(ACCESS_COOKIE_NAME);
+    if (token) {
+        try {
+            const payload = await verifyAccessToken(token);
+            event.locals.user = payload.user;
+        } catch {
+            event.locals.user = null;
+        }
+    } else {
+        event.locals.user = null;
+    }
+
     const response = await resolve(event);
 
     for (const [key, value] of Object.entries(securityHeaders)) {

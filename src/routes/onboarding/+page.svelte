@@ -127,7 +127,6 @@
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    userId: $authStore.id,
                     countryCode: selectedCountry,
                     city: selectedCity
                 })
