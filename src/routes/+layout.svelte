@@ -1,6 +1,5 @@
 <script lang="ts">
 	import './layout.css';
-	import logo from '$lib/assets/icon.png';
 	import { t } from '$lib/i18n';
 	let { children } = $props();
 </script>
@@ -13,28 +12,40 @@
 	{$t('nav.skipToContent')}
 </a>
 
-<div class="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900">
+<div class="flex h-[var(--app-height)] min-h-[100vh] max-h-[var(--app-height)] flex-col overflow-hidden bg-gray-50 font-sans text-gray-900">
 	<!-- Navbar -->
 	<nav
-		class="sticky top-0 z-50 border-b border-gray-100 bg-white/80 backdrop-blur-md"
+		class="flex-shrink-0 border-b border-gray-100 bg-white/80 backdrop-blur-md"
 		aria-label={$t('nav.mainNav')}
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="flex h-16 items-center justify-between">
+			<div class="flex h-16 items-center justify-center">
 				<!-- Logo -->
 				<a
 					href="/"
 					class="flex flex-shrink-0 cursor-pointer content-center items-center gap-3 rounded-lg transition-all hover:opacity-80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
 					aria-label={$t('nav.goHome')}
 				>
-					<img
-						src={logo}
-						alt=""
-						class="h-10 w-10 object-contain drop-shadow-md"
+					<svg
+						class="h-10 w-10 shrink-0 object-contain drop-shadow-md"
+						viewBox="0 0 277 231"
 						aria-hidden="true"
-					/>
+						style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<g transform="matrix(1,0,0,1,-42.778136,-256.726076)">
+							<g transform="matrix(1,0,0,1,36.634139,100.399991)">
+								<g transform="matrix(1,0,0,1,-120.239655,90.43053)">
+									<path d="M177.87,236.405L137.674,296.261C265.438,300.413 353.402,241.655 403.106,125.804L361.734,125.711C316.538,189.25 255.687,228.79 177.87,236.405Z" />
+								</g>
+								<g transform="matrix(1,0,0,1,-122.01667,87.900085)">
+									<path d="M128.161,238.41L246.262,68.426L394.5,68.426L362.998,127.135L254.454,125.77L179.013,237.952L128.161,238.41Z" />
+								</g>
+							</g>
+						</g>
+					</svg>
 					<span
-						class="font-brand bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-2xl font-bold tracking-wide text-transparent"
+						class="font-brand text-2xl font-bold tracking-wide text-black"
 					>
 						DEPORTY
 					</span>
@@ -44,13 +55,13 @@
 		</div>
 	</nav>
 
-	<!-- Main Content -->
-	<main id="main-content" class="flex-grow">
+	<!-- Main Content: ocupa el resto; scroll solo si el contenido lo requiere (p. ej. login/register) -->
+	<main id="main-content" class="min-h-0 flex-1 overflow-auto">
 		{@render children()}
 	</main>
 
 	<!-- Footer -->
-	<footer class="mt-auto border-t border-gray-100 bg-white py-8">
+	<footer class="flex-shrink-0 border-t border-gray-100 bg-white py-8">
 		<div class="mx-auto max-w-7xl px-4 text-center">
 			<p class="text-sm text-gray-400">{$t('app.copyright')}</p>
 		</div>

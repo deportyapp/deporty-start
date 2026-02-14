@@ -1,16 +1,7 @@
 /**
  * Sistema de internacionalización (i18n) para Deporty.
- * 
- * Diseñado para ser simple, tipado y reactivo con Svelte stores.
- * 
- * Uso básico:
- *   import { t, locale, setLocale } from '$lib/i18n';
- *   
- *   // En un componente Svelte:
- *   <h1>{$t('nav.dashboard')}</h1>
- *   
- *   // Cambiar idioma:
- *   setLocale('pt');
+ * Uso: import { t } from '$lib/i18n'; → {$t('landing.heroTitle1')}
+ * Cambiar idioma: setLocale('pt');
  */
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
@@ -59,12 +50,7 @@ function detectBrowserLanguage(): SupportedLanguage {
 /** Store reactivo con el idioma actual */
 export const locale = writable<SupportedLanguage>(detectBrowserLanguage());
 
-/** 
- * Store derivado que provee la función de traducción.
- * Se actualiza automáticamente cuando cambia el locale.
- * 
- * Uso: {$t('clave.traduccion')}
- */
+/** Función de traducción reactiva al idioma actual. */
 export const t = derived(locale, ($locale) => {
     return (key: TranslationKey, params?: Record<string, string | number>): string => {
         let text = translations[$locale]?.[key] ?? translations['es'][key] ?? key;
@@ -82,27 +68,11 @@ export const t = derived(locale, ($locale) => {
 
 // ─── Funciones de utilidad ────────────────────────────
 
-/** Cambia el idioma de la aplicación y lo persiste */
+/** Cambia el idioma y lo persiste en localStorage. */
 export function setLocale(lang: SupportedLanguage): void {
     locale.set(lang);
     if (browser) {
         localStorage.setItem('deporty_language', lang);
-        // Actualizar el atributo lang del HTML
         document.documentElement.lang = lang;
     }
 }
-
-/** Obtiene el nombre del idioma para mostrar en la UI */
-export function getLanguageName(lang: SupportedLanguage): string {
-    const names: Record<SupportedLanguage, string> = {
-        es: 'Español',
-        pt: 'Português',
-    };
-    return names[lang];
-}
-
-/** Lista de idiomas soportados para selectores */
-export const supportedLanguages: { code: SupportedLanguage; name: string; flag: string }[] = [
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
-];
