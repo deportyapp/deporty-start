@@ -5,13 +5,13 @@ import type { PageServerLoad } from './$types';
  * Usa el cliente Supabase server-side desde event.locals (configurado en hooks.server.ts).
  */
 export const load: PageServerLoad = async ({ locals }) => {
-    const { data, error } = await locals.supabase.from('profile').select('*');
+    const { data, error } = await locals.supabase.from('countries').select();
 
     if (error) {
-        console.error('Error trayendo perfiles:', error.message);
+        console.error('Error trayendo países:', error.message);
     }
 
     return {
-        profiles: data ?? [],
+        countries: data ?? [],
     };
 };

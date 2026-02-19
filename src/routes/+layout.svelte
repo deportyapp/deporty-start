@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import { t } from '$lib/i18n';
+	import LanguageSelector from '$lib/components/LanguageSelector.svelte';
 	let { children, data } = $props();
 </script>
 
@@ -21,7 +22,7 @@
 		aria-label={$t('nav.mainNav')}
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="flex h-[4.5rem] items-center justify-center sm:h-24">
+			<div class="flex h-[4.5rem] items-center justify-between sm:h-24">
 				<!-- Logo: siempre enlaza a la página de inicio -->
 				<a
 					href="/"
@@ -55,6 +56,9 @@
 						DEPORTY
 					</span>
 				</a>
+
+				<!-- Language Selector -->
+				<LanguageSelector />
 			</div>
 		</div>
 	</nav>
