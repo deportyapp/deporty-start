@@ -497,6 +497,7 @@
 
 				<!-- Footer -->
 				<p class="mt-8 text-center text-sm text-slate-400">
+					<span class="mb-2 block text-xs text-slate-600">v2.1</span>
 					{$t('register.hasAccount')}
 					<a
 						href="/login"
