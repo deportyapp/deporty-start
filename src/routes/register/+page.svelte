@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/i18n';
+
 	let nombres = $state('');
 	let apellidos = $state('');
 	let email = $state('');
@@ -31,17 +33,17 @@
 		switch (score) {
 			case 0:
 			case 1:
-				return 'Muy debil';
+				return $t('register.strengthVeryWeak');
 			case 2:
-				return 'Debil';
+				return $t('register.strengthWeak');
 			case 3:
-				return 'Regular';
+				return $t('register.strengthFair');
 			case 4:
-				return 'Buena';
+				return $t('register.strengthGood');
 			case 5:
-				return 'Fuerte';
+				return $t('register.strengthStrong');
 			default:
-				return 'Debil';
+				return $t('register.strengthWeak');
 		}
 	}
 
@@ -70,28 +72,28 @@
 		errorMessage = '';
 
 		if (!nombres || !apellidos || !email || !confirmEmail || !password || !confirmPassword) {
-			errorMessage = 'Por favor completa todos los campos';
+			errorMessage = $t('register.errorEmpty');
 			return;
 		}
 
 		if (email !== confirmEmail) {
-			errorMessage = 'Los correos no coinciden';
+			errorMessage = $t('register.errorEmailMismatch');
 			return;
 		}
 
 		if (password !== confirmPassword) {
-			errorMessage = 'Las contraseñas no coinciden';
+			errorMessage = $t('register.errorPasswordMismatch');
 			return;
 		}
 
 		if (password.length < 8) {
-			errorMessage = 'La contraseña debe tener al menos 8 caracteres';
+			errorMessage = $t('register.errorPasswordShort');
 			return;
 		}
 
 		isSubmitting = true;
 		await new Promise((resolve) => setTimeout(resolve, 600));
-		successMessage = 'Registro simulado. Esta pantalla es solo visual.';
+		successMessage = $t('register.successSimulated');
 		isSubmitting = false;
 	}
 </script>
@@ -112,8 +114,8 @@
 			<div class="p-8 sm:p-10">
 				<!-- Header -->
 				<div class="mb-8 text-center">
-					<h2 class="mb-2 text-3xl font-bold text-white">Crear una cuenta</h2>
-					<p class="text-slate-400">Unete a Deporty hoy</p>
+					<h2 class="mb-2 text-3xl font-bold text-white">{$t('register.title')}</h2>
+					<p class="text-slate-400">{$t('register.subtitle')}</p>
 				</div>
 
 				<!-- Success Message -->
@@ -145,24 +147,24 @@
 					<!-- Name Fields -->
 					<div class="grid grid-cols-2 gap-3">
 						<div class="space-y-2">
-							<label for="firstName" class="text-sm font-semibold text-slate-300">Nombre</label>
+							<label for="firstName" class="text-sm font-semibold text-slate-300">{$t('register.firstNameLabel')}</label>
 							<input
 								id="firstName"
 								type="text"
 								bind:value={nombres}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3 px-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="Juan"
+								placeholder={$t('register.firstNamePlaceholder')}
 								required
 							/>
 						</div>
 						<div class="space-y-2">
-							<label for="lastName" class="text-sm font-semibold text-slate-300">Apellido</label>
+							<label for="lastName" class="text-sm font-semibold text-slate-300">{$t('register.lastNameLabel')}</label>
 							<input
 								id="lastName"
 								type="text"
 								bind:value={apellidos}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3 px-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="Perez"
+								placeholder={$t('register.lastNamePlaceholder')}
 								required
 							/>
 						</div>
@@ -170,7 +172,7 @@
 
 					<!-- Email -->
 					<div class="space-y-2">
-						<label for="email" class="text-sm font-semibold text-slate-300">Email</label>
+						<label for="email" class="text-sm font-semibold text-slate-300">{$t('register.emailLabel')}</label>
 						<div class="relative">
 							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
 								<svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,7 +185,7 @@
 								bind:value={email}
 								oninput={(e) => (email = e.currentTarget.value.toLowerCase())}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="tunombre@email.com"
+								placeholder={$t('register.emailPlaceholder')}
 								required
 							/>
 						</div>
@@ -191,24 +193,24 @@
 
 					<!-- Confirm Email -->
 					<div class="space-y-2">
-						<label for="confirmEmail" class="text-sm font-semibold text-slate-300">Confirmar Email</label>
+						<label for="confirmEmail" class="text-sm font-semibold text-slate-300">{$t('register.confirmEmailLabel')}</label>
 						<input
 							id="confirmEmail"
 							type="email"
 							bind:value={confirmEmail}
 							oninput={(e) => (confirmEmail = e.currentTarget.value.toLowerCase())}
 							class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 {confirmEmail && email !== confirmEmail ? 'border-red-500/50' : ''}"
-							placeholder="tunombre@email.com"
+							placeholder={$t('register.confirmEmailPlaceholder')}
 							required
 						/>
 						{#if confirmEmail && email !== confirmEmail}
-							<p class="text-xs text-red-400">Los correos no coinciden</p>
+							<p class="text-xs text-red-400">{$t('register.emailMismatch')}</p>
 						{/if}
 					</div>
 
 					<!-- Password -->
 					<div class="space-y-2">
-						<label for="password" class="text-sm font-semibold text-slate-300">Contrasena</label>
+						<label for="password" class="text-sm font-semibold text-slate-300">{$t('register.passwordLabel')}</label>
 						<div class="relative">
 							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
 								<svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,7 +222,7 @@
 								type={showPassword ? 'text' : 'password'}
 								bind:value={password}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-12 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="••••••••"
+								placeholder={$t('register.passwordPlaceholder')}
 								required
 							/>
 							<button
@@ -252,14 +254,14 @@
 
 					<!-- Confirm Password -->
 					<div class="space-y-2">
-						<label for="confirmPassword" class="text-sm font-semibold text-slate-300">Confirmar Contrasena</label>
+						<label for="confirmPassword" class="text-sm font-semibold text-slate-300">{$t('register.confirmPasswordLabel')}</label>
 						<div class="relative">
 							<input
 								id="confirmPassword"
 								type={showConfirmPassword ? 'text' : 'password'}
 								bind:value={confirmPassword}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 px-4 pr-12 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 {confirmPassword && password !== confirmPassword ? 'border-red-500/50' : ''}"
-								placeholder="••••••••"
+								placeholder={$t('register.confirmPasswordPlaceholder')}
 								required
 							/>
 							<button
@@ -269,7 +271,7 @@
 							>
 								{#if showConfirmPassword}
 									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
 									</svg>
 								{:else}
 									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +282,7 @@
 							</button>
 						</div>
 						{#if confirmPassword && password !== confirmPassword}
-							<p class="text-xs text-red-400">Las contrasenas no coinciden</p>
+							<p class="text-xs text-red-400">{$t('register.passwordMismatch')}</p>
 						{/if}
 					</div>
 
@@ -297,29 +299,29 @@
 									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 								</svg>
-								Creando cuenta...
+								{$t('register.submitting')}
 							{:else}
 								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
 								</svg>
-								Crear Cuenta
+								{$t('register.submit')}
 							{/if}
 						</span>
 					</button>
 
 					<!-- Terms -->
 					<p class="text-center text-xs text-slate-500">
-						Al crear una cuenta, aceptas nuestros
-						<a href="/" class="text-blue-400 hover:text-blue-300">Terminos de Servicio</a>
-						y
-						<a href="/" class="text-blue-400 hover:text-blue-300">Politica de Privacidad</a>
+						{$t('register.terms')}
+						<a href="/" class="text-blue-400 hover:text-blue-300">{$t('register.termsOfService')}</a>
+						{$t('register.and')}
+						<a href="/" class="text-blue-400 hover:text-blue-300">{$t('register.privacyPolicy')}</a>
 					</p>
 				</form>
 
 				<!-- Divider -->
 				<div class="my-8 flex items-center gap-4">
 					<div class="h-px flex-1 bg-slate-700"></div>
-					<span class="text-xs uppercase text-slate-500">o continuar con</span>
+					<span class="text-xs uppercase text-slate-500">{$t('register.divider')}</span>
 					<div class="h-px flex-1 bg-slate-700"></div>
 				</div>
 
@@ -335,15 +337,15 @@
 							<path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
 							<path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
 						</svg>
-						Google
+						{$t('register.google')}
 					</button>
 				</div>
 
 				<!-- Footer -->
 				<p class="mt-8 text-center text-sm text-slate-400">
-					¿Ya tienes cuenta?
+					{$t('register.hasAccount')}
 					<a href="/login" class="font-semibold text-blue-400 hover:text-blue-300 transition-colors">
-						Iniciar Sesion
+						{$t('register.login')}
 					</a>
 				</p>
 			</div>
@@ -357,7 +359,7 @@
 			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 			</svg>
-			Volver al inicio
+			{$t('register.backToHome')}
 		</a>
 	</div>
 </div>

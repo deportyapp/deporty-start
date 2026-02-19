@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/i18n';
+
 	let email = $state('');
 	let password = $state('');
 	let showPassword = $state(false);
@@ -13,7 +15,7 @@
 	async function handleLogin(e: SubmitEvent) {
 		e.preventDefault();
 		if (!email || !password) {
-			errorMessage = 'Por favor completa todos los campos';
+			errorMessage = $t('login.errorEmpty');
 			return;
 		}
 
@@ -21,7 +23,7 @@
 		errorMessage = '';
 
 		await new Promise((resolve) => setTimeout(resolve, 500));
-		errorMessage = 'Esta pantalla es solo visual (sin backend).';
+		errorMessage = $t('login.errorNoBackend');
 		isSubmitting = false;
 	}
 
@@ -45,13 +47,13 @@
 		resetSuccessMessage = '';
 
 		if (!forgotEmail) {
-			resetErrorMessage = 'Por favor ingresa tu email';
+			resetErrorMessage = $t('login.forgot.errorEmpty');
 			return;
 		}
 
 		isSendingReset = true;
 		await new Promise((resolve) => setTimeout(resolve, 500));
-		resetSuccessMessage = 'Funcionalidad deshabilitada en modo solo UI.';
+		resetSuccessMessage = $t('login.forgot.errorDisabled');
 		isSendingReset = false;
 	}
 </script>
@@ -73,9 +75,9 @@
 				<!-- Header -->
 				<div class="mb-8 text-center">
 					<h2 class="mb-2 text-3xl font-bold text-white">
-						Bienvenido de vuelta
+						{$t('login.title')}
 					</h2>
-					<p class="text-slate-400">Inicia sesión para continuar</p>
+					<p class="text-slate-400">{$t('login.subtitle')}</p>
 				</div>
 
 				<!-- Error Message -->
@@ -94,7 +96,7 @@
 				<form onsubmit={handleLogin} class="space-y-5">
 					<!-- Email -->
 					<div class="space-y-2">
-						<label for="email" class="text-sm font-semibold text-slate-300">Email</label>
+						<label for="email" class="text-sm font-semibold text-slate-300">{$t('login.emailLabel')}</label>
 						<div class="relative">
 							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
 								<svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +109,7 @@
 								bind:value={email}
 								oninput={(e) => (email = e.currentTarget.value.toLowerCase())}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-							placeholder="tunombre@email.com"
+							placeholder={$t('login.emailPlaceholder')}
 								required
 							/>
 						</div>
@@ -116,13 +118,13 @@
 					<!-- Password -->
 					<div class="space-y-2">
 						<div class="flex items-center justify-between">
-							<label for="password" class="text-sm font-semibold text-slate-300">Contraseña</label>
+							<label for="password" class="text-sm font-semibold text-slate-300">{$t('login.passwordLabel')}</label>
 							<button 
 								type="button" 
 								onclick={openForgotPasswordModal}
 								class="text-xs text-blue-400 hover:text-blue-300 transition-colors"
 							>
-								¿Recordar Contraseña?
+								{$t('login.forgotPassword')}
 							</button>
 						</div>
 						<div class="relative">
@@ -136,7 +138,7 @@
 								type={showPassword ? 'text' : 'password'}
 								bind:value={password}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-12 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-								placeholder="••••••••"
+								placeholder={$t('login.passwordPlaceholder')}
 								required
 							/>
 							<button
@@ -171,12 +173,12 @@
 									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 								</svg>
-							Iniciando sesión...
+							{$t('login.submitting')}
 						{:else}
 							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 							</svg>
-							Iniciar Sesión
+							{$t('login.submit')}
 							{/if}
 						</span>
 					</button>
@@ -185,7 +187,7 @@
 				<!-- Divider -->
 				<div class="my-8 flex items-center gap-4">
 					<div class="h-px flex-1 bg-slate-700"></div>
-					<span class="text-xs uppercase text-slate-500">o continuar con</span>
+					<span class="text-xs uppercase text-slate-500">{$t('login.divider')}</span>
 					<div class="h-px flex-1 bg-slate-700"></div>
 				</div>
 
@@ -201,15 +203,15 @@
 							<path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
 							<path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
 						</svg>
-						Google
+						{$t('login.google')}
 					</button>
 				</div>
 
 				<!-- Footer -->
 				<p class="mt-8 text-center text-sm text-slate-400">
-					¿No tienes una cuenta?
+					{$t('login.noAccount')}
 					<a href="/register" class="font-semibold text-blue-400 hover:text-blue-300 transition-colors">
-						Registrarse
+						{$t('login.register')}
 					</a>
 				</p>
 			</div>
@@ -223,7 +225,7 @@
 			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 			</svg>
-			Volver al inicio
+			{$t('login.backToHome')}
 		</a>
 	</div>
 </div>
@@ -251,9 +253,9 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
 						</svg>
 					</div>
-					<h3 class="mb-2 text-2xl font-bold text-white">¿Olvidaste tu contraseña?</h3>
+					<h3 class="mb-2 text-2xl font-bold text-white">{$t('login.forgot.title')}</h3>
 					<p class="text-sm text-slate-400">
-						Ingresa tu email y te enviaremos instrucciones para restablecerla
+						{$t('login.forgot.subtitle')}
 					</p>
 				</div>
 
@@ -266,7 +268,7 @@
 							</svg>
 							<div>
 								<p>{resetSuccessMessage}</p>
-								<p class="mt-1 text-xs text-green-400/80">Revisa tu bandeja de entrada y spam.</p>
+								<p class="mt-1 text-xs text-green-400/80">{$t('login.forgot.successHint')}</p>
 							</div>
 						</div>
 					</div>
@@ -288,7 +290,7 @@
 				{#if !resetSuccessMessage}
 					<form onsubmit={handleForgotPassword} class="space-y-4">
 						<div class="space-y-2">
-							<label for="forgotEmail" class="text-sm font-semibold text-slate-300">Email</label>
+							<label for="forgotEmail" class="text-sm font-semibold text-slate-300">{$t('login.forgot.emailLabel')}</label>
 							<div class="relative">
 								<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
 									<svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,7 +303,7 @@
 									bind:value={forgotEmail}
 									oninput={(e) => (forgotEmail = e.currentTarget.value.toLowerCase())}
 									class="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-									placeholder="tunombre@email.com"
+									placeholder={$t('login.forgot.emailPlaceholder')}
 									required
 								/>
 							</div>
@@ -313,7 +315,7 @@
 								onclick={closeForgotPasswordModal}
 								class="flex-1 rounded-xl border border-slate-700 bg-slate-800/50 py-3.5 font-semibold text-slate-300 transition-all hover:border-slate-600 hover:bg-slate-800"
 							>
-								Cancelar
+								{$t('login.forgot.cancel')}
 							</button>
 							<button
 								type="submit"
@@ -327,12 +329,12 @@
 											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 											<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 										</svg>
-										Enviando...
+										{$t('login.forgot.submitting')}
 									{:else}
 										<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
 										</svg>
-										Enviar
+										{$t('login.forgot.submit')}
 									{/if}
 								</span>
 							</button>
@@ -343,7 +345,7 @@
 						onclick={closeForgotPasswordModal}
 						class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-3.5 font-bold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-[1.02] hover:shadow-blue-500/70"
 					>
-						Cerrar
+						{$t('login.forgot.close')}
 					</button>
 				{/if}
 			</div>
@@ -351,7 +353,7 @@
 			<!-- Close Button -->
 			<button
 				onclick={closeForgotPasswordModal}
-				aria-label="Cerrar modal"
+				aria-label={$t('login.forgot.closeModal')}
 				class="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200"
 			>
 				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

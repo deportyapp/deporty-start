@@ -1,7 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import { t } from '$lib/i18n';
-	let { children } = $props();
+	let { children, data } = $props();
 </script>
 
 <!-- Skip to main content (Accessibility) -->
@@ -12,7 +12,9 @@
 	{$t('nav.skipToContent')}
 </a>
 
-<div class="flex h-[var(--app-height)] min-h-[100vh] max-h-[var(--app-height)] flex-col overflow-hidden bg-gray-50 font-sans text-gray-900">
+<div
+	class="flex h-[var(--app-height)] max-h-[var(--app-height)] min-h-[100vh] flex-col overflow-hidden bg-gray-50 font-sans text-gray-900"
+>
 	<!-- Navbar -->
 	<nav
 		class="relative z-20 flex-shrink-0 border-b border-gray-100 bg-white/80 backdrop-blur-md"
@@ -37,10 +39,14 @@
 						<g transform="matrix(1,0,0,1,-42.778136,-256.726076)">
 							<g transform="matrix(1,0,0,1,36.634139,100.399991)">
 								<g transform="matrix(1,0,0,1,-120.239655,90.43053)">
-									<path d="M177.87,236.405L137.674,296.261C265.438,300.413 353.402,241.655 403.106,125.804L361.734,125.711C316.538,189.25 255.687,228.79 177.87,236.405Z" />
+									<path
+										d="M177.87,236.405L137.674,296.261C265.438,300.413 353.402,241.655 403.106,125.804L361.734,125.711C316.538,189.25 255.687,228.79 177.87,236.405Z"
+									/>
 								</g>
 								<g transform="matrix(1,0,0,1,-122.01667,87.900085)">
-									<path d="M128.161,238.41L246.262,68.426L394.5,68.426L362.998,127.135L254.454,125.77L179.013,237.952L128.161,238.41Z" />
+									<path
+										d="M128.161,238.41L246.262,68.426L394.5,68.426L362.998,127.135L254.454,125.77L179.013,237.952L128.161,238.41Z"
+									/>
 								</g>
 							</g>
 						</g>
@@ -49,7 +55,6 @@
 						DEPORTY
 					</span>
 				</a>
-
 			</div>
 		</div>
 	</nav>
