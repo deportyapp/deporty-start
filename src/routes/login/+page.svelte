@@ -2,6 +2,7 @@
 	import { t } from '$lib/i18n';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
+	import { signInWithGoogle } from '$lib/auth/googleAuth';
 
 	let email = $state('');
 	let password = $state('');
@@ -34,6 +35,13 @@
 		forgotEmail = '';
 		resetSuccessMessage = '';
 		resetErrorMessage = '';
+	}
+
+	async function handleGoogleSignIn() {
+		const error = await signInWithGoogle('/auth/callback');
+		if (error) {
+			errorMessage = error;
+		}
 	}
 </script>
 
@@ -279,6 +287,7 @@
 				<div class="flex justify-center">
 					<button
 						type="button"
+						onclick={handleGoogleSignIn}
 						class="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-slate-600 hover:bg-slate-800"
 					>
 						<svg class="h-5 w-5" viewBox="0 0 24 24">

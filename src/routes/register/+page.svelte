@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import { enhance } from '$app/forms';
+	import { signInWithGoogle } from '$lib/auth/googleAuth';
 
 	let nombres = $state('');
 	let apellidos = $state('');
@@ -19,6 +20,12 @@
 	const strengthColor = $derived(getPasswordStrengthColor(passwordStrength));
 	const strengthText = $derived(getPasswordStrengthText(passwordStrength));
 
+	async function handleGoogleSignIn() {
+		const error = await signInWithGoogle('/auth/callback');
+		if (error) {
+			errorMessage = error;
+		}
+	}
 	function getPasswordStrength(value: string): number {
 		let score = 0;
 		if (value.length >= 8) score += 1;
@@ -471,6 +478,7 @@
 				<div class="flex justify-center">
 					<button
 						type="button"
+						onclick={handleGoogleSignIn}
 						class="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-slate-600 hover:bg-slate-800"
 					>
 						<svg class="h-5 w-5" viewBox="0 0 24 24">
