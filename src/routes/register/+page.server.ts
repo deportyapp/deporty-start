@@ -6,6 +6,7 @@ export const actions: Actions = {
         const formData = await request.formData();
         const firstName = formData.get('firstName') as string;
         const lastName = formData.get('lastName') as string;
+        const nickname = (formData.get('nickname') as string) ?? '';
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
@@ -27,6 +28,7 @@ export const actions: Actions = {
                 data: {
                     first_name: firstName,
                     last_name: lastName,
+                    nickname: nickname.trim() || undefined,
                 },
             },
         });

@@ -5,6 +5,7 @@
 
 	let nombres = $state('');
 	let apellidos = $state('');
+	let apodo = $state('');
 	let email = $state('');
 	let confirmEmail = $state('');
 	let password = $state('');
@@ -228,6 +229,22 @@
 								required
 							/>
 						</div>
+					</div>
+
+					<!-- Nickname -->
+					<div class="space-y-2">
+						<label for="nickname" class="text-sm font-semibold text-slate-300"
+							>{$t('register.nicknameLabel')}</label
+						>
+						<input
+							id="nickname"
+							name="nickname"
+							type="text"
+							bind:value={apodo}
+							class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-white placeholder-slate-500 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+							placeholder={$t('register.nicknamePlaceholder')}
+						/>
+						<p class="text-xs text-slate-500">{$t('register.nicknameHint')}</p>
 					</div>
 
 					<!-- Email -->
