@@ -7,12 +7,17 @@ export const actions: Actions = {
         const firstName = formData.get('firstName') as string;
         const lastName = formData.get('lastName') as string;
         const nickname = (formData.get('nickname') as string) ?? '';
+        const birthDate = formData.get('birthDate') as string;
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
         // Validación server-side
-        if (!firstName || !lastName || !email || !password) {
+        if (!firstName || !lastName || !birthDate || !email || !password) {
             return fail(400, { error: 'missing_fields', email });
+        }
+
+        if (Number.isNaN(Date.parse(birthDate))) {
+            return fail(400, { error: 'invalid_birth_date', email });
         }
 
         if (password.length < 8) {
@@ -49,6 +54,29 @@ export const actions: Actions = {
         // 2. Verificar si el usuario ya existía
         if (authData.user && authData.user.identities?.length === 0) {
             return fail(400, { error: 'email_exists', email });
+        }
+
+        // 2.1 Crear perfil en tabla profile
+        if (!authData.user?.id) {
+            return fail(500, { error: 'profile_error', email });
+        }
+
+        const { error: profileError } = await locals.supabase
+            .from('profile')
+            .upsert(
+                {
+                    profile_id: authData.user.id,
+                    first_name: firstName,
+                    last_name: lastName,
+                    nickname: nickname.trim() || null,
+                    birth_date: birthDate,
+                },
+                { onConflict: 'profile_id' },
+            );
+
+        if (profileError) {
+            console.error('Profile insert error:', profileError.message);
+            return fail(500, { error: 'profile_error', email });
         }
 
         // 3. Si necesita confirmar email (email confirmation habilitado)

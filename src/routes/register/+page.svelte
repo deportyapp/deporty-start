@@ -6,6 +6,7 @@
 	let nombres = $state('');
 	let apellidos = $state('');
 	let apodo = $state('');
+	let birthDate = $state('');
 	let email = $state('');
 	let confirmEmail = $state('');
 	let password = $state('');
@@ -75,7 +76,7 @@
 	}
 
 	function clientValidate(): string | null {
-		if (!nombres || !apellidos || !email || !confirmEmail || !password || !confirmPassword) {
+		if (!nombres || !apellidos || !birthDate || !email || !confirmEmail || !password || !confirmPassword) {
 			return $t('register.errorEmpty');
 		}
 		if (email !== confirmEmail) {
@@ -245,6 +246,22 @@
 							placeholder={$t('register.nicknamePlaceholder')}
 						/>
 						<p class="text-xs text-slate-500">{$t('register.nicknameHint')}</p>
+					</div>
+
+					<!-- Birth Date -->
+					<div class="space-y-2">
+						<label for="birthDate" class="text-sm font-semibold text-slate-300"
+							>{$t('register.birthDateLabel')}</label
+						>
+						<input
+							id="birthDate"
+							name="birthDate"
+							type="date"
+							bind:value={birthDate}
+							class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-white placeholder-slate-500 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+							required
+						/>
+						<p class="text-xs text-slate-500">{$t('register.birthDateHint')}</p>
 					</div>
 
 					<!-- Email -->
