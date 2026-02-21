@@ -25,7 +25,7 @@ export const actions: Actions = {
 		}
 
 		// 1. Crear usuario en Supabase Auth
-		// El profile se crea automáticamente via trigger en la BD
+		// El profile se crea automáticamente via trigger on_auth_user_created
 		const { data: authData, error: authError } = await locals.supabase.auth.signUp({
 			email,
 			password,
@@ -33,7 +33,8 @@ export const actions: Actions = {
 				data: {
 					first_name: firstName,
 					last_name: lastName,
-					nickname: nickname.trim() || undefined
+					nickname: nickname.trim() || undefined,
+					birth_date: birthDate
 				}
 			}
 		});
@@ -54,27 +55,6 @@ export const actions: Actions = {
 		// 2. Verificar si el usuario ya existía
 		if (authData.user && authData.user.identities?.length === 0) {
 			return fail(400, { error: 'email_exists', email });
-		}
-
-		// 2.1 Crear perfil en tabla profile
-		if (!authData.user?.id) {
-			return fail(500, { error: 'profile_error', email });
-		}
-
-		const { error: profileError } = await locals.supabase.from('profile').upsert(
-			{
-				profile_id: authData.user.id,
-				first_name: firstName,
-				last_name: lastName,
-				nickname: nickname.trim() || null,
-				birth_date: birthDate
-			},
-			{ onConflict: 'profile_id' }
-		);
-
-		if (profileError) {
-			console.error('Profile insert error:', profileError.message);
-			return fail(500, { error: 'profile_error', email });
 		}
 
 		// 3. Si necesita confirmar email (email confirmation habilitado)
