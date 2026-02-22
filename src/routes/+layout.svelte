@@ -26,12 +26,12 @@
 		aria-label={$t('nav.mainNav')}
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="flex h-[4.5rem] items-center justify-between sm:h-24">
-				<!-- Logo -->
+			<div class="relative flex h-[4.5rem] items-center justify-center sm:h-24">
+				<!-- Logo (centered) -->
 				<a
 					href="/"
 					data-sveltekit-preload-data="hover"
-					class="flex flex-shrink-0 cursor-pointer content-center items-center gap-3 rounded-lg transition-all hover:opacity-80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:gap-4"
+					class="flex cursor-pointer items-center gap-3 rounded-lg transition-all hover:opacity-80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:gap-4"
 					aria-label={$t('nav.goHome')}
 				>
 					<svg
@@ -61,48 +61,30 @@
 					</span>
 				</a>
 
-				<!-- Right side -->
-				<div class="flex items-center gap-3">
-					{#if !isComingSoon && data.session}
-						<!-- Logged in: just logout button -->
-						<button
-							type="button"
-							onclick={() => (showLogoutConfirm = true)}
-							class="flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition-colors hover:border-red-300 hover:bg-red-50"
+				<!-- Logout button (absolute right, only when logged in) -->
+				{#if !isComingSoon && data.session}
+					<button
+						type="button"
+						onclick={() => (showLogoutConfirm = true)}
+						class="absolute right-0 flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition-colors hover:border-red-300 hover:bg-red-50"
+					>
+						<svg
+							class="h-4 w-4"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
 						>
-							<svg
-								class="h-4 w-4"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-								aria-hidden="true"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-								/>
-							</svg>
-							<span class="hidden sm:inline">{$t('nav.logout')}</span>
-						</button>
-					{:else if !isComingSoon}
-						<!-- Not logged in: language selector + auth links -->
-						<LanguageSelector />
-						<a
-							href="/login"
-							class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-600"
-						>
-							{$t('nav.login')}
-						</a>
-						<a
-							href="/register"
-							class="rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-2 text-sm font-bold text-white shadow-md shadow-blue-500/30 transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/40"
-						>
-							{$t('nav.register')}
-						</a>
-					{/if}
-				</div>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+							/>
+						</svg>
+						<span class="hidden sm:inline">{$t('nav.logout')}</span>
+					</button>
+				{/if}
 			</div>
 		</div>
 	</nav>
@@ -111,6 +93,15 @@
 	<main id="main-content" class="min-h-0 flex-1 overflow-auto">
 		{@render children()}
 	</main>
+
+	<!-- Language Selector (public pages, above footer) -->
+	{#if !data.session}
+		<div class="flex-shrink-0 border-t border-gray-100 bg-white px-4 py-4">
+			<div class="mx-auto flex max-w-7xl justify-center">
+				<LanguageSelector />
+			</div>
+		</div>
+	{/if}
 
 	<!-- Footer -->
 	<footer class="flex-shrink-0 border-t border-gray-100 bg-white py-8">
