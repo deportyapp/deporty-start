@@ -9,41 +9,6 @@
 		class="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-xl shadow-blue-500/5"
 	>
 		<div class="p-8 sm:p-10">
-			<!-- Header -->
-			<div class="mb-8 text-center">
-				<h1 class="mb-2 text-3xl font-bold text-gray-900">
-					{$t('dashboard.welcome', { name: data.user?.user_metadata?.first_name ?? '' })}
-				</h1>
-				<p class="text-gray-500">{$t('dashboard.subtitle')}</p>
-			</div>
-
-			<!-- Profile Card -->
-			{#if data.profile}
-				<div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
-					<div class="flex items-center gap-4">
-						<div
-							class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 text-xl font-bold text-white"
-						>
-							{data.profile.first_name?.[0]}{data.profile.last_name?.[0]}
-						</div>
-						<div>
-							<h2 class="text-lg font-semibold text-gray-900">
-								{data.profile.first_name}
-								{data.profile.last_name}
-							</h2>
-							<p class="text-sm text-gray-500">{data.user?.email}</p>
-							{#if data.profile.nickname}
-								<p class="text-sm text-blue-600">@{data.profile.nickname}</p>
-							{/if}
-						</div>
-					</div>
-				</div>
-			{:else}
-				<div class="rounded-2xl border border-gray-100 bg-gray-50 p-6 text-center">
-					<p class="text-gray-500">{data.user?.email}</p>
-				</div>
-			{/if}
-
 			<!-- Quick Actions -->
 			<div class="mt-6 grid gap-3 sm:grid-cols-2">
 				<a
