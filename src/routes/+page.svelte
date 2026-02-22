@@ -19,8 +19,10 @@
 		></div>
 
 		<section
-			class="relative flex min-h-0 flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
+			class="relative flex min-h-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
 		>
+			<!-- Top spacer (balances language selector at bottom) -->
+			<div class="flex-1" aria-hidden="true"></div>
 			<div class="relative z-10 mx-auto w-full max-w-3xl text-center">
 				<!-- Badge -->
 				<div
@@ -143,11 +145,9 @@
 					style="animation-delay: 3s;"
 				></div>
 			</div>
-			<!-- Language Selector -->
-			<div class="relative z-10 mt-auto pb-4">
-				<div class="flex justify-center">
-					<LanguageSelector />
-				</div>
+			<!-- Bottom spacer with language selector (balances top spacer) -->
+			<div class="relative z-10 flex flex-1 items-end justify-center pb-4">
+				<LanguageSelector />
 			</div>
 		</section>
 	</main>
@@ -161,10 +161,11 @@
 			class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_75%_55%_at_50%_30%,#000_60%,transparent_100%)] bg-[size:3rem_3rem]"
 		></div>
 
-		<!-- Hero Section -->
 		<section
-			class="relative flex min-h-0 flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
+			class="relative flex min-h-0 flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
 		>
+			<!-- Top spacer (balances language selector at bottom) -->
+			<div class="flex-1" aria-hidden="true"></div>
 			<div class="relative z-10 mx-auto w-full max-w-2xl text-center">
 				<h1
 					class="font-brand mb-6 text-4xl leading-[1.15] font-bold tracking-tight text-white drop-shadow-sm sm:text-5xl lg:text-6xl lg:tracking-tighter"
@@ -243,11 +244,9 @@
 					style="animation-delay: 3s;"
 				></div>
 			</div>
-			<!-- Language Selector -->
-			<div class="relative z-10 mt-auto pb-4">
-				<div class="flex justify-center">
-					<LanguageSelector />
-				</div>
+			<!-- Bottom spacer with language selector (balances top spacer) -->
+			<div class="relative z-10 flex flex-1 items-end justify-center pb-4">
+				<LanguageSelector />
 			</div>
 		</section>
 	</main>
