@@ -52,13 +52,20 @@ export const actions: Actions = {
 		let avatarUrl: string | undefined = undefined;
 
 		if (avatarFile && avatarFile.size > 0 && avatarFile.name) {
-			const fileExt = avatarFile.name.split('.').pop() || 'png';
-			// Upsert over the same path to save space
+			const fileExt = avatarFile.name.split('.').pop() || 'webp';
 			const filePath = `${user.id}/avatar.${fileExt}`;
+
+			// Limpiar cualquier imagen anterior que tenga otra extensión (png, jpg, jpeg)
+			// para no acumular basura si el usuario sube diferentes formatos.
+			const possibleOldFiles = ['avatar.png', 'avatar.jpg', 'avatar.jpeg', 'avatar.webp']
+				.filter(name => name !== `avatar.${fileExt}`)
+				.map(name => `${user.id}/${name}`);
+
+			await locals.supabase.storage.from('avatars').remove(possibleOldFiles);
 
 			const { error: uploadError } = await locals.supabase.storage
 				.from('avatars')
-				.upload(filePath, avatarFile, { upsert: true });
+				.upload(filePath, avatarFile, { upsert: true, contentType: avatarFile.type });
 
 			if (uploadError) {
 				console.error('Avatar upload error:', uploadError);

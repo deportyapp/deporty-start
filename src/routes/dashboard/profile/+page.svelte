@@ -5,17 +5,83 @@
 	let { data, form } = $props();
 	let isSubmitting = $state(false);
 	let avatarPreview: string | null = $state(null);
+	let optimizedAvatarBlob: Blob | null = $state(null);
 
-	function handleAvatarChange(event: Event) {
+	async function handleAvatarChange(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const file = target.files?.[0];
-		if (file) {
-			if (avatarPreview) URL.revokeObjectURL(avatarPreview);
-			avatarPreview = URL.createObjectURL(file);
-		} else {
-			if (avatarPreview) URL.revokeObjectURL(avatarPreview);
-			avatarPreview = null;
+		if (!file) {
+			clearPreview();
+			return;
 		}
+
+		// Mostrar preview inmediato si se desea o esperar al WebP
+		if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+		avatarPreview = URL.createObjectURL(file);
+
+		// Optimización WebP
+		optimizedAvatarBlob = await optimizeImage(file, 500, 0.8);
+	}
+
+	function clearPreview() {
+		if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+		avatarPreview = null;
+		optimizedAvatarBlob = null;
+	}
+
+	function optimizeImage(file: File, maxSize: number, quality: number): Promise<Blob> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				const img = new Image();
+				img.onload = () => {
+					// Calcular nuevas dimensiones
+					let width = img.width;
+					let height = img.height;
+
+					if (width > height) {
+						if (width > maxSize) {
+							height = Math.round((height * maxSize) / width);
+							width = maxSize;
+						}
+					} else {
+						if (height > maxSize) {
+							width = Math.round((width * maxSize) / height);
+							height = maxSize;
+						}
+					}
+
+					const canvas = document.createElement('canvas');
+					canvas.width = width;
+					canvas.height = height;
+
+					const ctx = canvas.getContext('2d');
+					if (!ctx) {
+						reject(new Error('Canvas context no disponible'));
+						return;
+					}
+
+					ctx.drawImage(img, 0, 0, width, height);
+
+					// Convertir a WebP
+					canvas.toBlob(
+						(blob) => {
+							if (blob) {
+								resolve(blob);
+							} else {
+								reject(new Error('Fallo al comprimir la imagen'));
+							}
+						},
+						'image/webp',
+						quality
+					);
+				};
+				img.onerror = () => reject(new Error('No se pudo cargar la imagen para optimizar'));
+				img.src = e.target?.result as string;
+			};
+			reader.onerror = () => reject(new Error('Fallo al leer el archivo original'));
+			reader.readAsDataURL(file);
+		});
 	}
 
 	$effect(() => {
@@ -35,7 +101,12 @@
 		<form
 			method="POST"
 			enctype="multipart/form-data"
-			use:enhance={() => {
+			use:enhance={({ formData }) => {
+				// Inject the optimized WebP file instead of the original one if available
+				if (optimizedAvatarBlob) {
+					formData.set('avatar', optimizedAvatarBlob, 'avatar.webp');
+				}
+
 				isSubmitting = true;
 				return async ({ update }) => {
 					isSubmitting = false;
