@@ -24,6 +24,10 @@ export const actions: Actions = {
 			return fail(400, { error: 'password_short', email });
 		}
 
+		if (nickname && !/^[a-zA-Z0-9]+$/.test(nickname)) {
+			return fail(400, { error: 'invalid_nickname', email });
+		}
+
 		// 1. Crear usuario en Supabase Auth
 		// El profile se crea automáticamente via trigger on_auth_user_created
 		const { data: authData, error: authError } = await locals.supabase.auth.signUp({

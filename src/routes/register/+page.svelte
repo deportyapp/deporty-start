@@ -100,6 +100,9 @@
 		if (password.length < 8) {
 			return $t('register.errorPasswordShort');
 		}
+		if (apodo && !/^[a-zA-Z0-9]+$/.test(apodo)) {
+			return $t('register.errorInvalidNickname');
+		}
 		return null;
 	}
 </script>

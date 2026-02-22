@@ -118,7 +118,11 @@
 			<!-- Error Message -->
 			{#if form?.error}
 				<div class="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-					{$t('profile.error')}
+					{#if form.error === 'invalid_nickname'}
+						{$t('auth.error.invalid_nickname')}
+					{:else}
+						{$t('profile.error')}
+					{/if}
 				</div>
 			{/if}
 

@@ -97,9 +97,11 @@ const pt: Record<string, string> = {
 	'register.errorEmailMismatch': 'Os emails não coincidem',
 	'register.errorPasswordMismatch': 'As senhas não coincidem',
 	'register.errorPasswordShort': 'A senha deve ter pelo menos 8 caracteres',
+	'register.errorInvalidNickname': 'O de usuário só pode conter letras e números, sem espaços',
 	// Auth — erros do servidor
 	'auth.error.missing_fields': 'Por favor, preencha todos os campos',
 	'auth.error.password_short': 'A senha deve ter pelo menos 8 caracteres',
+	'auth.error.invalid_nickname': 'O de usuário só pode conter letras e números, sem espaços',
 	'auth.error.email_exists': 'Já existe uma conta com este e-mail',
 	'auth.error.invalid_email': 'Por favor, insira um e-mail válido',
 	'auth.error.invalid_birth_date': 'Data de nascimento inválida',

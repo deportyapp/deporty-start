@@ -98,9 +98,11 @@ const es = {
 	'register.errorEmailMismatch': 'Los correos no coinciden',
 	'register.errorPasswordMismatch': 'Las contraseñas no coinciden',
 	'register.errorPasswordShort': 'La contraseña debe tener al menos 8 caracteres',
+	'register.errorInvalidNickname': 'El apodo solo puede contener letras y números, sin espacios',
 	// Auth — errores server-side
 	'auth.error.missing_fields': 'Por favor completa todos los campos',
 	'auth.error.password_short': 'La contraseña debe tener al menos 8 caracteres',
+	'auth.error.invalid_nickname': 'El apodo solo puede contener letras y números, sin espacios',
 	'auth.error.email_exists': 'Ya existe una cuenta con este correo electrónico',
 	'auth.error.invalid_email': 'Por favor ingresa un correo electrónico válido',
 	'auth.error.invalid_birth_date': 'Fecha de nacimiento inválida',

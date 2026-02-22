@@ -48,6 +48,16 @@ export const actions: Actions = {
 			});
 		}
 
+		if (nickname && !/^[a-zA-Z0-9]+$/.test(nickname)) {
+			return fail(400, {
+				error: 'invalid_nickname',
+				firstName,
+				lastName,
+				nickname,
+				birthDate
+			});
+		}
+
 		// 1. Manejar subida de Avatar si existe
 		let avatarUrl: string | undefined = undefined;
 
