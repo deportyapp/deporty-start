@@ -25,13 +25,17 @@
 		aria-label={$t('nav.mainNav')}
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="relative flex h-[4.5rem] items-center justify-center sm:h-24">
-				<!-- Logo (centered) -->
+			<div
+				class="relative flex h-[4.5rem] items-center {data.session
+					? 'justify-start'
+					: 'justify-center'} sm:h-24"
+			>
+				<!-- Logo -->
 				<a
-					href="/"
+					href={data.session ? '/dashboard' : '/'}
 					data-sveltekit-preload-data="hover"
 					class="flex cursor-pointer items-center gap-3 rounded-lg transition-all hover:opacity-80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:gap-4"
-					aria-label={$t('nav.goHome')}
+					aria-label={data.session ? $t('nav.dashboard') : $t('nav.goHome')}
 				>
 					<svg
 						class="h-12 w-12 shrink-0 object-contain drop-shadow-md"
