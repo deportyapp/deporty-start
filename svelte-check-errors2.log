@@ -1,0 +1,61 @@
+﻿Loading svelte-check in workspace: c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start
+Getting Svelte diagnostics...
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\dashboard.test.ts[39m:2:32
+[31mError[39m: Cannot find module '@testing-library/svelte' or its corresponding type declarations. 
+[36mimport { describe, it, expect } from 'vitest';
+import { render, screen } from [35m'@testing-library/svelte'[36m;
+import DashboardPage from '../dashboard/+page.svelte';[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\dashboard.test.ts[39m:3:27
+[31mError[39m: Cannot find module '../dashboard/+page.svelte' or its corresponding type declarations. 
+[36mimport { render, screen } from '@testing-library/svelte';
+import DashboardPage from [35m'../dashboard/+page.svelte'[36m;[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\dashboard.test.ts[39m:6:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m// Mock implementation of t mapping for localization
+[35mvi[36m.mock('$lib/i18n', () => ({
+    t: {[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:2:32
+[31mError[39m: Cannot find module '@testing-library/svelte' or its corresponding type declarations. 
+[36mimport { describe, it, expect } from 'vitest';
+import { render, screen } from [35m'@testing-library/svelte'[36m;
+import SportsPage from '../dashboard/sports/+page.svelte';[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:3:24
+[31mError[39m: Cannot find module '../dashboard/sports/+page.svelte' or its corresponding type declarations. 
+[36mimport { render, screen } from '@testing-library/svelte';
+import SportsPage from [35m'../dashboard/sports/+page.svelte'[36m;[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:5:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m
+[35mvi[36m.mock('$lib/i18n', () => ({
+    t: {[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:18:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m// Mock routing so enhance forms don't crash the context
+[35mvi[36m.mock('$app/stores', () => ({
+    page: writable({ url: new URL('http://localhost') })[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:21:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m}));
+[35mvi[36m.mock('$app/forms', () => ({
+    enhance: () => { }[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\routes\calendariodeportivo\+page.svelte[39m:696:6
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m				<div>
+					[35m<label class="mb-2 block text-sm font-medium text-slate-300"
+						>{$t('calendar.eventColor')}</label
+					>[36m
+					<div class="flex flex-wrap gap-2">[39m
+
+====================================
+[31msvelte-check found 8 errors and 1 warning in 3 files
+[39m

@@ -185,6 +185,69 @@
 					{$t('landing.subtitleEnd')}
 				</p>
 
+				<!-- ★ HERO CARD — Calendario Deportivo ★ -->
+				<a
+					href="/calendariodeportivo"
+					class="group relative mx-auto mb-8 block w-full max-w-lg overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-900/40 via-slate-800/60 to-cyan-900/40 p-6 backdrop-blur-md transition-all hover:scale-[1.02] hover:border-blue-400/50 hover:shadow-2xl hover:shadow-blue-500/20 sm:p-8"
+				>
+					<!-- Glow effect -->
+					<div
+						class="pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-500/20 blur-2xl transition-all group-hover:bg-blue-400/30"
+					></div>
+					<div
+						class="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-cyan-500/15 blur-2xl transition-all group-hover:bg-cyan-400/25"
+					></div>
+
+					<div class="relative flex items-center gap-4 sm:gap-5">
+						<div
+							class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg shadow-blue-500/30 sm:h-16 sm:w-16"
+						>
+							<svg
+								class="h-7 w-7 text-white sm:h-8 sm:w-8"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+						</div>
+						<div class="text-left">
+							<h2 class="font-brand text-xl font-bold text-white sm:text-2xl">
+								{$t('calendar.heroTitle')}
+							</h2>
+							<p class="mt-1 text-sm leading-relaxed text-slate-300 sm:text-base">
+								{$t('calendar.heroDesc')}
+							</p>
+						</div>
+					</div>
+
+					<div
+						class="relative mt-5 flex items-center justify-end gap-2 text-sm font-semibold text-blue-400 transition-colors group-hover:text-blue-300"
+					>
+						{$t('calendar.heroCta')}
+						<svg
+							class="h-4 w-4 transition-transform group-hover:translate-x-1"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M13 7l5 5m0 0l-5 5m5-5H6"
+							/>
+						</svg>
+					</div>
+				</a>
+
 				<!-- CTA Buttons -->
 				<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
 					<a

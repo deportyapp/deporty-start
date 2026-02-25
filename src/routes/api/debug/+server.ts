@@ -1,14 +1,36 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { env } from '$env/dynamic/public';
+import { createSupabaseServerClient } from '$lib/supabaseServer';
 
-export const GET: RequestHandler = async ({ locals }) => {
-    const { session, user } = await locals.safeGetSession();
+export async function GET({ locals, event }) {
+    try {
+        const supabaseUrl = env.PUBLIC_SUPABASE_URL;
 
-    const profile = user ? await locals.supabase.from('profile').select('avatar_url').eq('profile_id', user.id).single() : null;
+        let dbTest = 'Not executed';
+        let dbError = null;
+        try {
+            const supabase = createSupabaseServerClient(event as any);
+            const { data, error } = await supabase.from('countries').select('id').limit(1);
+            dbTest = data ? 'Success' : 'Failed';
+            dbError = error;
 
-    return json({
-        user_metadata: user?.user_metadata,
-        profile_db: profile?.data,
-        session_exists: !!session
-    });
-};
+            // Try city table
+            const { data: cityData, error: cityError } = await supabase.from('city').select('city_id').limit(1);
+            if (cityError) {
+                dbError = cityError;
+            }
+        } catch (e: any) {
+            dbError = e.message;
+        }
+
+        return json({
+            env: {
+                PUBLIC_SUPABASE_URL: supabaseUrl || 'MISSING'
+            },
+            dbTest,
+            dbError
+        });
+    } catch (e: any) {
+        return json({ error: e.message });
+    }
+}

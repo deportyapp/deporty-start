@@ -1,0 +1,104 @@
+﻿Loading svelte-check in workspace: c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start
+Getting Svelte diagnostics...
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\dashboard.test.ts[39m:2:32
+[31mError[39m: Cannot find module '@testing-library/svelte' or its corresponding type declarations. 
+[36mimport { describe, it, expect } from 'vitest';
+import { render, screen } from [35m'@testing-library/svelte'[36m;
+import DashboardPage from '../dashboard/+page.svelte';[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\dashboard.test.ts[39m:3:27
+[31mError[39m: Cannot find module '../dashboard/+page.svelte' or its corresponding type declarations. 
+[36mimport { render, screen } from '@testing-library/svelte';
+import DashboardPage from [35m'../dashboard/+page.svelte'[36m;[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\dashboard.test.ts[39m:6:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m// Mock implementation of t mapping for localization
+[35mvi[36m.mock('$lib/i18n', () => ({
+    t: {[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:2:32
+[31mError[39m: Cannot find module '@testing-library/svelte' or its corresponding type declarations. 
+[36mimport { describe, it, expect } from 'vitest';
+import { render, screen } from [35m'@testing-library/svelte'[36m;
+import SportsPage from '../dashboard/sports/+page.svelte';[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:3:24
+[31mError[39m: Cannot find module '../dashboard/sports/+page.svelte' or its corresponding type declarations. 
+[36mimport { render, screen } from '@testing-library/svelte';
+import SportsPage from [35m'../dashboard/sports/+page.svelte'[36m;[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:5:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m
+[35mvi[36m.mock('$lib/i18n', () => ({
+    t: {[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:18:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m// Mock routing so enhance forms don't crash the context
+[35mvi[36m.mock('$app/stores', () => ({
+    page: writable({ url: new URL('http://localhost') })[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\tests\sports.test.ts[39m:21:1
+[31mError[39m: Cannot find name 'vi'. 
+[36m}));
+[35mvi[36m.mock('$app/forms', () => ({
+    enhance: () => { }[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\routes\calendariodeportivo\+page.svelte[39m:321:6
+[31mError[39m: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary>` or `<Component>`
+https://svelte.dev/e/const_tag_invalid_placement (svelte)
+[36m				>
+					[35m{@const prevIdx = selectedMonth === 0 ? 11 : selectedMonth - 1}[36m
+					{@const prevY = selectedMonth === 0 ? selectedYear - 1 : selectedYear}[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\routes\calendariodeportivo\+page.svelte[39m:57:27
+[31mError[39m: No overload matches this call.
+  Overload 1 of 2, '(predicate: (value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => value is { ...; }, thisArg?: any): { ...; }[]', gave the following error.
+    Argument of type '(e: CalendarEvent) => boolean' is not assignable to parameter of type '(value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => value is { ...; }'.
+      Types of parameters 'e' and 'value' are incompatible.
+        Type '{ event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }' is not assignable to type 'CalendarEvent'.
+          Types of property 'sport' are incompatible.
+            Property 'name' is missing in type '{ name: any; }[]' but required in type '{ name: string; }'.
+  Overload 2 of 2, '(predicate: (value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => unknown, thisArg?: any): { ...; }[]', gave the following error.
+    Argument of type '(e: CalendarEvent) => boolean' is not assignable to parameter of type '(value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => unknown'.
+      Types of parameters 'e' and 'value' are incompatible.
+        Type '{ event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }' is not assignable to type 'CalendarEvent'.
+          Types of property 'sport' are incompatible.
+            Property 'name' is missing in type '{ name: any; }[]' but required in type '{ name: string; }'. (ts)
+[36m		if (selectedCityId) {
+			events = events.filter([35m(e: CalendarEvent) => e.city_id === selectedCityId[36m);
+		}[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\routes\calendariodeportivo\+page.svelte[39m:60:27
+[31mError[39m: No overload matches this call.
+  Overload 1 of 2, '(predicate: (value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => value is { ...; }, thisArg?: any): { ...; }[]', gave the following error.
+    Argument of type '(e: CalendarEvent) => boolean' is not assignable to parameter of type '(value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => value is { ...; }'.
+      Types of parameters 'e' and 'value' are incompatible.
+        Type '{ event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }' is not assignable to type 'CalendarEvent'.
+          Types of property 'sport' are incompatible.
+            Property 'name' is missing in type '{ name: any; }[]' but required in type '{ name: string; }'.
+  Overload 2 of 2, '(predicate: (value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => unknown, thisArg?: any): { ...; }[]', gave the following error.
+    Argument of type '(e: CalendarEvent) => boolean' is not assignable to parameter of type '(value: { event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }, index: number, array: { ...; }[]) => unknown'.
+      Types of parameters 'e' and 'value' are incompatible.
+        Type '{ event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }' is not assignable to type 'CalendarEvent'.
+          Types of property 'sport' are incompatible.
+            Property 'name' is missing in type '{ name: any; }[]' but required in type '{ name: string; }'. (ts)
+[36m		if (selectedSportId) {
+			events = events.filter([35m(e: CalendarEvent) => e.sport_id === selectedSportId[36m);
+		}[39m
+
+c:\Users\USUARIO1\Documents\mnzswtzrlnd\deporty-start\[32msrc\routes\calendariodeportivo\+page.svelte[39m:62:10
+[31mError[39m: Conversion of type '{ event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }[]' to type 'CalendarEvent[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ event_id: any; name: any; sport_id: any; city_id: any; color: any; reference_start: any; reference_end: any; start_day_of_week: any; end_day_of_week: any; is_recurring: any; sport: { name: any; }[]; city: { ...; }[]; }' is not comparable to type 'CalendarEvent'.
+    Types of property 'sport' are incompatible.
+      Property 'name' is missing in type '{ name: any; }[]' but required in type '{ name: string; }'. (ts)
+[36m		}
+		return [35mevents as CalendarEvent[][36m;
+	});[39m
+
+====================================
+[31msvelte-check found 12 errors and 0 warnings in 3 files
+[39m

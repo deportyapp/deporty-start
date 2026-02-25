@@ -292,7 +292,40 @@ const es = {
 	'comingSoon.feature2Title': 'Equipos',
 	'comingSoon.feature2Desc': 'Gestiona rosters, jugadores y estadísticas de cada equipo.',
 	'comingSoon.feature3Title': 'Resultados',
-	'comingSoon.feature3Desc': 'Sigue marcadores y posiciones en tiempo real.'
+	'comingSoon.feature3Desc': 'Sigue marcadores y posiciones en tiempo real.',
+
+	// ─── Calendario Deportivo ─────────────────────────
+	'calendar.title': 'Calendario Deportivo',
+	'calendar.subtitle': 'Explora todos los eventos deportivos en tu ciudad',
+	'calendar.filterCountry': 'País',
+	'calendar.filterCity': 'Ciudad',
+	'calendar.filterCityPlaceholder': 'Selecciona una ciudad',
+	'calendar.filterSport': 'Deporte',
+	'calendar.filterSportPlaceholder': 'Todos los deportes',
+	'calendar.filterAllSports': 'Todos los deportes',
+	'calendar.viewYear': 'Año',
+	'calendar.viewMonth': 'Mes',
+	'calendar.today': 'Hoy',
+	'calendar.noEvents': 'No hay eventos para los filtros seleccionados',
+	'calendar.addEvent': 'Agregar Evento',
+	'calendar.loginToAdd': 'Inicia sesión para agregar eventos',
+	'calendar.eventName': 'Nombre del evento',
+	'calendar.eventNamePlaceholder': 'Ej: Copa Verano 2026',
+	'calendar.eventSport': 'Deporte',
+	'calendar.eventCity': 'Ciudad',
+	'calendar.eventColor': 'Color',
+	'calendar.eventStartDate': 'Fecha de inicio',
+	'calendar.eventEndDate': 'Fecha de fin',
+	'calendar.eventRecurring': 'Evento recurrente (se repite cada año)',
+	'calendar.eventSubmit': 'Crear Evento',
+	'calendar.eventCancel': 'Cancelar',
+	'calendar.eventSuccess': 'Evento creado exitosamente',
+	'calendar.eventError': 'Error al crear el evento',
+	'calendar.heroTitle': 'Calendario Deportivo',
+	'calendar.heroDesc': 'Descubre todos los eventos deportivos cerca de ti. Filtra por ciudad y deporte.',
+	'calendar.heroCta': 'Explorar Calendario',
+	'calendar.detecting': 'Detectando ubicación...',
+	'calendar.eventCreating': 'Creando...'
 };
 
 export default es;
