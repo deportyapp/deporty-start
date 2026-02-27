@@ -6,7 +6,7 @@ vi.mock('$lib/i18n', () => ({
 	t: {
 		subscribe: (fn: any) => {
 			fn((key: string) => key);
-			return () => {};
+			return () => { };
 		}
 	}
 }));
@@ -16,20 +16,19 @@ vi.mock('$app/stores', () => ({
 	page: {
 		subscribe: (fn: any) => {
 			fn({ url: new URL('http://localhost') });
-			return () => {};
+			return () => { };
 		}
 	}
 }));
 vi.mock('$app/forms', () => ({
-	enhance: () => {}
+	enhance: () => { }
 }));
 
 describe('Profile Sports Configuration Page', () => {
 	it('should render the sports grid and check active sports by default', () => {
 		const mockData = {
-			profile: {
-				sports: ['natacion_carreras']
-			}
+			allSports: [{ sport_id: 'natacion-id', name: 'Natación Carreras' }],
+			userSportsIds: ['natacion-id']
 		};
 
 		render(SportsPage as any, { props: { data: mockData as any, form: null } });

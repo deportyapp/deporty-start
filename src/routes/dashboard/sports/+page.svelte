@@ -7,21 +7,12 @@
 
 	let isSubmitting = $state(false);
 
-	// The available sports derived from the translations
-	const availableSports = [
-		{ id: 'futbol', label: 'sports.futbol', icon: '⚽' },
-		{ id: 'natacion_carreras', label: 'sports.natacion_carreras', icon: '🏊' },
-		{ id: 'aguas_abiertas', label: 'sports.aguas_abiertas', icon: '🌊' },
-		{ id: 'padel', label: 'sports.padel', icon: '🎾' }
-	];
-
-	// Parse current sports string array from the DB
 	let userSports = $state<string[]>([]);
 
 	// Svelte 5 recommends re-syncing props into state if the load data changes
 	$effect(() => {
-		if (data.profile?.sports) {
-			userSports = data.profile.sports;
+		if (data.userSportsIds) {
+			userSports = data.userSportsIds;
 		}
 	});
 
@@ -65,8 +56,8 @@
 			{/each}
 
 			<div class="grid gap-4 sm:grid-cols-2">
-				{#each availableSports as sport}
-					{@const isSelected = userSports.includes(sport.id)}
+				{#each data.allSports as sport (sport.sport_id)}
+					{@const isSelected = userSports.includes(sport.sport_id)}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
@@ -74,14 +65,14 @@
                          {isSelected
 							? 'border-blue-500 bg-blue-50 shadow-md shadow-blue-500/10'
 							: 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'}"
-						onclick={() => toggleSport(sport.id)}
+						onclick={() => toggleSport(sport.sport_id)}
 					>
 						<div class="flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-full text-2xl
                                 {isSelected ? 'bg-blue-600 text-white' : 'bg-gray-100'}"
 							>
-								{sport.icon}
+								🏅
 							</div>
 							<div>
 								<h3
@@ -90,8 +81,7 @@
 										? 'text-blue-900'
 										: 'text-gray-900 group-hover:text-blue-600'}"
 								>
-									<!-- @ts-ignore - dynamic dictionary string bypass -->
-									{$t(sport.label as any)}
+									{sport.name}
 								</h3>
 							</div>
 						</div>

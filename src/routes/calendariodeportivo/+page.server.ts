@@ -12,6 +12,18 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const { supabase } = locals;
 	const { session, user } = await locals.safeGetSession();
 
+	let isAdmin = false;
+	if (user) {
+		const { data: profile } = await supabase
+			.from('profile')
+			.select('is_admin')
+			.eq('profile_id', user.id)
+			.single();
+		if (profile?.is_admin) {
+			isAdmin = true;
+		}
+	}
+
 	try {
 		// Load countries (only Latin American by ISO code)
 		const latamIsoCodes = [
@@ -74,7 +86,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			sports: sports ?? [],
 			events: [],
 			isLoggedIn: !!session,
-			currentUserId: user?.id ?? null
+			currentUserId: user?.id ?? null,
+			isAdmin
 		};
 	} catch (e) {
 		console.error('Error loading calendar data:', e);
@@ -86,6 +99,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			events: [],
 			isLoggedIn: !!session,
 			currentUserId: user?.id ?? null,
+			isAdmin,
 			errorMsg: 'No se pudo conectar con la base de datos. Por favor, intenta de nuevo más tarde.'
 		};
 	}
@@ -98,6 +112,17 @@ export const actions: Actions = {
 
 		if (!user) {
 			return fail(401, { error: 'unauthorized' });
+		}
+
+		// Enforce Admin Only for Create Event
+		const { data: profile } = await supabase
+			.from('profile')
+			.select('is_admin')
+			.eq('profile_id', user.id)
+			.single();
+
+		if (!profile?.is_admin) {
+			return fail(403, { error: 'forbidden_not_admin' });
 		}
 
 		const formData = await request.formData();
@@ -173,6 +198,17 @@ export const actions: Actions = {
 
 		if (!user) {
 			return fail(401, { error: 'unauthorized' });
+		}
+
+		// Enforce Admin Only for Delete Event
+		const { data: profile } = await supabase
+			.from('profile')
+			.select('is_admin')
+			.eq('profile_id', user.id)
+			.single();
+
+		if (!profile?.is_admin) {
+			return fail(403, { error: 'forbidden_not_admin' });
 		}
 
 		const formData = await request.formData();

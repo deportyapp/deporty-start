@@ -16,7 +16,7 @@
 	import { createSupabaseBrowserClient } from '$lib/supabaseClient';
 	import DateInput from '$lib/components/DateInput.svelte';
 
-	let { data } = $props();
+	let { data }: { data: import('./$types').PageData & { isAdmin?: boolean } } = $props();
 
 	// ─── State ──────────────────────────────────────────
 	const currentDate = new Date();
@@ -439,28 +439,30 @@
 				</button>
 			</div>
 
-			<!-- Add event button -->
-			<button
-				type="button"
-				onclick={handleAddEvent}
-				class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] hover:shadow-blue-500/50"
-			>
-				<svg
-					class="h-4 w-4"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
+			<!-- Add event button (Admin only) -->
+			{#if data.isAdmin}
+				<button
+					type="button"
+					onclick={handleAddEvent}
+					class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] hover:shadow-blue-500/50"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 4v16m8-8H4"
-					/>
-				</svg>
-				{$t('calendar.addEvent')}
-			</button>
+					<svg
+						class="h-4 w-4"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 4v16m8-8H4"
+						/>
+					</svg>
+					{$t('calendar.addEvent')}
+				</button>
+			{/if}
 		</div>
 
 		<!-- Year navigation -->
@@ -736,7 +738,7 @@
 						>
 							<span class="h-3 w-3 rounded-full" style="background-color: {item.color};"></span>
 							<span class="text-xs text-slate-300">{item.name}</span>
-							{#if data.isLoggedIn && data.currentUserId && item.created_by === data.currentUserId}
+							{#if data.isLoggedIn && data.currentUserId && item.created_by === data.currentUserId && data.isAdmin}
 								<form
 									method="POST"
 									action="?/deleteEvent"
