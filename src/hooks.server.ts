@@ -1,5 +1,8 @@
 import { createSupabaseServerClient } from '$lib/supabaseServer';
+import { createLogger } from '$lib/server/logger';
 import type { Handle } from '@sveltejs/kit';
+
+const logger = createLogger('HooksServer');
 
 /**
  * Hook principal del servidor.
@@ -9,8 +12,16 @@ import type { Handle } from '@sveltejs/kit';
  * 1. Crear el cliente Supabase server-side (per-request, no singleton)
  * 2. Proveer safeGetSession() para obtener sesión validada
  * 3. Adjuntar ambos a event.locals para uso en +page.server.ts, +server.ts, etc.
+ * 4. Inyectar security headers optimizados
+ * 5. Loguear requests importantes
  */
 export const handle: Handle = async ({ event, resolve }) => {
+	const startTime = Date.now();
+	const method = event.request.method;
+	const url = event.url;
+
+	logger.debug(`[${method}] ${url.pathname}`);
+
 	// 1. Crear Supabase server client para este request
 	event.locals.supabase = createSupabaseServerClient(event);
 
@@ -34,12 +45,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 			} = await event.locals.supabase.auth.getUser();
 
 			if (error) {
+				logger.warn('Failed to get user from Supabase', { error: error.message });
 				return { session: null, user: null };
 			}
 
 			return { session, user };
 		} catch (e) {
-			console.error('safeGetSession failed: network or db error', e);
+			logger.error('safeGetSession failed', {
+				error: e instanceof Error ? e.message : String(e)
+			});
 			return { session: null, user: null };
 		}
 	};
@@ -70,6 +84,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 	response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 	response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
 	response.headers.set('X-XSS-Protection', '1; mode=block');
+	response.headers.set(
+		'Content-Security-Policy',
+		"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'none'"
+	);
+	response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+
+	// Cache control para assets estáticos
+	if (url.pathname.startsWith('/static/') || url.pathname.match(/\.(js|css|woff2?)$/)) {
+		response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+	} else if (url.pathname.startsWith('/api/')) {
+		response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+	}
 
 	return response;
 };
