@@ -124,18 +124,25 @@
 		}
 	});
 
-	// Fetch events dynamically only after municipality/city is selected
+	// Fetch events dynamically when a department is selected (all cities in that department)
 	$effect(() => {
 		// Read token to establish reactive dependency
 		const trigger = eventsRequestToken;
 
-		if (!selectedCityId) {
+		if (!selectedDepartmentId) {
 			loadedEvents = [];
 			loadingEvents = false;
 			return;
 		}
 
+		// Wait until cities are loaded so we know which city_ids belong to this department
+		if (loadingCities || loadedCities.length === 0) {
+			return;
+		}
+
 		loadingEvents = true;
+
+		const cityIds = loadedCities.map((c) => c.city_id);
 
 		const client = createSupabaseBrowserClient();
 		let query = client
@@ -157,7 +164,7 @@
 				city ( name, department_id )
 			`
 			)
-			.eq('city_id', selectedCityId)
+			.in('city_id', cityIds)
 			.is('deleted_at', null)
 			.order('reference_start');
 
@@ -175,12 +182,18 @@
 		});
 	});
 
-	// Events to render (requires selected municipality/city)
+	// Events to render: show all department events, optionally filtered by city
 	const filteredEvents = $derived(() => {
-		if (!selectedCityId) {
+		if (!selectedDepartmentId) {
 			return [] as CalendarEvent[];
 		}
 
+		// If a specific city is selected, filter to just that city
+		if (selectedCityId) {
+			return loadedEvents.filter((ev) => ev.city_id === selectedCityId);
+		}
+
+		// Otherwise show all events in the department
 		return loadedEvents;
 	});
 
@@ -221,7 +234,7 @@
 
 	// ─── Active month events (month view footer list) ─────────────────
 	const activeMonthEvents = $derived(() => {
-		if (!selectedCityId) return [];
+		if (!selectedDepartmentId) return [];
 
 		const monthStart = new Date(selectedYear, selectedMonth, 1);
 		const monthEnd = new Date(selectedYear, selectedMonth + 1, 0);
@@ -439,12 +452,14 @@
 				</button>
 			</div>
 
-			<!-- Add event button (Admin only) -->
+			<!-- Add event button (Admin only, requires city selected) -->
 			{#if data.isAdmin}
 				<button
 					type="button"
 					onclick={handleAddEvent}
-					class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] hover:shadow-blue-500/50"
+					disabled={!selectedCityId}
+					class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] hover:shadow-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+					title={!selectedCityId ? 'Selecciona una ciudad para agregar un evento' : ''}
 				>
 					<svg
 						class="h-4 w-4"
