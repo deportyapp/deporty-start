@@ -135,6 +135,7 @@ export const actions: Actions = {
 		const reference_start = normalizeToIsoDate(referenceStartInput);
 		const reference_end = normalizeToIsoDate(referenceEndInput);
 		const is_recurring = formData.get('is_recurring') === 'on';
+		const categoryIds = formData.getAll('categories') as string[];
 
 		// Validation
 		if (!name || !sport_id || !city_id || !referenceStartInput || !referenceEndInput) {
@@ -156,7 +157,7 @@ export const actions: Actions = {
 		const start_day_of_week = startDate.getDay();
 		const end_day_of_week = endDate.getDay();
 
-		const { error } = await supabase.from('calendar_event').insert({
+		const { data: newEvent, error } = await supabase.from('calendar_event').insert({
 			name,
 			sport_id,
 			city_id,
@@ -167,26 +168,28 @@ export const actions: Actions = {
 			end_day_of_week,
 			is_recurring,
 			created_by: user.id
-		});
-
-		import('fs').then((fs) => {
-			fs.writeFileSync(
-				'last_calendar_debug.txt',
-				JSON.stringify(
-					{
-						formData: Object.fromEntries(formData.entries()),
-						error: error || 'NONE - SUCCESS',
-						dates: { reference_start, reference_end, start_day_of_week, end_day_of_week }
-					},
-					null,
-					2
-				)
-			);
-		});
+		}).select('event_id').single();
 
 		if (error) {
 			console.error('Error creating calendar event:', error);
 			return fail(500, { error: 'db_error' });
+		}
+
+		// Insert category associations if any were selected
+		if (categoryIds.length > 0 && newEvent?.event_id) {
+			const categoryRows = categoryIds.map((category_id) => ({
+				event_id: newEvent.event_id,
+				category_id
+			}));
+
+			const { error: catError } = await supabase
+				.from('calendar_event_category')
+				.insert(categoryRows);
+
+			if (catError) {
+				console.error('Error linking categories to event:', catError);
+				// Event was created, just warn about categories
+			}
 		}
 
 		return { success: true };

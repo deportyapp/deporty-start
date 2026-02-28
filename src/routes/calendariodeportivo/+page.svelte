@@ -38,6 +38,19 @@
 	let loadedEvents = $state<CalendarEvent[]>([]);
 	let loadingEvents = $state(false);
 	let eventsRequestToken = $state(0);
+	let eventStartDate = $state('');
+	let eventEndDate = $state('');
+	let eventCategories = $state<
+		{
+			category_id: string;
+			modality: string;
+			name: string;
+			min_age: number;
+			max_age: number | null;
+		}[]
+	>([]);
+	let selectedCategoryIds = $state<string[]>([]);
+	let loadingCategories = $state(false);
 
 	type SportOption = { sport_id: string; name: string };
 
@@ -122,6 +135,35 @@
 			loadedCities = [];
 			loadingCities = false;
 		}
+	});
+
+	// Auto-sync end date from start date
+	$effect(() => {
+		if (eventStartDate && !eventEndDate) {
+			eventEndDate = eventStartDate;
+		}
+	});
+
+	// Fetch sport categories when sport changes in the modal
+	$effect(() => {
+		if (!eventSportId) {
+			eventCategories = [];
+			selectedCategoryIds = [];
+			return;
+		}
+
+		loadingCategories = true;
+		const client = createSupabaseBrowserClient();
+		client
+			.from('sport_category')
+			.select('category_id, modality, name, min_age, max_age')
+			.eq('sport_id', eventSportId)
+			.order('sort_order')
+			.then(({ data }) => {
+				eventCategories = data ?? [];
+				selectedCategoryIds = [];
+				loadingCategories = false;
+			});
 	});
 
 	// Fetch events dynamically when a department is selected (all cities in that department)
@@ -293,6 +335,9 @@
 		showAddModal = true;
 		formMessage = '';
 		formError = false;
+		eventStartDate = '';
+		eventEndDate = '';
+		selectedCategoryIds = [];
 	}
 
 	function confirmDeleteEvent(): boolean {
@@ -935,6 +980,51 @@
 					</div>
 				</div>
 
+				<!-- Categories -->
+				{#if eventCategories.length > 0}
+					<div>
+						<p class="mb-2 block text-sm font-medium text-slate-300">Categorías del evento</p>
+						<div
+							class="grid grid-cols-2 gap-2 rounded-lg border border-slate-600/50 bg-slate-700/30 p-3 sm:grid-cols-3"
+						>
+							{#each eventCategories as cat (cat.category_id)}
+								<label
+									class="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs text-slate-300 transition-colors hover:bg-slate-600/30"
+								>
+									<input
+										type="checkbox"
+										name="categories"
+										value={cat.category_id}
+										checked={selectedCategoryIds.includes(cat.category_id)}
+										onchange={(e) => {
+											const target = e.currentTarget;
+											if (target.checked) {
+												selectedCategoryIds = [...selectedCategoryIds, cat.category_id];
+											} else {
+												selectedCategoryIds = selectedCategoryIds.filter(
+													(id) => id !== cat.category_id
+												);
+											}
+										}}
+										class="rounded border-slate-500 bg-slate-700 text-blue-500 focus:ring-blue-500"
+									/>
+									<span>
+										{#if cat.modality !== 'Carreras'}<span class="text-blue-400"
+												>{cat.modality}</span
+											>{/if}
+										{cat.name}
+										<span class="text-slate-500"
+											>{cat.min_age}{cat.max_age ? `-${cat.max_age}` : '+'} años</span
+										>
+									</span>
+								</label>
+							{/each}
+						</div>
+					</div>
+				{:else if loadingCategories}
+					<p class="text-xs text-slate-500">Cargando categorías...</p>
+				{/if}
+
 				<!-- Dates -->
 				<div class="grid grid-cols-2 gap-3">
 					<div>
@@ -944,6 +1034,7 @@
 						<DateInput
 							id="event-start"
 							name="reference_start"
+							bind:value={eventStartDate}
 							required={true}
 							class="w-full rounded-lg border border-slate-600 bg-slate-700/80 px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 						/>
@@ -955,6 +1046,7 @@
 						<DateInput
 							id="event-end"
 							name="reference_end"
+							bind:value={eventEndDate}
 							required={true}
 							class="w-full rounded-lg border border-slate-600 bg-slate-700/80 px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 						/>
