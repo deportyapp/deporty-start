@@ -34,3 +34,7 @@ list2.txt
 supabase/*_dump.sql
 supabase/*_dump_*.sql
 supabase/*_postrestart.sql
+
+# Playwright generated artifacts
+playwright-report/
+test-results/
