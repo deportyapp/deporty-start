@@ -458,6 +458,7 @@
 						<div class="relative">
 							<input
 								id="confirmPassword"
+								name="confirmPassword"
 								type={showConfirmPassword ? 'text' : 'password'}
 								bind:value={confirmPassword}
 								class="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3.5 pr-12 text-white placeholder-slate-500 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 {confirmPassword &&

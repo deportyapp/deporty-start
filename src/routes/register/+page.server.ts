@@ -69,8 +69,11 @@ export const actions: Actions = {
 
 		// 2.1 Crear perfil en tabla profile
 		if (!authData.user?.id) {
-			return fail(500, { error: 'profile_error', email });
+			console.error('No user ID found after signup');
+			return fail(500, { error: 'auth_error_no_id', email });
 		}
+
+		console.log('Attempting to create profile for user:', authData.user.id);
 
 		const { error: profileError } = await locals.supabase.from('profile').upsert(
 			{
@@ -85,12 +88,24 @@ export const actions: Actions = {
 		);
 
 		if (profileError) {
-			console.error('Profile insert error:', profileError.message);
-			return fail(500, { error: 'profile_error', email });
+			console.error('Profile insert error details:', {
+				message: profileError.message,
+				code: profileError.code,
+				hint: profileError.hint,
+				details: profileError.details
+			});
+			return fail(500, { error: 'profile_error', message: profileError.message, email });
 		}
 
 		if (authData.session) {
 			throw redirect(303, '/dashboard');
+		}
+
+		console.log('Profile created successfully for:', email);
+
+		// 3. Si necesita confirmar email (email confirmation habilitado)
+		if (authData.user && !authData.session) {
+			return { success: true, needsConfirmation: true };
 		}
 
 		throw redirect(303, '/login?registered=true');
