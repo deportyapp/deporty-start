@@ -112,21 +112,17 @@ describe('Register Action - Server-side Validation', () => {
 		expect(result?.data?.error).toBe('password_short');
 	});
 
-	it('should accept password with exactly 8 characters', async () => {
+	it('should accept password with exactly 8 characters and require confirmation', async () => {
 		const action = await getRegisterAction();
 		const formData = createFormData({ ...validInput, password: 'abcd1234' });
 		const locals = createMockLocals();
 
-		try {
-			await action({
-				request: new Request('http://localhost', { method: 'POST', body: formData }),
-				locals
-			} as any);
-			expect.unreachable('Expected redirect');
-		} catch (e: any) {
-			expect(e.status).toBe(303);
-			expect(e.location).toBe('/login?registered=true');
-		}
+		const result = await action({
+			request: new Request('http://localhost', { method: 'POST', body: formData }),
+			locals
+		} as any);
+
+		expect(result).toEqual({ success: true, needsConfirmation: true });
 	});
 
 	it('should fail with invalid_birth_date when date is invalid', async () => {
@@ -179,22 +175,17 @@ describe('Register Action - Server-side Validation', () => {
 		expect(result?.data?.error).toBe('email_exists');
 	});
 
-	it('should redirect to /login?registered=true on successful signup', async () => {
+	it('should return confirmation payload on successful signup without session', async () => {
 		const action = await getRegisterAction();
 		const formData = createFormData(validInput);
 		const locals = createMockLocals();
 
-		try {
-			await action({
-				request: new Request('http://localhost', { method: 'POST', body: formData }),
-				locals
-			} as any);
-			// Should not reach here — redirect throws
-			expect.unreachable('Expected redirect to be thrown');
-		} catch (e: any) {
-			expect(e.status).toBe(303);
-			expect(e.location).toBe('/login?registered=true');
-		}
+		const result = await action({
+			request: new Request('http://localhost', { method: 'POST', body: formData }),
+			locals
+		} as any);
+
+		expect(result).toEqual({ success: true, needsConfirmation: true });
 	});
 
 	it('should pass birth_date in signUp metadata', async () => {

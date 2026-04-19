@@ -702,16 +702,16 @@
     color: var(--muted);
   }
 
-  .process-detail p {
+  .process-detail :global(p) {
     margin: 0 0 0.55rem;
   }
 
-  .process-detail ul {
+  .process-detail :global(ul) {
     margin: 0;
     padding-left: 1.15rem;
   }
 
-  .process-detail li {
+  .process-detail :global(li) {
     margin-bottom: 0.38rem;
   }
 
