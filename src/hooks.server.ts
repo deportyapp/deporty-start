@@ -1,8 +1,31 @@
 import { createSupabaseServerClient } from '$lib/supabaseServer';
 import { createLogger } from '$lib/server/logger';
 import type { Handle } from '@sveltejs/kit';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 const logger = createLogger('HooksServer');
+
+const createUnavailableSupabaseClient = (reason: string) => {
+	const fail = () => {
+		throw new Error(reason);
+	};
+
+	return new Proxy(
+		{},
+		{
+			get() {
+				return new Proxy(fail, {
+					apply() {
+						fail();
+					},
+					get() {
+						return fail;
+					}
+				});
+			}
+		}
+	) as SupabaseClient;
+};
 
 /**
  * Hook principal del servidor.
@@ -19,16 +42,31 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const startTime = Date.now();
 	const method = event.request.method;
 	const url = event.url;
+	let supabaseAvailable = true;
 
 	logger.debug(`[${method}] ${url.pathname}`);
 
 	// 1. Crear Supabase server client para este request
-	event.locals.supabase = createSupabaseServerClient(event);
+	try {
+		event.locals.supabase = createSupabaseServerClient(event);
+	} catch (error) {
+		supabaseAvailable = false;
+		const message = error instanceof Error ? error.message : String(error);
+		logger.warn('Supabase server client unavailable; public routes will continue without auth', {
+			error: message,
+			path: url.pathname
+		});
+		event.locals.supabase = createUnavailableSupabaseClient(message);
+	}
 
 	// 2. Proveer helper seguro para obtener sesión
 	//    Usa getUser() que valida el JWT contra Supabase Auth,
 	//    a diferencia de getSession() que solo lee cookies (spoofeable).
 	event.locals.safeGetSession = async () => {
+		if (!supabaseAvailable) {
+			return { session: null, user: null };
+		}
+
 		try {
 			const {
 				data: { session }

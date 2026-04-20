@@ -10,7 +10,7 @@
 	let referenceDate = '1970-01-01';
 	let generatedCode = '';
 	let codeExplanation =
-		'El codigo se obtiene a partir de los dias UTC transcurridos desde la fecha elegida.';
+		'El codigo se obtiene contando los dias UTC transcurridos desde la fecha elegida y reduciendo ese valor a un numero del alfabeto.';
 
 	let originalMessage = 'HOLA EQUIPO, HOY EXPLICAMOS TURING.';
 	let encryptedMessage = '';
@@ -90,7 +90,7 @@
 	const getCodeFromDate = (referenceDateStr: string) => {
 		const daily = getDailyNumber(referenceDateStr);
 		const range = ALPHABET.length - 1;
-		return ((((daily * 17 + 43) % range) + range) % range) + 1;
+		return (daily % range) + 1;
 	};
 
 	const shiftChar = (char: string, shift: number) => {
@@ -124,9 +124,10 @@
 			return;
 		}
 
-		encryptionSummary = `El codigo ${key} define un desplazamiento uniforme para todos los simbolos validos del mensaje.`;
-		encryptionDetailIntro = `Cada letra, numero o signo que pertenezca al alfabeto interno se procesa de la misma manera: la maquina toma el simbolo original, localiza su posicion en el alfabeto y lo mueve ${key} posiciones hacia delante.`;
+		encryptionSummary = `El codigo ${key} sale del conteo de dias y define un desplazamiento uniforme para todos los simbolos validos del mensaje.`;
+		encryptionDetailIntro = `Primero se cuentan los dias UTC transcurridos desde la fecha elegida. Luego ese total se reduce a un numero valido del alfabeto, y la maquina usa ese resultado para mover ${key} posiciones cada simbolo del mensaje.`;
 		encryptionDetailSteps = [
+			`Se toma el numero total de dias transcurridos y se convierte en el codigo ${key}.`,
 			`Si el simbolo forma parte del alfabeto, se sustituye por otro simbolo desplazado ${key} posiciones.`,
 			'Si el desplazamiento supera el final del alfabeto, el proceso vuelve al inicio y continua desde ahi.',
 			'Todos los caracteres del mensaje se transforman con la misma regla, por eso el cifrado es consistente.',
@@ -135,7 +136,7 @@
 	};
 
 	const renderCodeExplanation = (referenceDateStr: string, dailyNumber: number, code: number) => {
-		codeExplanation = `Dias UTC transcurridos desde ${referenceDateStr}: ${dailyNumber}. Formula interna: ((dias x 17 + 43) mod ${ALPHABET.length - 1}) + 1. Resultado: codigo ${code}, que desplaza ${code} posiciones cada simbolo del alfabeto.`;
+		codeExplanation = `Dias UTC transcurridos desde ${referenceDateStr}: ${dailyNumber}. Formula usada: (dias mod ${ALPHABET.length - 1}) + 1. Resultado: codigo ${code}, que desplaza ${code} posiciones cada simbolo del alfabeto.`;
 	};
 
 	const ensureGeneratedCode = () => {
@@ -149,7 +150,7 @@
 		} catch {
 			setStatus('Fecha invalida. Corrige la fecha para generar el codigo.');
 			codeExplanation =
-				'No se pudo calcular el codigo. Revisa la fecha para obtener los dias UTC y el desplazamiento resultante.';
+				'No se pudo calcular el codigo. Revisa la fecha para obtener los dias UTC y convertirlos en un desplazamiento valido.';
 			renderEncryptionProcess(null);
 			return null;
 		}
@@ -348,7 +349,7 @@
 	<title>Turing: cifrado y traduccion visual</title>
 	<meta
 		name="description"
-		content="Maquina de Turing didactica para cifrar y descifrar frases con codigo diario UTC."
+		content="Maquina de Turing didactica para cifrar y descifrar frases con un codigo obtenido a partir de los dias UTC transcurridos."
 	/>
 </svelte:head>
 
@@ -357,7 +358,7 @@
 		<p class="tag">Laboratorio didactico</p>
 		<h1 id="title">Maquina de Turing para mensajes</h1>
 		<p class="subtitle">
-			Introduce una fecha, genera un codigo diario y observa como la maquina traduce el mensaje
+			Introduce una fecha, genera un codigo a partir de los dias transcurridos y observa como la maquina traduce el mensaje
 			encriptado hasta recuperar el texto original.
 		</p>
 	</header>
@@ -530,7 +531,7 @@
 			<section class="card guide-card">
 				<h2 id="guide-title">Como funciona</h2>
 				<p>
-					La aplicacion combina dos ideas: un codigo diario derivado de una fecha UTC y una maquina
+					La aplicacion combina dos ideas: un codigo derivado de los dias transcurridos desde una fecha UTC y una maquina
 					didactica que recorre el mensaje encriptado caracter por caracter para reconstruir el
 					original.
 				</p>
@@ -538,8 +539,8 @@
 				<h3>Proceso general</h3>
 				<ol class="guide-list">
 					<li>Eliges una fecha de referencia.</li>
-					<li>Se calcula un numero diario usando UTC y una formula interna.</li>
-					<li>Ese numero se convierte en el codigo de desplazamiento.</li>
+					<li>Se cuentan los dias exactos transcurridos en UTC desde esa fecha hasta hoy.</li>
+					<li>Ese total se reduce a un codigo de desplazamiento entre 1 y {ALPHABET.length - 1}.</li>
 					<li>El mensaje original se transforma en un mensaje encriptado.</li>
 					<li>La maquina lee el texto encriptado y lo traduce paso a paso.</li>
 					<li>El mensaje final debe coincidir con el mensaje original.</li>
@@ -549,7 +550,7 @@
 				<ul class="guide-list plain-list">
 					<li>Parte de los dias exactos transcurridos en UTC desde la fecha elegida hasta hoy.</li>
 					<li>
-						Ese valor se transforma con una formula fija para obtener un desplazamiento estable.
+						Ese valor se reduce con una regla simple para obtener un desplazamiento estable dentro del alfabeto.
 					</li>
 					<li>
 						El resultado final indica cuantas posiciones se mueve cada simbolo dentro del alfabeto
