@@ -36,19 +36,16 @@ export class AppError extends Error {
  * Common error factory functions
  */
 export const errors = {
-	authRequired: () =>
-		new AppError('AUTH_REQUIRED', 401, 'Authentication required', undefined),
+	authRequired: () => new AppError('AUTH_REQUIRED', 401, 'Authentication required', undefined),
 
 	invalidCredentials: () =>
 		new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password', undefined),
 
 	userNotFound: () => new AppError('USER_NOT_FOUND', 404, 'User not found', undefined),
 
-	unauthorized: (message = 'Unauthorized') =>
-		new AppError('UNAUTHORIZED', 403, message, undefined),
+	unauthorized: (message = 'Unauthorized') => new AppError('UNAUTHORIZED', 403, message, undefined),
 
-	forbidden: (message = 'Forbidden') =>
-		new AppError('FORBIDDEN', 403, message, undefined),
+	forbidden: (message = 'Forbidden') => new AppError('FORBIDDEN', 403, message, undefined),
 
 	notFound: (resource: string) =>
 		new AppError('NOT_FOUND', 404, `${resource} not found`, undefined),
@@ -65,8 +62,7 @@ export const errors = {
 	rateLimit: () =>
 		new AppError('RATE_LIMIT', 429, 'Too many requests. Please try again later.', undefined),
 
-	conflict: (message: string) =>
-		new AppError('CONFLICT', 409, message, undefined)
+	conflict: (message: string) => new AppError('CONFLICT', 409, message, undefined)
 };
 
 export interface ErrorResponse {

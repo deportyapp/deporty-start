@@ -7,7 +7,7 @@ vi.mock('$lib/i18n', () => ({
 	t: {
 		subscribe: (fn: any) => {
 			fn((key: string) => key);
-			return () => { };
+			return () => {};
 		}
 	}
 }));

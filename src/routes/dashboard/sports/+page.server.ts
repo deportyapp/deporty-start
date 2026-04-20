@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		if (userSportsError) {
 			console.error('Error loading user sports:', userSportsError);
 		}
-		userSportsIds = (userSports ?? []).map(s => s.sport_id);
+		userSportsIds = (userSports ?? []).map((s) => s.sport_id);
 	}
 
 	return {

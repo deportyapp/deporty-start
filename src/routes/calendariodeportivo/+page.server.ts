@@ -139,7 +139,14 @@ export const actions: Actions = {
 		const participant_type = formData.get('participant_type') as string;
 
 		// Validation
-		if (!name || !sport_id || !city_id || !referenceStartInput || !referenceEndInput || !participant_type) {
+		if (
+			!name ||
+			!sport_id ||
+			!city_id ||
+			!referenceStartInput ||
+			!referenceEndInput ||
+			!participant_type
+		) {
 			return fail(400, { error: 'missing_fields' });
 		}
 
@@ -158,19 +165,23 @@ export const actions: Actions = {
 		const start_day_of_week = startDate.getDay();
 		const end_day_of_week = endDate.getDay();
 
-		const { data: newEvent, error } = await supabase.from('calendar_event').insert({
-			name,
-			sport_id,
-			city_id,
-			color: color || '#3B82F6',
-			reference_start,
-			reference_end,
-			start_day_of_week,
-			end_day_of_week,
-			is_recurring,
-			participant_type,
-			created_by: user.id
-		}).select('event_id').single();
+		const { data: newEvent, error } = await supabase
+			.from('calendar_event')
+			.insert({
+				name,
+				sport_id,
+				city_id,
+				color: color || '#3B82F6',
+				reference_start,
+				reference_end,
+				start_day_of_week,
+				end_day_of_week,
+				is_recurring,
+				participant_type,
+				created_by: user.id
+			})
+			.select('event_id')
+			.single();
 
 		if (error) {
 			console.error('Error creating calendar event:', error);

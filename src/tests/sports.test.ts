@@ -6,7 +6,7 @@ vi.mock('$lib/i18n', () => ({
 	t: {
 		subscribe: (fn: any) => {
 			fn((key: string) => key);
-			return () => { };
+			return () => {};
 		}
 	}
 }));
@@ -16,12 +16,12 @@ vi.mock('$app/stores', () => ({
 	page: {
 		subscribe: (fn: any) => {
 			fn({ url: new URL('http://localhost') });
-			return () => { };
+			return () => {};
 		}
 	}
 }));
 vi.mock('$app/forms', () => ({
-	enhance: () => { }
+	enhance: () => {}
 }));
 
 describe('Profile Sports Configuration Page', () => {

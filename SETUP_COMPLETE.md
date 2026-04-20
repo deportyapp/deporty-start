@@ -13,31 +13,38 @@ Tu proyecto ha sido mejorado significativamente. Se implementaron **12 mejoras c
 ## 🎯 Archivos Creados
 
 ### 1. **Containerización (Docker)**
+
 - ✅ `Dockerfile` - Multi-stage build optimizado para SvelteKit
 - ✅ `docker-compose.yml` - Dev environment con hot-reload
 - ✅ `.dockerignore` - Optimización de contexto
 
 ### 2. **Configuración & Seguridad**
+
 - ✅ `src/lib/server/env.ts` - Validación de env vars al startup
 - ✅ `src/hooks.server.ts` - Actualizado con logging + security headers mejorados
 
 ### 3. **Logging & Error Handling**
+
 - ✅ `src/lib/server/logger.ts` - Logger centralizado con niveles (debug, info, warn, error)
 - ✅ `src/lib/server/errors.ts` - Error handling tipado (15+ error types predefinidos)
 
 ### 4. **Estado Global**
+
 - ✅ `src/lib/stores.ts` - Svelte stores para usuario, sesión, notificaciones
 - ✅ `src/routes/api/health/+server.ts` - Health check endpoint
 
 ### 5. **Testing**
+
 - ✅ `src/tests/unit/auth.test.ts` - 8 tests para error handling
 - ✅ `src/tests/unit/stores.test.ts` - 12 tests para stores
 - ✅ `vitest.config.ts` - Configuración de Vitest con coverage
 
 ### 6. **CI/CD**
+
 - ✅ `.github/workflows/ci.yml` - Pipeline completo (lint → test → build → deploy)
 
 ### 7. **Documentación**
+
 - ✅ `IMPROVEMENTS.md` - Guía completa de uso de las mejoras
 
 ---
@@ -84,18 +91,18 @@ import { errors, handleError } from '$lib/server/errors';
 import { json } from '@sveltejs/kit';
 
 export const POST = async (event) => {
-  try {
-    const data = await event.request.json();
-    
-    if (!data.email) {
-      throw errors.validationError('Email is required', { field: 'email' });
-    }
-    
-    return json({ success: true });
-  } catch (error) {
-    const errorResponse = handleError(error);
-    return json(errorResponse, { status: errorResponse.status });
-  }
+	try {
+		const data = await event.request.json();
+
+		if (!data.email) {
+			throw errors.validationError('Email is required', { field: 'email' });
+		}
+
+		return json({ success: true });
+	} catch (error) {
+		const errorResponse = handleError(error);
+		return json(errorResponse, { status: errorResponse.status });
+	}
 };
 ```
 
@@ -103,20 +110,18 @@ export const POST = async (event) => {
 
 ```svelte
 <script>
-  import { user, loading, isAuthenticated, addNotification } from '$lib/stores';
+	import { user, loading, isAuthenticated, addNotification } from '$lib/stores';
 </script>
 
 {#if $isAuthenticated}
-  <p>Welcome, {$user?.email}</p>
+	<p>Welcome, {$user?.email}</p>
 {/if}
 
 {#if $loading}
-  <p>Loading...</p>
+	<p>Loading...</p>
 {/if}
 
-<button on:click={() => addNotification('Success!', 'success')}>
-  Show Notification
-</button>
+<button on:click={() => addNotification('Success!', 'success')}> Show Notification </button>
 ```
 
 ### Health Check
@@ -137,14 +142,14 @@ curl http://localhost:3000/api/health
 
 ## 🔐 Mejoras de Seguridad
 
-| Header | Implementado | Beneficio |
-|--------|--------------|-----------|
-| Content-Security-Policy | ✅ | Previene XSS attacks |
-| Strict-Transport-Security | ✅ | Fuerza HTTPS |
-| X-Frame-Options | ✅ | Previene clickjacking |
-| X-Content-Type-Options | ✅ | Previene MIME-sniffing |
-| Permissions-Policy | ✅ | Control de permisos del navegador |
-| Cache-Control | ✅ | Optimiza caching de assets |
+| Header                    | Implementado | Beneficio                         |
+| ------------------------- | ------------ | --------------------------------- |
+| Content-Security-Policy   | ✅           | Previene XSS attacks              |
+| Strict-Transport-Security | ✅           | Fuerza HTTPS                      |
+| X-Frame-Options           | ✅           | Previene clickjacking             |
+| X-Content-Type-Options    | ✅           | Previene MIME-sniffing            |
+| Permissions-Policy        | ✅           | Control de permisos del navegador |
+| Cache-Control             | ✅           | Optimiza caching de assets        |
 
 ---
 
@@ -187,6 +192,7 @@ El GitHub Actions pipeline automático:
 ### Setup Requerido
 
 Agregar estos secrets en GitHub:
+
 - `VERCEL_TOKEN` - Token de Vercel
 - `VERCEL_ORG_ID` - Organization ID de Vercel
 - `VERCEL_PROJECT_ID` - Project ID de Vercel
@@ -281,6 +287,7 @@ Cada push a `main` triggerea deploy automáticamente.
 ## 🆘 Troubleshooting
 
 ### Error: "Missing required environment variables"
+
 ```bash
 # Crea .env.local con tus valores
 PUBLIC_SUPABASE_URL=https://your-project.supabase.co
@@ -288,6 +295,7 @@ PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### Docker build fails
+
 ```bash
 docker-compose down
 docker system prune -a
@@ -295,6 +303,7 @@ docker-compose up --build --no-cache
 ```
 
 ### Tests fail
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
@@ -306,6 +315,7 @@ npm run test
 ## 📞 Soporte
 
 Para dudas sobre la implementación, revisa los comentarios en:
+
 - `src/lib/server/logger.ts` - Cómo usar el logger
 - `src/lib/server/errors.ts` - Error types disponibles
 - `src/lib/stores.ts` - Cómo usar stores

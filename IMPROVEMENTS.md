@@ -3,30 +3,37 @@
 ## 📦 Archivos Nuevos Agregados
 
 ### Docker & Containerización
+
 - **`Dockerfile`** - Multi-stage build para producción
 - **`docker-compose.yml`** - Setup local con hot-reload
 - **`.dockerignore`** - Optimización de contexto Docker
 
 ### Validación & Configuración
+
 - **`src/lib/server/env.ts`** - Validación de variables de entorno al startup
 
 ### Logging & Errores
+
 - **`src/lib/server/logger.ts`** - Logger centralizado con niveles
 - **`src/lib/server/errors.ts`** - Error handling tipado y estandarizado
 
 ### Estado Global
+
 - **`src/lib/stores.ts`** - Svelte stores para usuario, sesión, notificaciones
 - **`src/hooks.server.ts`** (actualizado) - Security headers mejorados, logging
 
 ### Tests
+
 - **`src/tests/unit/auth.test.ts`** - Tests para error handling
 - **`src/tests/unit/stores.test.ts`** - Tests para stores
 - **`vitest.config.ts`** - Configuración de Vitest
 
 ### CI/CD
+
 - **`.github/workflows/ci.yml`** - Pipeline completo (lint, test, build, deploy)
 
 ### APIs
+
 - **`src/routes/api/health/+server.ts`** - Health check endpoint con ejemplo de error handling
 
 ---
@@ -68,6 +75,7 @@ logger.error('Error message', { error: 'details' });
 ```
 
 **Controla el nivel de logging:**
+
 ```bash
 LOG_LEVEL=debug npm run dev   # Muy verboso
 LOG_LEVEL=info npm run dev    # Normal
@@ -84,22 +92,22 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async (event) => {
-  try {
-    const data = await event.request.json();
-    
-    if (!data.email) {
-      throw errors.validationError('Email is required', { field: 'email' });
-    }
-    
-    if (someCondition) {
-      throw errors.unauthorized('No tienes permisos');
-    }
+	try {
+		const data = await event.request.json();
 
-    return json({ success: true });
-  } catch (error) {
-    const errorResponse = handleError(error);
-    return json(errorResponse, { status: errorResponse.status });
-  }
+		if (!data.email) {
+			throw errors.validationError('Email is required', { field: 'email' });
+		}
+
+		if (someCondition) {
+			throw errors.unauthorized('No tienes permisos');
+		}
+
+		return json({ success: true });
+	} catch (error) {
+		const errorResponse = handleError(error);
+		return json(errorResponse, { status: errorResponse.status });
+	}
 };
 ```
 
@@ -109,32 +117,30 @@ Usa stores en tus componentes:
 
 ```svelte
 <script>
-  import { user, loading, isAuthenticated, addNotification } from '$lib/stores';
+	import { user, loading, isAuthenticated, addNotification } from '$lib/stores';
 </script>
 
 {#if $isAuthenticated}
-  <p>Welcome, {$user?.email}</p>
+	<p>Welcome, {$user?.email}</p>
 {/if}
 
 {#if $loading}
-  <p>Cargando...</p>
+	<p>Cargando...</p>
 {/if}
 
-<button on:click={() => addNotification('¡Éxito!', 'success')}>
-  Show Success
-</button>
+<button on:click={() => addNotification('¡Éxito!', 'success')}> Show Success </button>
 ```
 
 En `+layout.server.ts` o `+page.server.ts`:
 
 ```typescript
 export const load: PageServerLoad = async (event) => {
-  const { session, user } = await event.locals.safeGetSession();
-  
-  return {
-    session,
-    user
-  };
+	const { session, user } = await event.locals.safeGetSession();
+
+	return {
+		session,
+		user
+	};
 };
 ```
 
@@ -142,11 +148,11 @@ Luego en `+layout.svelte`:
 
 ```svelte
 <script>
-  export let data;
-  import { user, session } from '$lib/stores';
+	export let data;
+	import { user, session } from '$lib/stores';
 
-  user.set(data.user);
-  session.set(data.session);
+	user.set(data.user);
+	session.set(data.session);
 </script>
 ```
 
@@ -174,6 +180,7 @@ El pipeline automático ejecuta:
 5. **Deploy** - A Vercel (solo en `main`)
 
 **Requisitos para deploy:**
+
 - Agregar secrets en GitHub:
   - `VERCEL_TOKEN`
   - `VERCEL_ORG_ID`
@@ -201,20 +208,22 @@ GET /api/health
 ```
 
 **Response (200):**
+
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2024-01-15T10:30:00.000Z",
-  "uptime": 3600.5
+	"status": "healthy",
+	"timestamp": "2024-01-15T10:30:00.000Z",
+	"uptime": 3600.5
 }
 ```
 
 **Response (503):**
+
 ```json
 {
-  "status": "unhealthy",
-  "message": "Database connection failed",
-  "timestamp": "2024-01-15T10:30:00.000Z"
+	"status": "unhealthy",
+	"message": "Database connection failed",
+	"timestamp": "2024-01-15T10:30:00.000Z"
 }
 ```
 

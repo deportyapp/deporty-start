@@ -88,7 +88,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 		'Content-Security-Policy',
 		"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'none'"
 	);
-	response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+	response.headers.set(
+		'Permissions-Policy',
+		'geolocation=(), microphone=(), camera=(), payment=()'
+	);
 
 	// Cache control para assets estáticos
 	if (url.pathname.startsWith('/static/') || url.pathname.match(/\.(js|css|woff2?)$/)) {

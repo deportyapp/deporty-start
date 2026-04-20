@@ -34,4 +34,4 @@ declare module 'intl-tel-input/svelteWithUtils' {
 	export default component;
 }
 
-export { };
+export {};
