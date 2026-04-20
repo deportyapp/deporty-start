@@ -61,7 +61,12 @@ jobs:
 
   deploy:
     needs: quality_gate
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      secrets.VERCEL_TOKEN != '' &&
+      secrets.VERCEL_ORG_ID != '' &&
+      secrets.VERCEL_PROJECT_ID != ''
     runs-on: ubuntu-latest
     permissions:
       contents: read
