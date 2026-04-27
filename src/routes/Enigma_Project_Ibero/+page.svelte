@@ -1,54 +1,42 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	const ALPHABET = 'ABCDEFGHIJKLMN\u00D1OPQRSTUVWXYZ0123456789 .,;:!?()-';
+	const ALPHABET = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789 .,;:!?()-";
 	const RUN_DELAY_MS = 280;
 	const MS_PER_DAY = 86400000;
+	const CODE_MODULUS = 46;
 
-	type MachineState = 'qRead' | 'qDecode' | 'qWrite' | 'qMove' | 'qH';
-
-	let referenceDate = '1970-01-01';
+	// DOM references using state
+	let referenceDate = '1970-01-13';
 	let generatedCode = '';
-	let codeExplanation =
-		'El codigo se obtiene contando los dias UTC transcurridos desde la fecha elegida y reduciendo ese valor a un numero del alfabeto.';
-
-	let originalMessage = 'HOLA EQUIPO, HOY EXPLICAMOS TURING.';
+	let codeExplanation = 'El codigo se obtiene a partir de los dias UTC transcurridos desde la fecha elegida con la formula (dias mod 46) + 1.';
+	let originalMessage = 'Vamos a encriptar un mensaje para toda la clase.';
 	let encryptedMessage = '';
 	let finalMessage = '';
-
 	let encryptionSummary = 'Todavia no se ha generado el recorrido del cifrado.';
-	let encryptionDetailIntro = '';
-	let encryptionDetailSteps: string[] = [];
-
+	let encryptionDetail = '';
 	let status = '';
 	let statusMatch = false;
 
-	let currentState: MachineState = 'qRead';
+	let currentState = 'qRead';
 	let headIndex = 0;
 	let readSymbol = '-';
 	let writtenSymbol = '-';
 	let stepCount = 0;
 
-	let encryptedTape: string[] = [];
-	let decodedTape: string[] = [];
-	let trace: string[] = [];
-
-	let halted = false;
-	let running = false;
-	let runTimer: ReturnType<typeof setInterval> | null = null;
-	let pendingDecoded = '';
-	let machineKey = 1;
+	let machineEncryptedTape: string[] = [];
+	let machineDecodedTape: string[] = [];
+	let machineHead = 0;
+	let machineHalted = false;
+	let machineRunningId: ReturnType<typeof setInterval> | null = null;
+	let machineCurrentRead = '-';
+	let machineCurrentWritten = '-';
 	let machineOriginalText = '';
 	let machineEncryptedText = '';
+	let machineKey = 1;
+	let traceLines: string[] = [];
 
-	const normalizeMessage = (value: string) =>
-		value
-			.toUpperCase()
-			.replace(/[\u00C1\u00C0\u00C4\u00C2]/g, 'A')
-			.replace(/[\u00C9\u00C8\u00CB\u00CA]/g, 'E')
-			.replace(/[\u00CD\u00CC\u00CF\u00CE]/g, 'I')
-			.replace(/[\u00D3\u00D2\u00D6\u00D4]/g, 'O')
-			.replace(/[\u00DA\u00D9\u00DC\u00DB]/g, 'U');
+	let runningUI = false;
 
 	const getTodayUtcStartMs = () => {
 		const now = new Date();
@@ -87,10 +75,49 @@
 		return Math.floor((getTodayUtcStartMs() - refMs) / MS_PER_DAY);
 	};
 
+	const normalizeMessage = (value: string) =>
+		value
+			.toUpperCase()
+			.replace(/[ÁÀÄÂ]/g, 'A')
+			.replace(/[ÉÈËÊ]/g, 'E')
+			.replace(/[ÍÌÏÎ]/g, 'I')
+			.replace(/[ÓÒÖÔ]/g, 'O')
+			.replace(/[ÚÙÜÛ]/g, 'U');
+
 	const getCodeFromDate = (referenceDateStr: string) => {
 		const daily = getDailyNumber(referenceDateStr);
-		const range = ALPHABET.length - 1;
-		return (daily % range) + 1;
+		return ((daily % CODE_MODULUS) + CODE_MODULUS) % CODE_MODULUS + 1;
+	};
+
+	const renderCodeExplanation = (referenceDateStr: string, dailyNumber: number, code: number) => {
+		return `Dias UTC transcurridos desde ${referenceDateStr}: ${dailyNumber}. Formula usada: (dias mod ${CODE_MODULUS}) + 1. Resultado: codigo ${code}, que desplaza ${code} posiciones cada simbolo del alfabeto.`;
+	};
+
+	const renderEncryptionProcess = (key: number | null) => {
+		if (key === null || Number.isNaN(key)) {
+			return {
+				summary: 'Todavia no se ha generado el recorrido del cifrado.',
+				detail: ''
+			};
+		}
+
+		const summary = `El codigo ${key} define un desplazamiento uniforme para todos los simbolos validos del mensaje.`;
+		const detail = `
+    <p>Cada letra, numero o signo que pertenezca al alfabeto interno se procesa de la misma manera: la maquina toma el simbolo original, localiza su posicion en el alfabeto y lo mueve ${key} posiciones hacia delante.</p>
+    <ul>
+      <li>Si el simbolo forma parte del alfabeto, se sustituye por otro simbolo desplazado ${key} posiciones.</li>
+      <li>Si el desplazamiento supera el final del alfabeto, el proceso vuelve al inicio y continua desde ahi.</li>
+      <li>Todos los caracteres del mensaje se transforman con la misma regla, por eso el cifrado es consistente.</li>
+      <li>Durante el descifrado, la maquina aplica el movimiento inverso para recuperar exactamente el mensaje original.</li>
+    </ul>
+  `;
+
+		return { summary, detail };
+	};
+
+	const setStatus = (message: string, isMatch = false) => {
+		status = message;
+		statusMatch = isMatch;
 	};
 
 	const shiftChar = (char: string, shift: number) => {
@@ -100,7 +127,7 @@
 		}
 
 		const size = ALPHABET.length;
-		const shifted = (((index + shift) % size) + size) % size;
+		const shifted = ((index + shift) % size + size) % size;
 		return ALPHABET[shifted];
 	};
 
@@ -111,32 +138,12 @@
 
 	const decryptChar = (char: string, key: number) => shiftChar(char, -key);
 
-	const setStatus = (message: string, isMatch = false) => {
-		status = message;
-		statusMatch = isMatch;
+	const appendTrace = (line: string) => {
+		traceLines = [...traceLines, line];
 	};
 
-	const renderEncryptionProcess = (key: number | null) => {
-		if (key === null || Number.isNaN(key)) {
-			encryptionSummary = 'Todavia no se ha generado el recorrido del cifrado.';
-			encryptionDetailIntro = '';
-			encryptionDetailSteps = [];
-			return;
-		}
-
-		encryptionSummary = `El codigo ${key} sale del conteo de dias y define un desplazamiento uniforme para todos los simbolos validos del mensaje.`;
-		encryptionDetailIntro = `Primero se cuentan los dias UTC transcurridos desde la fecha elegida. Luego ese total se reduce a un numero valido del alfabeto, y la maquina usa ese resultado para mover ${key} posiciones cada simbolo del mensaje.`;
-		encryptionDetailSteps = [
-			`Se toma el numero total de dias transcurridos y se convierte en el codigo ${key}.`,
-			`Si el simbolo forma parte del alfabeto, se sustituye por otro simbolo desplazado ${key} posiciones.`,
-			'Si el desplazamiento supera el final del alfabeto, el proceso vuelve al inicio y continua desde ahi.',
-			'Todos los caracteres del mensaje se transforman con la misma regla, por eso el cifrado es consistente.',
-			'Durante el descifrado, la maquina aplica el movimiento inverso para recuperar exactamente el mensaje original.'
-		];
-	};
-
-	const renderCodeExplanation = (referenceDateStr: string, dailyNumber: number, code: number) => {
-		codeExplanation = `Dias UTC transcurridos desde ${referenceDateStr}: ${dailyNumber}. Formula usada: (dias mod ${ALPHABET.length - 1}) + 1. Resultado: codigo ${code}, que desplaza ${code} posiciones cada simbolo del alfabeto.`;
+	const clearTrace = () => {
+		traceLines = [];
 	};
 
 	const ensureGeneratedCode = () => {
@@ -144,14 +151,17 @@
 			const dailyNumber = getDailyNumber(referenceDate);
 			const key = getCodeFromDate(referenceDate);
 			generatedCode = String(key);
-			renderCodeExplanation(referenceDate, dailyNumber, key);
-			renderEncryptionProcess(key);
+			codeExplanation = renderCodeExplanation(referenceDate, dailyNumber, key);
+			const { summary, detail } = renderEncryptionProcess(key);
+			encryptionSummary = summary;
+			encryptionDetail = detail;
 			return key;
 		} catch {
 			setStatus('Fecha invalida. Corrige la fecha para generar el codigo.');
-			codeExplanation =
-				'No se pudo calcular el codigo. Revisa la fecha para obtener los dias UTC y convertirlos en un desplazamiento valido.';
-			renderEncryptionProcess(null);
+			generatedCode = '';
+			codeExplanation = 'No se pudo calcular el codigo. Revisa la fecha para obtener los dias UTC y el desplazamiento resultante.';
+			encryptionSummary = 'Todavia no se ha generado el recorrido del cifrado.';
+			encryptionDetail = '';
 			return null;
 		}
 	};
@@ -172,20 +182,30 @@
 		originalMessage = original;
 		encryptedMessage = encrypted;
 		finalMessage = '';
-		renderEncryptionProcess(key);
+		const { summary, detail } = renderEncryptionProcess(key);
+		encryptionSummary = summary;
+		encryptionDetail = detail;
 
 		setStatus(`Mensaje encriptado con codigo ${key}.`);
 		return { original, encrypted, key };
 	};
 
 	const resetMachineRuntime = () => {
-		headIndex = 0;
+		machineHead = 0;
 		currentState = 'qRead';
 		stepCount = 0;
-		halted = false;
-		readSymbol = '-';
-		writtenSymbol = '-';
-		pendingDecoded = '';
+		machineHalted = false;
+		machineCurrentRead = '-';
+		machineCurrentWritten = '-';
+	};
+
+	const stopAutoRun = () => {
+		if (machineRunningId !== null) {
+			clearInterval(machineRunningId);
+			machineRunningId = null;
+		}
+
+		runningUI = false;
 	};
 
 	const loadMachine = () => {
@@ -202,165 +222,125 @@
 		machineEncryptedText = encrypted;
 		machineOriginalText = original;
 		machineKey = key || ensureGeneratedCode() || 1;
-		encryptedTape = Array.from(encrypted);
-		decodedTape = Array(encryptedTape.length).fill('_');
+		machineEncryptedTape = Array.from(encrypted);
+		machineDecodedTape = Array(machineEncryptedTape.length).fill('_');
 		resetMachineRuntime();
-		trace = [];
+		clearTrace();
 		appendTrace(`Inicio: cinta encriptada '${encrypted}'.`);
 		setStatus('Maquina cargada. Lista para traducir.');
 	};
 
-	const appendTrace = (line: string) => {
-		trace = [...trace, line];
-	};
-
 	const haltMachine = (message: string) => {
-		halted = true;
+		machineHalted = true;
 		stopAutoRun();
-		const final = decodedTape.join('').replace(/_+$/g, '');
+		const final = machineDecodedTape.join('').replace(/_+$/g, '');
 		finalMessage = final;
 		const matches = final === machineOriginalText;
-		setStatus(
-			matches
-				? `${message} Mensaje final coincide con el original.`
-				: `${message} Mensaje final no coincide.`,
-			matches
-		);
-		appendTrace(
-			matches
-				? 'Verificacion: el resultado final coincide con el mensaje original.'
-				: 'Verificacion: el resultado final NO coincide con el mensaje original.'
-		);
+		setStatus(matches ? `${message} Mensaje final coincide con el original.` : `${message} Mensaje final no coincide.`, matches);
+		appendTrace(matches ? 'Verificacion: el resultado final coincide con el mensaje original.' : 'Verificacion: el resultado final NO coincide con el mensaje original.');
 	};
 
 	const stepMachine = () => {
-		if (halted || encryptedTape.length === 0) {
+		if (machineHalted || machineEncryptedTape.length === 0) {
 			return;
 		}
 
-		if (headIndex >= encryptedTape.length) {
+		if (machineHead >= machineEncryptedTape.length) {
 			currentState = 'qH';
 			haltMachine('Traduccion terminada.');
 			return;
 		}
 
 		if (currentState === 'qRead') {
-			readSymbol = encryptedTape[headIndex];
-			writtenSymbol = '-';
+			machineCurrentRead = machineEncryptedTape[machineHead];
+			machineCurrentWritten = '-';
 			currentState = 'qDecode';
 			stepCount += 1;
-			appendTrace(`Paso ${stepCount}: qRead lee '${readSymbol}' en celda ${headIndex}.`);
+			appendTrace(`Paso ${stepCount}: qRead lee '${machineCurrentRead}' en celda ${machineHead}.`);
 		} else if (currentState === 'qDecode') {
-			pendingDecoded = decryptChar(readSymbol, machineKey);
+			const decrypted = decryptChar(machineCurrentRead, machineKey);
+			machineCurrentWritten = decrypted;
 			currentState = 'qWrite';
-			stepCount += 1;
-			appendTrace(
-				`Paso ${stepCount}: qDecode aplica codigo ${machineKey} y obtiene '${pendingDecoded}'.`
-			);
+			appendTrace(`Paso ${stepCount}: qDecode descifra '${machineCurrentRead}' con codigo ${machineKey} -> '${decrypted}'.`);
 		} else if (currentState === 'qWrite') {
-			decodedTape[headIndex] = pendingDecoded;
-			decodedTape = [...decodedTape];
-			writtenSymbol = pendingDecoded;
+			machineDecodedTape[machineHead] = machineCurrentWritten;
 			currentState = 'qMove';
-			stepCount += 1;
-			appendTrace(`Paso ${stepCount}: qWrite escribe '${pendingDecoded}' en salida.`);
+			appendTrace(`Paso ${stepCount}: qWrite escribe '${machineCurrentWritten}' en celda ${machineHead}.`);
 		} else if (currentState === 'qMove') {
-			headIndex += 1;
-			readSymbol = '-';
-			writtenSymbol = '-';
-			currentState = headIndex >= encryptedTape.length ? 'qH' : 'qRead';
-			stepCount += 1;
-			appendTrace(`Paso ${stepCount}: qMove desplaza el cabezal a ${headIndex}.`);
-			if (currentState === 'qH') {
-				haltMachine('Traduccion terminada.');
-				return;
-			}
+			machineHead += 1;
+			machineCurrentRead = '-';
+			machineCurrentWritten = '-';
+			currentState = 'qRead';
+			appendTrace(`Paso ${stepCount}: qMove avanza cabezal a celda ${machineHead}.`);
 		}
 
-		finalMessage = decodedTape.join('').replace(/_+$/g, '');
+		finalMessage = machineDecodedTape.join('').replace(/_+$/g, '');
 	};
 
 	const runMachine = () => {
-		if (halted || runTimer !== null || encryptedTape.length === 0) {
+		if (machineHalted || machineRunningId !== null || machineEncryptedTape.length === 0) {
 			return;
 		}
 
 		setStatus('Maquina ejecutando traduccion...');
-		running = true;
-		runTimer = setInterval(() => {
+		runningUI = true;
+		machineRunningId = setInterval(() => {
 			stepMachine();
-			if (halted) {
+			if (machineHalted) {
 				stopAutoRun();
 			}
 		}, RUN_DELAY_MS);
 	};
 
-	const stopAutoRun = () => {
-		if (runTimer !== null) {
-			clearInterval(runTimer);
-			runTimer = null;
-		}
-		running = false;
-	};
-
 	const pauseMachine = () => {
 		stopAutoRun();
-		if (!halted) {
+		if (!machineHalted) {
 			setStatus('Ejecucion pausada.');
 		}
 	};
 
 	const resetMachine = () => {
 		if (!machineEncryptedText) {
-			loadMachine();
+			setStatus('Carga un mensaje encriptado en la maquina antes de reiniciar.');
 			return;
 		}
 
 		stopAutoRun();
-		encryptedTape = Array.from(machineEncryptedText);
-		decodedTape = Array(encryptedTape.length).fill('_');
+		machineEncryptedTape = Array.from(machineEncryptedText);
+		machineDecodedTape = Array(machineEncryptedTape.length).fill('_');
 		resetMachineRuntime();
-		trace = [];
+		clearTrace();
 		appendTrace(`Reinicio: cinta encriptada '${machineEncryptedText}'.`);
 		finalMessage = '';
 		setStatus('Maquina reiniciada.');
 	};
 
-	const handleEncryptAndLoad = () => {
-		const result = prepareEncryption();
-		if (!result) {
-			return;
-		}
-
-		loadMachine();
-	};
-
 	onMount(() => {
 		ensureGeneratedCode();
-		handleEncryptAndLoad();
-
-		return () => {
-			stopAutoRun();
-		};
+		const result = prepareEncryption();
+		if (result) {
+			loadMachine();
+		}
 	});
 </script>
 
-<svelte:head>
-	<title>Turing: cifrado y traduccion visual</title>
-	<meta
-		name="description"
-		content="Maquina de Turing didactica para cifrar y descifrar frases con un codigo obtenido a partir de los dias UTC transcurridos."
-	/>
-</svelte:head>
-
 <main class="layout" aria-labelledby="title">
 	<header class="hero">
-		<p class="tag">Laboratorio didactico</p>
-		<h1 id="title">Maquina de Turing para mensajes</h1>
-		<p class="subtitle">
-			Introduce una fecha, genera un codigo a partir de los dias transcurridos y observa como la maquina traduce el mensaje
-			encriptado hasta recuperar el texto original.
-		</p>
+		<div class="hero-content">
+			<div>
+				<p class="tag">Laboratorio didactico</p>
+				<h1 id="title">Maquina de Turing para mensajes</h1>
+				<p class="subtitle">Introduce una fecha, genera un codigo diario y observa como la maquina traduce el mensaje encriptado hasta recuperar el texto original.</p>
+			</div>
+			<div class="authors">
+				<p class="authors-label">Taller realizado por:</p>
+				<ul class="authors-list">
+					<li>Manuel Buitrago</li>
+					<li>Jimena Gallego</li>
+					<li>Sergio Zapata</li>
+				</ul>
+			</div>
+		</div>
 	</header>
 
 	<div class="split-view">
@@ -382,145 +362,69 @@
 					</div>
 					<div>
 						<label for="generated-code">Codigo generado</label>
-						<input
-							id="generated-code"
-							type="text"
-							bind:value={generatedCode}
-							readonly
-							aria-live="polite"
-						/>
-						<p id="code-explanation" class="code-explanation" aria-live="polite">
-							{codeExplanation}
-						</p>
+						<input id="generated-code" type="text" readonly value={generatedCode} aria-live="polite" />
+						<p id="code-explanation" class="code-explanation" aria-live="polite">{codeExplanation}</p>
 					</div>
 				</div>
 
 				<label for="original-message">Mensaje original</label>
-				<textarea id="original-message" rows="3" bind:value={originalMessage} disabled={running}
-				></textarea>
+				<textarea id="original-message" rows="3" bind:value={originalMessage}></textarea>
 
 				<div class="buttons">
-					<button id="encrypt-btn" type="button" on:click={prepareEncryption} disabled={running}
-						>Encriptar</button
-					>
-					<button id="load-machine-btn" type="button" on:click={loadMachine} disabled={running}
-						>Cargar en maquina</button
-					>
+					<button id="encrypt-btn" type="button" on:click={prepareEncryption}>Encriptar</button>
+					<button id="load-machine-btn" type="button" on:click={loadMachine}>Cargar en maquina</button>
 				</div>
 
 				<section class="inline-process" aria-labelledby="encryption-title">
 					<h2 id="encryption-title">Proceso de encriptado</h2>
 					<p id="encryption-summary" class="process-summary">{encryptionSummary}</p>
-					<div id="encryption-detail" class="process-detail" aria-live="polite">
-						{#if encryptionDetailIntro}
-							<p>{encryptionDetailIntro}</p>
-						{/if}
-						{#if encryptionDetailSteps.length > 0}
-							<ul>
-								{#each encryptionDetailSteps as step}
-									<li>{step}</li>
-								{/each}
-							</ul>
-						{/if}
-					</div>
+					<div id="encryption-detail" class="process-detail" aria-live="polite">{@html encryptionDetail}</div>
 				</section>
 
-				<label for="encrypted-message">Mensaje resultante (encriptado)</label>
-				<textarea
-					id="encrypted-message"
-					rows="3"
-					bind:value={encryptedMessage}
-					readonly
-					disabled={running}
-				></textarea>
+				<label for="encrypted-message">Mensaje resultante (encriptado con codigo <span data-code-instance>{generatedCode || '-'}</span>)</label>
+				<textarea id="encrypted-message" rows="3" readonly value={encryptedMessage}></textarea>
 
-				<label for="final-message">Mensaje final (descifrado por la maquina)</label>
-				<textarea id="final-message" rows="3" bind:value={finalMessage} readonly></textarea>
+				<label for="final-message">Mensaje final (descifrado por la maquina con codigo <span data-code-instance>{generatedCode || '-'}</span>)</label>
+				<textarea id="final-message" rows="3" readonly value={finalMessage}></textarea>
 
-				<p
-					id="status"
-					class={`status ${statusMatch ? 'match' : ''}`}
-					role="status"
-					aria-live="polite"
-				>
-					{status}
-				</p>
+				<p id="status" class="status" role="status" aria-live="polite" class:match={statusMatch}>{status}</p>
 			</section>
 
 			<section class="card" aria-labelledby="machine-title">
-				<h2 id="machine-title">Ejecucion interna de la maquina</h2>
+				<h2 id="machine-title">Ejecucion interna de la maquina (codigo <span data-code-instance>{generatedCode || '-'}</span>)</h2>
 
 				<div class="buttons">
-					<button
-						id="step-btn"
-						type="button"
-						class="secondary"
-						on:click={stepMachine}
-						disabled={running || halted}>Paso</button
-					>
-					<button
-						id="run-btn"
-						type="button"
-						class="secondary"
-						on:click={runMachine}
-						disabled={running || halted}>Ejecutar</button
-					>
-					<button
-						id="pause-btn"
-						type="button"
-						class="secondary"
-						on:click={pauseMachine}
-						disabled={!running}>Pausar</button
-					>
-					<button id="reset-btn" type="button" class="secondary" on:click={resetMachine}
-						>Reiniciar</button
-					>
+					<button id="step-btn" type="button" class="secondary" on:click={stepMachine} disabled={runningUI || machineHalted}>Paso</button>
+					<button id="run-btn" type="button" class="secondary" on:click={runMachine} disabled={runningUI || machineHalted}>Ejecutar</button>
+					<button id="pause-btn" type="button" class="secondary" on:click={pauseMachine} disabled={!runningUI}>Pausar</button>
+					<button id="reset-btn" type="button" class="secondary" on:click={resetMachine}>Reiniciar</button>
 				</div>
 
 				<dl class="state-grid">
-					<div>
-						<dt>Estado</dt>
-						<dd id="current-state">{currentState}</dd>
-					</div>
-					<div>
-						<dt>Cabezal</dt>
-						<dd id="head-index">{headIndex}</dd>
-					</div>
-					<div>
-						<dt>Simbolo leido</dt>
-						<dd id="read-symbol">{readSymbol}</dd>
-					</div>
-					<div>
-						<dt>Simbolo escrito</dt>
-						<dd id="written-symbol">{writtenSymbol}</dd>
-					</div>
-					<div>
-						<dt>Pasos</dt>
-						<dd id="step-count">{stepCount}</dd>
-					</div>
+					<div><dt>Estado</dt><dd id="current-state">{currentState}</dd></div>
+					<div><dt>Cabezal</dt><dd id="head-index">{machineHead}</dd></div>
+					<div><dt>Simbolo leido</dt><dd id="read-symbol">{machineCurrentRead}</dd></div>
+					<div><dt>Simbolo escrito</dt><dd id="written-symbol">{machineCurrentWritten}</dd></div>
+					<div><dt>Pasos</dt><dd id="step-count">{stepCount}</dd></div>
 				</dl>
 
-				<div class="tape" aria-label="Cinta de traduccion de la maquina">
-					{#if encryptedTape.length === 0}
-						<div class="cell">
-							<span class="enc">E: _</span><span class="dec">D: _</span><span class="index">0</span>
+				<div id="tape" class="tape" aria-label="Cinta de traduccion de la maquina">
+					{#each machineEncryptedTape as encChar, index}
+						<div class="cell" class:head={index === machineHead && !machineHalted}>
+							<span class="enc">E: {encChar}</span>
+							<span class="dec">D: {machineDecodedTape[index] || '_'}</span>
+							<span class="index">{index}</span>
 						</div>
 					{:else}
-						{#each encryptedTape as encChar, index}
-							<div class={`cell ${index === headIndex && !halted ? 'head' : ''}`}>
-								<span class="enc">E: {encChar}</span>
-								<span class="dec">D: {decodedTape[index] || '_'}</span>
-								<span class="index">{index}</span>
-							</div>
-						{/each}
-					{/if}
+						<div class="cell"><span class="enc">E: _</span><span class="dec">D: _</span><span class="index">0</span></div>
+					{/each}
 				</div>
 			</section>
 
 			<section class="card" aria-labelledby="trace-title">
 				<h2 id="trace-title">Traza de transiciones</h2>
 				<ol id="trace" class="trace" aria-live="polite">
-					{#each trace as line}
+					{#each traceLines as line}
 						<li>{line}</li>
 					{/each}
 				</ol>
@@ -530,17 +434,13 @@
 		<aside class="side-panel" aria-labelledby="guide-title">
 			<section class="card guide-card">
 				<h2 id="guide-title">Como funciona</h2>
-				<p>
-					La aplicacion combina dos ideas: un codigo derivado de los dias transcurridos desde una fecha UTC y una maquina
-					didactica que recorre el mensaje encriptado caracter por caracter para reconstruir el
-					original.
-				</p>
+				<p>La aplicacion combina dos ideas: un codigo diario derivado de una fecha UTC y una maquina didactica que recorre el mensaje encriptado caracter por caracter para reconstruir el original.</p>
 
 				<h3>Proceso general</h3>
 				<ol class="guide-list">
 					<li>Eliges una fecha de referencia.</li>
-					<li>Se cuentan los dias exactos transcurridos en UTC desde esa fecha hasta hoy.</li>
-					<li>Ese total se reduce a un codigo de desplazamiento entre 1 y {ALPHABET.length - 1}.</li>
+					<li>Se calcula un numero diario usando UTC y la formula (dias mod 46) + 1.</li>
+					<li>Ese numero se convierte en el codigo de desplazamiento.</li>
 					<li>El mensaje original se transforma en un mensaje encriptado.</li>
 					<li>La maquina lee el texto encriptado y lo traduce paso a paso.</li>
 					<li>El mensaje final debe coincidir con el mensaje original.</li>
@@ -549,19 +449,14 @@
 				<h3>Que significa el codigo generado</h3>
 				<ul class="guide-list plain-list">
 					<li>Parte de los dias exactos transcurridos en UTC desde la fecha elegida hasta hoy.</li>
-					<li>
-						Ese valor se reduce con una regla simple para obtener un desplazamiento estable dentro del alfabeto.
-					</li>
-					<li>
-						El resultado final indica cuantas posiciones se mueve cada simbolo dentro del alfabeto
-						del sistema.
-					</li>
+					<li>Ese valor se transforma con la formula (dias mod 46) + 1 para obtener un desplazamiento estable.</li>
+					<li>El resultado final indica cuantas posiciones se mueve cada simbolo dentro del alfabeto del sistema.</li>
 				</ul>
 
 				<h3>Estados de la maquina</h3>
 				<ul class="guide-list plain-list">
 					<li><strong>qRead</strong>: lee el simbolo encriptado de la cinta.</li>
-					<li><strong>qDecode</strong>: aplica el codigo generado para descifrar.</li>
+					<li><strong>qDecode</strong>: aplica el codigo generado (<span data-code-instance>{generatedCode || '-'}</span>) para descifrar.</li>
 					<li><strong>qWrite</strong>: escribe el caracter traducido en la salida.</li>
 					<li><strong>qMove</strong>: mueve el cabezal a la siguiente posicion.</li>
 					<li><strong>qH</strong>: estado final de parada.</li>
@@ -569,7 +464,7 @@
 
 				<h3>Como usarlo</h3>
 				<ol class="guide-list">
-					<li>Introduce la fecha.</li>
+					<li>Introduce la fecha y pulsa Generar codigo.</li>
 					<li>Escribe el mensaje original.</li>
 					<li>Pulsa Encriptar para producir el texto cifrado.</li>
 					<li>Pulsa Cargar en maquina para preparar la cinta.</li>
@@ -582,7 +477,7 @@
 </main>
 
 <style>
-	:global(:root) {
+	:root {
 		--bg-1: #fff7e5;
 		--bg-2: #ecf8ff;
 		--ink: #1c2233;
@@ -598,20 +493,30 @@
 		--radius: 16px;
 	}
 
+	:global(*) {
+		box-sizing: border-box;
+	}
+
+	:global(html, body) {
+		margin: 0;
+		padding: 0;
+	}
+
 	:global(body) {
+		min-height: 100vh;
+		color: var(--ink);
+		font-family: "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
 		background:
 			radial-gradient(circle at 10% 12%, #ffe0af 0%, transparent 34%),
 			radial-gradient(circle at 92% 94%, #cae8ff 0%, transparent 37%),
 			linear-gradient(145deg, var(--bg-1), var(--bg-2));
+		line-height: 1.5;
 	}
 
 	.layout {
 		width: min(1000px, 92vw);
 		margin: 0 auto;
 		padding: 1.8rem 0 2.5rem;
-		color: var(--ink);
-		font-family: 'Trebuchet MS', 'Gill Sans', 'Segoe UI', sans-serif;
-		line-height: 1.5;
 	}
 
 	.split-view {
@@ -621,13 +526,51 @@
 		align-items: start;
 	}
 
-	.work-area,
+	.work-area {
+		min-width: 0;
+	}
+
 	.side-panel {
 		min-width: 0;
 	}
 
 	.hero {
 		margin-bottom: 1rem;
+	}
+
+	.hero-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 2rem;
+	}
+
+	.authors {
+		text-align: right;
+		flex-shrink: 0;
+	}
+
+	.authors-label {
+		margin: 0 0 0.5rem 0;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--muted);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+
+	.authors-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: 0.9rem;
+		color: var(--ink);
+		line-height: 1.6;
+	}
+
+	.authors-list li {
+		margin: 0;
+		font-weight: 500;
 	}
 
 	.tag {
@@ -638,9 +581,9 @@
 		color: var(--muted);
 	}
 
-	h1 {
+	:global(h1) {
 		margin: 0.3rem 0 0;
-		font-family: Georgia, 'Times New Roman', serif;
+		font-family: Georgia, "Times New Roman", serif;
 		font-size: clamp(1.8rem, 3.5vw, 2.7rem);
 		line-height: 1.1;
 	}
@@ -660,12 +603,12 @@
 		margin-bottom: 0.95rem;
 	}
 
-	h2 {
+	:global(h2) {
 		margin: 0 0 0.8rem;
 		font-size: 1.04rem;
 	}
 
-	label {
+	:global(label) {
 		display: inline-block;
 		margin-bottom: 0.45rem;
 		font-weight: 700;
@@ -684,14 +627,11 @@
 		margin-bottom: 0.65rem;
 	}
 
-	input,
-	textarea,
-	button {
+	:global(input, textarea, button) {
 		font: inherit;
 	}
 
-	input,
-	textarea {
+	:global(input, textarea) {
 		width: 100%;
 		border: 1px solid #9aa9c4;
 		border-radius: 10px;
@@ -699,52 +639,54 @@
 		color: var(--ink);
 	}
 
-	textarea {
+	:global(textarea) {
 		resize: vertical;
 		min-height: 84px;
 		margin-bottom: 0.65rem;
 	}
 
-	button {
+	:global(button) {
 		border: 1px solid transparent;
 		border-radius: 10px;
 		background: var(--accent);
 		color: #fff;
 		padding: 0.55rem 0.9rem;
 		cursor: pointer;
-		transition:
-			background-color 150ms ease,
-			transform 150ms ease;
+		transition: background-color 150ms ease, transform 150ms ease;
 	}
 
-	button:hover {
+	:global(button:hover) {
 		background: #0d5b54;
 	}
 
-	button:active {
+	:global(button:active) {
 		transform: translateY(1px);
 	}
 
-	button.secondary {
+	:global(button.secondary) {
 		background: var(--accent-soft);
 		color: var(--ink);
 		border-color: #9ed5cf;
 	}
 
-	button.secondary:hover {
+	:global(button.secondary:hover) {
 		background: #cdeae6;
 	}
 
-	button:disabled {
+	:global(button:disabled) {
 		opacity: 0.55;
 		cursor: not-allowed;
 	}
 
-	input:focus-visible,
-	textarea:focus-visible,
-	button:focus-visible {
+	:global(input:focus-visible, textarea:focus-visible, button:focus-visible) {
 		outline: 3px solid var(--focus);
 		outline-offset: 2px;
+	}
+
+	.help {
+		margin: 0.5rem 0 0;
+		color: var(--muted);
+		font-size: 0.92rem;
 	}
 
 	.buttons {
@@ -758,6 +700,11 @@
 		margin: 0.72rem 0 0;
 		min-height: 1.5rem;
 		color: var(--muted);
+	}
+
+	.status.match {
+		color: var(--ok);
+		font-weight: 700;
 	}
 
 	.code-explanation {
@@ -780,16 +727,16 @@
 		color: var(--muted);
 	}
 
-	.process-detail :global(p) {
+	:global(.process-detail p) {
 		margin: 0 0 0.55rem;
 	}
 
-	.process-detail :global(ul) {
+	:global(.process-detail ul) {
 		margin: 0;
 		padding-left: 1.15rem;
 	}
 
-	.process-detail :global(li) {
+	:global(.process-detail li) {
 		margin-bottom: 0.38rem;
 	}
 
@@ -808,12 +755,12 @@
 		background: #f9fbff;
 	}
 
-	dt {
+	:global(dt) {
 		font-size: 0.82rem;
 		color: var(--muted);
 	}
 
-	dd {
+	:global(dd) {
 		margin: 0.25rem 0 0;
 		font-weight: 800;
 		font-size: 1.1rem;
@@ -834,13 +781,13 @@
 		padding: 0.42rem 0.25rem;
 	}
 
-	.cell .enc {
+	.cell :global(.enc) {
 		display: block;
 		font-size: 1rem;
 		font-weight: 700;
 	}
 
-	.cell .dec {
+	.cell :global(.dec) {
 		display: block;
 		margin-top: 0.08rem;
 		font-size: 1rem;
@@ -848,7 +795,7 @@
 		color: var(--ok);
 	}
 
-	.cell .index {
+	.cell :global(.index) {
 		display: block;
 		margin-top: 0.16rem;
 		font-size: 0.75rem;
@@ -868,7 +815,7 @@
 		overflow: auto;
 	}
 
-	.trace li {
+	:global(.trace li) {
 		padding: 0.28rem 0;
 	}
 
@@ -877,12 +824,12 @@
 		top: 1rem;
 	}
 
-	.guide-card p {
+	:global(.guide-card p) {
 		margin: 0 0 1rem;
 		color: var(--muted);
 	}
 
-	.guide-card h3 {
+	:global(.guide-card h3) {
 		margin: 1rem 0 0.55rem;
 		font-size: 0.96rem;
 	}
@@ -892,17 +839,12 @@
 		padding-left: 1.2rem;
 	}
 
-	.guide-list li {
+	:global(.guide-list li) {
 		margin-bottom: 0.45rem;
 	}
 
 	.plain-list {
 		list-style: disc;
-	}
-
-	.match {
-		color: var(--ok);
-		font-weight: 700;
 	}
 
 	@media (max-width: 760px) {
