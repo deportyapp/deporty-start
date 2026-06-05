@@ -7,7 +7,7 @@
 				<p>Este diagrama muestra cómo la máquina procesa cada símbolo del mensaje encriptado usando los estados internos qRead, qDecode, qWrite, qMove y qH.</p>
 
 				<div class="diagram-visual" role="img" aria-label="Diagrama de estados de la máquina de Turing">
-			<svg viewBox="50 10 900 800" aria-hidden="true">
+			<svg viewBox="0 0 1000 900" aria-hidden="true">
 				<defs>
 					<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
 						<path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e" />
@@ -15,50 +15,61 @@
 				</defs>
 
 				<!-- Estados principales en línea vertical central -->
-				<circle cx="560" cy="100" r="90" class="node start" />
-				<text x="560" y="90" text-anchor="middle" class="node-label">qRead</text>
-				<text x="560" y="115" text-anchor="middle" class="node-sub">Lee símbolo</text>
+				<circle cx="550" cy="80" r="90" class="node start" />
+				<text x="550" y="65" text-anchor="middle" class="node-label">qRead</text>
+				<text x="550" y="95" text-anchor="middle" class="node-sub">Lee símbolo</text>
 
-				<circle cx="560" cy="250" r="90" class="node" />
-				<text x="560" y="240" text-anchor="middle" class="node-label">qDecode</text>
-				<text x="560" y="265" text-anchor="middle" class="node-sub">Descifra</text>
+				<circle cx="550" cy="250" r="90" class="node" />
+				<text x="550" y="235" text-anchor="middle" class="node-label">qDecode</text>
+				<text x="550" y="265" text-anchor="middle" class="node-sub">Descifra</text>
 
-				<circle cx="560" cy="400" r="90" class="node" />
-				<text x="560" y="390" text-anchor="middle" class="node-label">qWrite</text>
-				<text x="560" y="415" text-anchor="middle" class="node-sub">Escribe</text>
+				<circle cx="550" cy="420" r="90" class="node" />
+				<text x="550" y="405" text-anchor="middle" class="node-label">qWrite</text>
+				<text x="550" y="435" text-anchor="middle" class="node-sub">Escribe</text>
 
-				<circle cx="560" cy="550" r="90" class="node end" />
-				<text x="560" y="540" text-anchor="middle" class="node-label">qMove</text>
-				<text x="560" y="565" text-anchor="middle" class="node-sub">Avanza</text>
+				<circle cx="550" cy="590" r="90" class="node end" />
+				<text x="550" y="575" text-anchor="middle" class="node-label">qMove</text>
+				<text x="550" y="605" text-anchor="middle" class="node-sub">Avanza</text>
 
-				<!-- Estado halt a la izquierda -->
-				<circle cx="200" cy="350" r="90" class="node aux" />
-				<text x="200" y="340" text-anchor="middle" class="node-label">qH</text>
-				<text x="200" y="365" text-anchor="middle" class="node-sub">Parada</text>
+				<!-- Estado halt a la izquierda, mejor posicionado -->
+				<circle cx="180" cy="335" r="90" class="node aux" />
+				<text x="180" y="320" text-anchor="middle" class="node-label">qH</text>
+				<text x="180" y="350" text-anchor="middle" class="node-sub">Parada</text>
 
-				<!-- Transiciones verticales centrales -->
-				<line x1="560" y1="175" x2="560" y2="205" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
-				<line x1="560" y1="325" x2="560" y2="355" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
-				<line x1="560" y1="475" x2="560" y2="505" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<!-- Transiciones verticales centrales con más espacio -->
+				<line x1="550" y1="165" x2="550" y2="195" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<line x1="550" y1="335" x2="550" y2="365" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<line x1="550" y1="505" x2="550" y2="535" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
 
-				<!-- Transición desde qMove a qH (abajo izquierda) -->
-				<path d="M 500 620 C 350 680 250 680 280 440" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<!-- Transición desde qMove hacia qH (curva suave hacia abajo y izquierda) -->
+				<path d="M 480 640 C 350 720 250 720 270 410" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
 
-				<!-- Transición desde qH de vuelta a qRead (arriba) -->
-				<path d="M 280 260 C 350 150 450 130 480 100" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<!-- Transición desde qH hacia qRead (curva suave hacia arriba y derecha) -->
+				<path d="M 270 260 C 350 120 430 80 460 80" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
 
-				<!-- Etiquetas de transiciones -->
-				<text x="680" y="190" class="arrow-text">Decodifica</text>
-				<text x="680" y="330" class="arrow-text">Escribe</text>
-				<text x="680" y="490" class="arrow-text">
-					<tspan x="680" dy="0">Avanza a la</tspan>
-					<tspan x="680" dy="1.5em">siguiente celda</tspan>
+				<!-- Etiquetas de transiciones - posicionadas claramente -->
+				<!-- Entre qRead y qDecode -->
+				<text x="720" y="175" class="arrow-text">Decodifica</text>
+
+				<!-- Entre qDecode y qWrite -->
+				<text x="720" y="345" class="arrow-text">Escribe</text>
+
+				<!-- Entre qWrite y qMove -->
+				<text x="720" y="515" class="arrow-text">
+					<tspan x="720" dy="0">Avanza a la</tspan>
+					<tspan x="720" dy="1.5em">siguiente celda</tspan>
 				</text>
-				<text x="330" y="530" class="arrow-text">Fin de cinta</text>
-				<text x="330" y="545" class="arrow-text">→ qH</text>
-				<text x="380" y="80" class="arrow-text-lg">
-					<tspan x="380" dy="0">Carga inicial /</tspan>
-					<tspan x="380" dy="1.6em">reinicio</tspan>
+
+				<!-- De qMove a qH (abajo) -->
+				<text x="360" y="680" class="arrow-text">
+					<tspan x="360" dy="0">Fin de cinta</tspan>
+					<tspan x="360" dy="1.5em">→ qH</tspan>
+				</text>
+
+				<!-- De qH a qRead (arriba) -->
+				<text x="270" y="40" class="arrow-text-lg">
+					<tspan x="270" dy="0">Carga inicial /</tspan>
+					<tspan x="270" dy="1.6em">reinicio</tspan>
 				</text>
 			</svg>
 		</div>
