@@ -14,42 +14,51 @@
 					</marker>
 				</defs>
 
-				<circle cx="560" cy="120" r="90" class="node start" />
-				<text x="560" y="100" text-anchor="middle" class="node-label">qRead</text>
-				<text x="560" y="132" text-anchor="middle" class="node-sub">Lee símbolo</text>
+				<!-- Estados principales en línea vertical central -->
+				<circle cx="560" cy="100" r="90" class="node start" />
+				<text x="560" y="90" text-anchor="middle" class="node-label">qRead</text>
+				<text x="560" y="115" text-anchor="middle" class="node-sub">Lee símbolo</text>
 
-				<circle cx="560" cy="290" r="90" class="node" />
-				<text x="560" y="270" text-anchor="middle" class="node-label">qDecode</text>
-				<text x="560" y="302" text-anchor="middle" class="node-sub">Descifra</text>
+				<circle cx="560" cy="250" r="90" class="node" />
+				<text x="560" y="240" text-anchor="middle" class="node-label">qDecode</text>
+				<text x="560" y="265" text-anchor="middle" class="node-sub">Descifra</text>
 
-				<circle cx="560" cy="460" r="90" class="node" />
-				<text x="560" y="440" text-anchor="middle" class="node-label">qWrite</text>
-				<text x="560" y="472" text-anchor="middle" class="node-sub">Escribe</text>
+				<circle cx="560" cy="400" r="90" class="node" />
+				<text x="560" y="390" text-anchor="middle" class="node-label">qWrite</text>
+				<text x="560" y="415" text-anchor="middle" class="node-sub">Escribe</text>
 
-				<circle cx="560" cy="630" r="90" class="node end" />
-				<text x="560" y="610" text-anchor="middle" class="node-label">qMove</text>
-				<text x="560" y="642" text-anchor="middle" class="node-sub">Avanza</text>
+				<circle cx="560" cy="550" r="90" class="node end" />
+				<text x="560" y="540" text-anchor="middle" class="node-label">qMove</text>
+				<text x="560" y="565" text-anchor="middle" class="node-sub">Avanza</text>
 
-				<circle cx="180" cy="380" r="90" class="node aux" />
-				<text x="180" y="360" text-anchor="middle" class="node-label">qH</text>
-				<text x="180" y="398" text-anchor="middle" class="node-sub">Parada</text>
+				<!-- Estado halt a la izquierda -->
+				<circle cx="200" cy="350" r="90" class="node aux" />
+				<text x="200" y="340" text-anchor="middle" class="node-label">qH</text>
+				<text x="200" y="365" text-anchor="middle" class="node-sub">Parada</text>
 
-				<line x1="560" y1="188" x2="560" y2="222" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
-				<line x1="560" y1="358" x2="560" y2="392" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
-				<line x1="560" y1="528" x2="560" y2="562" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
-				<path d="M 520 698 C 460 760 280 760 220 430" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
-				<path d="M 220 330 C 240 220 400 180 520 180" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<!-- Transiciones verticales centrales -->
+				<line x1="560" y1="175" x2="560" y2="205" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<line x1="560" y1="325" x2="560" y2="355" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+				<line x1="560" y1="475" x2="560" y2="505" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
 
-				<text x="650" y="240" class="arrow-text">Decodifica</text>
-				<text x="650" y="410" class="arrow-text">Escribe</text>
-				<text x="650" y="590" class="arrow-text">
-					<tspan x="650" dy="0">Avanza a la siguiente</tspan>
-					<tspan x="650" dy="1.5em">celda</tspan>
+				<!-- Transición desde qMove a qH (abajo izquierda) -->
+				<path d="M 500 620 C 350 680 250 680 280 440" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+
+				<!-- Transición desde qH de vuelta a qRead (arriba) -->
+				<path d="M 280 260 C 350 150 450 130 480 100" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" />
+
+				<!-- Etiquetas de transiciones -->
+				<text x="680" y="190" class="arrow-text">Decodifica</text>
+				<text x="680" y="330" class="arrow-text">Escribe</text>
+				<text x="680" y="490" class="arrow-text">
+					<tspan x="680" dy="0">Avanza a la</tspan>
+					<tspan x="680" dy="1.5em">siguiente celda</tspan>
 				</text>
-				<text x="290" y="570" class="arrow-text">Fin de cinta → qH</text>
-				<text x="310" y="70" class="arrow-text-lg">
-					<tspan x="310" dy="0">Carga inicial /</tspan>
-					<tspan x="310" dy="1.6em">reinicio</tspan>
+				<text x="330" y="530" class="arrow-text">Fin de cinta</text>
+				<text x="330" y="545" class="arrow-text">→ qH</text>
+				<text x="380" y="80" class="arrow-text-lg">
+					<tspan x="380" dy="0">Carga inicial /</tspan>
+					<tspan x="380" dy="1.6em">reinicio</tspan>
 				</text>
 			</svg>
 		</div>
