@@ -1,9 +1,12 @@
 <main class="layout" aria-labelledby="diagram-title">
 	<section class="card">
 		<h1 id="diagram-title">Diagrama gráfico de la máquina de Turing</h1>
-		<p>Este diagrama muestra cómo la máquina procesa cada símbolo del mensaje encriptado usando los estados internos qRead, qDecode, qWrite, qMove y qH.</p>
 
-		<div class="diagram-visual" role="img" aria-label="Diagrama de estados de la máquina de Turing">
+		<div class="diagram-container">
+			<div class="diagram-left">
+				<p>Este diagrama muestra cómo la máquina procesa cada símbolo del mensaje encriptado usando los estados internos qRead, qDecode, qWrite, qMove y qH.</p>
+
+				<div class="diagram-visual" role="img" aria-label="Diagrama de estados de la máquina de Turing">
 			<svg viewBox="0 0 1020 820" aria-hidden="true">
 				<defs>
 					<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
@@ -50,19 +53,49 @@
 				</text>
 			</svg>
 		</div>
+			</div>
 
-		<section class="diagram-description">
-			<h2>Cómo funciona esta máquina</h2>
-			<ol>
-				<li><strong>qRead:</strong> lee el símbolo actual del mensaje encriptado desde la cinta.</li>
-				<li><strong>qDecode:</strong> aplica la clave diaria para revertir el desplazamiento de cada símbolo.</li>
-				<li><strong>qWrite:</strong> escribe el símbolo descifrado en la cinta de salida.</li>
-				<li><strong>qMove:</strong> avanza el cabezal a la siguiente posición y vuelve a qRead.</li>
-				<li><strong>qH:</strong> cuando el cabezal supera la longitud de la cinta, la máquina se detiene.</li>
-			</ol>
-			<p>La transición es secuencial: cada símbolo se procesa de forma independiente, aplicando siempre la misma regla de desplazamiento inverso para recuperar el mensaje original.</p>
-			<a class="button" href="/Enigma_Project_Ibero">Volver a la máquina</a>
-		</section>
+			<div class="diagram-right">
+				<h2>Cómo funciona esta máquina</h2>
+				<p>
+					La máquina de Turing implementada aquí procesa mensajes encriptados de manera secuencial y determinista. 
+					En cada ciclo, realiza exactamente cinco operaciones en orden fijo para recuperar un símbolo del mensaje original.
+				</p>
+
+				<h3>Los cinco estados de operación</h3>
+				<ul class="states-list">
+					<li>
+						<strong>qRead:</strong> La máquina lee el símbolo encriptado actualmente en la posición del cabezal.
+						Este símbolo se mantiene en memoria para los pasos siguientes.
+					</li>
+					<li>
+						<strong>qDecode:</strong> La máquina aplica la clave diaria al símbolo leído, invirtiendo exactamente 
+						el desplazamiento que se aplicó durante el encriptado. Calcula la posición original del símbolo.
+					</li>
+					<li>
+						<strong>qWrite:</strong> La máquina guarda el símbolo descifrado en la cinta de salida, asignándolo a la 
+						misma posición del cabezal. Esta es la contribución del ciclo actual al mensaje final.
+					</li>
+					<li>
+						<strong>qMove:</strong> La máquina avanza el cabezal una posición hacia la derecha y reinicia el ciclo 
+						volviendo a qRead para procesar el siguiente símbolo encriptado.
+					</li>
+					<li>
+						<strong>qH (Halt):</strong> Cuando el cabezal intenta moverse más allá del final de la cinta encriptada, 
+						la máquina entra en estado de parada y finaliza la ejecución.
+					</li>
+				</ul>
+
+				<h3>Garantía de exactitud</h3>
+				<p>
+					Cada símbolo del mensaje se descifra de forma independiente pero consistente. La máquina aplica siempre 
+					la misma clave diaria a cada carácter, por lo que el resultado final coincide exactamente con el mensaje 
+					original que fue encriptado.
+				</p>
+
+				<a class="button" href="/Enigma_Project_Ibero">Volver a la máquina</a>
+			</div>
+		</div>
 	</section>
 </main>
 
@@ -75,7 +108,7 @@
 	}
 
 	.layout {
-		width: min(980px, 92vw);
+		width: min(1200px, 95vw);
 		margin: 1.6rem auto 2rem;
 	}
 
@@ -88,14 +121,46 @@
 	}
 
 	h1 {
-		margin: 0 0 1rem;
+		margin: 0 0 1.6rem;
 		font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+	}
+
+	h2 {
+		margin: 0 0 1rem;
+		font-size: 1.4rem;
+		color: #0f766e;
+	}
+
+	h3 {
+		margin: 1.2rem 0 0.8rem;
+		font-size: 1.1rem;
+		color: #134e4a;
+		font-weight: 600;
 	}
 
 	p {
 		margin: 0 0 1rem;
 		line-height: 1.7;
 		color: #45546e;
+	}
+
+	.diagram-container {
+		display: grid;
+		grid-template-columns: 1fr 1.1fr;
+		gap: 2rem;
+		align-items: start;
+	}
+
+	.diagram-left {
+		min-width: 0;
+	}
+
+	.diagram-right {
+		min-width: 0;
+		padding: 1.2rem;
+		background: #f9fbfd;
+		border-radius: 14px;
+		border-left: 4px solid #0f766e;
 	}
 
 	.diagram-visual {
@@ -150,20 +215,20 @@
 		fill: #f5d9f3;
 	}
 
-	.diagram-description {
-		margin-top: 1.4rem;
-	}
-
-	.diagram-description h2 {
-		margin-top: 0;
-	}
-
-	.diagram-description ol {
+	.states-list {
 		padding-left: 1.2rem;
+		margin: 0.8rem 0 1rem 0;
 	}
 
-	.diagram-description li {
-		margin-bottom: 0.8rem;
+	.states-list li {
+		margin-bottom: 1rem;
+		line-height: 1.6;
+		color: #45546e;
+	}
+
+	.states-list strong {
+		color: #0f766e;
+		font-weight: 600;
 	}
 
 	.button {
@@ -174,9 +239,22 @@
 		color: #fff;
 		text-decoration: none;
 		border-radius: 10px;
+		font-weight: 500;
+		transition: background 0.2s;
 	}
 
 	.button:hover {
 		background: #0d665c;
+	}
+
+	@media (max-width: 900px) {
+		.diagram-container {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.diagram-right {
+			padding: 1rem;
+		}
 	}
 </style>
