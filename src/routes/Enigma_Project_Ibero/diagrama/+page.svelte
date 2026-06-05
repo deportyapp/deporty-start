@@ -14,23 +14,23 @@
 					</marker>
 				</defs>
 
-				<circle cx="560" cy="120" r="68" class="node start" />
+				<circle cx="560" cy="120" r="90" class="node start" />
 				<text x="560" y="100" text-anchor="middle" class="node-label">qRead</text>
 				<text x="560" y="132" text-anchor="middle" class="node-sub">Lee símbolo</text>
 
-				<circle cx="560" cy="290" r="68" class="node" />
+				<circle cx="560" cy="290" r="90" class="node" />
 				<text x="560" y="270" text-anchor="middle" class="node-label">qDecode</text>
 				<text x="560" y="302" text-anchor="middle" class="node-sub">Descifra</text>
 
-				<circle cx="560" cy="460" r="68" class="node" />
+				<circle cx="560" cy="460" r="90" class="node" />
 				<text x="560" y="440" text-anchor="middle" class="node-label">qWrite</text>
 				<text x="560" y="472" text-anchor="middle" class="node-sub">Escribe</text>
 
-				<circle cx="560" cy="630" r="68" class="node end" />
+				<circle cx="560" cy="630" r="90" class="node end" />
 				<text x="560" y="610" text-anchor="middle" class="node-label">qMove</text>
 				<text x="560" y="642" text-anchor="middle" class="node-sub">Avanza</text>
 
-				<circle cx="180" cy="380" r="70" class="node aux" />
+				<circle cx="180" cy="380" r="90" class="node aux" />
 				<text x="180" y="360" text-anchor="middle" class="node-label">qH</text>
 				<text x="180" y="398" text-anchor="middle" class="node-sub">Parada</text>
 
