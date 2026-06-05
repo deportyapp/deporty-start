@@ -168,18 +168,21 @@
 	.diagram-visual {
 		margin: 1.6rem 0 0 0;
 		flex: 1;
-		overflow: hidden;
+		overflow: auto;
 		background: #eef7ff;
 		border-radius: 18px;
 		padding: 20px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		min-height: 600px;
 	}
 
 	svg {
 		width: 100%;
-		height: 100%;
+		height: auto;
+		min-width: 600px;
+		min-height: 600px;
 	}
 
 	.node {
