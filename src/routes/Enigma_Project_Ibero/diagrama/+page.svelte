@@ -231,10 +231,9 @@
 
 
 	.diagram-container {
-		display: grid;
-		grid-template-columns: 1.15fr 1fr;
+		display: flex;
+		flex-direction: column;
 		gap: 2rem;
-		align-items: start;
 	}
 
 	.diagram-left {
@@ -260,7 +259,10 @@
 		background: #ffffff;
 		border: 1px solid #e2e8f0;
 		border-radius: 14px;
-		padding: 0.5rem;
+		padding: 1rem;
+		max-width: 850px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	svg {
@@ -270,7 +272,7 @@
 	}
 
 	/* ── Nodes ── */
-	.node { stroke-width: 3; }
+	.node { stroke-width: 4; }
 
 	.node.start { fill: #e6fcf5; stroke: #0ca678; }
 	.node-group.start .node-label { fill: #0ca678; }
@@ -292,26 +294,26 @@
 	.node-group.aux .node-label { fill: #e64980; }
 	.node-group.aux .node-sub { fill: #a61e4d; }
 
-	.node-label { font: 700 18px "Inter", sans-serif; }
-	.node-sub { font: 400 13px "Inter", sans-serif; }
+	.node-label { font: 700 28px "Inter", sans-serif; }
+	.node-sub { font: 400 18px "Inter", sans-serif; }
 
 	/* ── Edge labels ── */
-	.edge-label { font: 500 12px "Inter", sans-serif; fill: #475569; }
-	.edge-action { font: 400 11px "Inter", sans-serif; fill: #64748b; }
+	.edge-label { font: 500 18px "Inter", sans-serif; fill: #475569; }
+	.edge-action { font: 400 16px "Inter", sans-serif; fill: #64748b; }
 	.loop-label { fill: #087f5b; }
 	.halt-label { fill: #c2255c; }
 	.halt-action { fill: #e64980; }
 
 	/* ── Tape illustration ── */
-	.tape-char { font: 700 18px "JetBrains Mono", monospace; fill: #334155; }
+	.tape-char { font: 700 24px "Inter", monospace; fill: #334155; }
 	.tape-char.active { fill: #0ca678; }
-	.tape-label { font: 600 12px "Inter", sans-serif; fill: #94a3b8; }
-	.head-label { font: 600 12px "Inter", sans-serif; fill: #0ca678; }
-	.start-text { font: 600 13px "Inter", sans-serif; fill: #0ca678; }
+	.tape-label { font: 600 16px "Inter", sans-serif; fill: #94a3b8; }
+	.head-label { font: 600 16px "Inter", sans-serif; fill: #0ca678; }
+	.start-text { font: 600 18px "Inter", sans-serif; fill: #0ca678; }
 
 	/* ── Legend ── */
-	.legend-title { font: 700 13px "Inter", sans-serif; fill: #334155; }
-	.legend-text { font: 400 12px "Inter", sans-serif; fill: #64748b; }
+	.legend-title { font: 700 18px "Inter", sans-serif; fill: #334155; }
+	.legend-text { font: 400 16px "Inter", sans-serif; fill: #64748b; }
 
 
 	/* ── Right panel ── */
