@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import TuringDiagram from '$lib/components/enigma/TuringDiagram.svelte';
 
 	const ALPHABET = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789 .,;:!?()-";
 	const RUN_DELAY_MS = 280;
@@ -7,40 +8,38 @@
 	const CODE_MODULUS = 46;
 
 	// DOM references using state
-	let referenceDate = '1970-01-13';
-	let generatedCode = '';
-	let codeExplanation = 'El codigo se obtiene a partir de los dias UTC transcurridos desde la fecha elegida con la formula (dias mod 46) + 1.';
-	let originalMessage = 'Vamos a encriptar un mensaje para toda la clase.';
-	let encryptedMessage = '';
-	let finalMessage = '';
-	let encryptionSummary = 'Todavia no se ha generado el recorrido del cifrado.';
-	let encryptionDetail = '';
-	let status = '';
-	let statusMatch = false;
+	let referenceDate = $state('1970-01-13');
+	let generatedCode = $state('');
+	let codeExplanation = $state('El codigo se obtiene a partir de los dias UTC transcurridos desde la fecha elegida con la formula (dias mod 46) + 1.');
+	let originalMessage = $state('Vamos a encriptar un mensaje para toda la clase.');
+	let encryptedMessage = $state('');
+	let finalMessage = $state('');
+	let encryptionSummary = $state('Todavia no se ha generado el recorrido del cifrado.');
+	let encryptionDetail = $state('');
+	let status = $state('');
+	let statusMatch = $state(false);
 
-	let currentState = 'qRead';
-	let headIndex = 0;
-	let readSymbol = '-';
-	let writtenSymbol = '-';
-	let stepCount = 0;
+	let currentState = $state('qRead');
+	let headIndex = $state(0);
+	let readSymbol = $state('-');
+	let writtenSymbol = $state('-');
+	let stepCount = $state(0);
 
-	let machineEncryptedTape: string[] = [];
-	let machineDecodedTape: string[] = [];
-	let machineHead = 0;
-	let machineHalted = false;
-	let machineRunningId: ReturnType<typeof setInterval> | null = null;
-	let machineCurrentRead = '-';
-	let machineCurrentWritten = '-';
-	let machineOriginalText = '';
-	let machineEncryptedText = '';
-	let machineKey = 1;
-	let traceLines: string[] = [];
+	let machineEncryptedTape: string[] = $state([]);
+	let machineDecodedTape: string[] = $state([]);
+	let machineHead = $state(0);
+	let machineHalted = $state(false);
+	let machineRunningId: ReturnType<typeof setInterval> | null = $state(null);
+	let machineCurrentRead = $state('-');
+	let machineCurrentWritten = $state('-');
+	let machineOriginalText = $state('');
+	let machineEncryptedText = $state('');
+	let machineKey = $state(1);
+	let traceLines: string[] = $state([]);
 
-	let runningUI = false;
+	let runningUI = $state(false);
 
-	const openDiagram = () => {
-		window.open('/Enigma_Project_Ibero/diagrama', '_blank', 'noopener');
-	};
+
 
 	const getTodayUtcStartMs = () => {
 		const now = new Date();
@@ -359,7 +358,7 @@
 								id="reference-date"
 								type="date"
 								bind:value={referenceDate}
-								on:change={ensureGeneratedCode}
+								onchange={ensureGeneratedCode}
 								required
 							/>
 						</div>
@@ -375,8 +374,8 @@
 				<textarea id="original-message" rows="3" bind:value={originalMessage}></textarea>
 
 				<div class="buttons">
-					<button id="encrypt-btn" type="button" on:click={prepareEncryption}>Encriptar</button>
-					<button id="load-machine-btn" type="button" on:click={loadMachine}>Cargar en maquina</button>
+					<button id="encrypt-btn" type="button" onclick={prepareEncryption}>Encriptar</button>
+					<button id="load-machine-btn" type="button" onclick={loadMachine}>Cargar en maquina</button>
 				</div>
 
 				<section class="inline-process" aria-labelledby="encryption-title">
@@ -398,10 +397,10 @@
 				<h2 id="machine-title">Ejecucion interna de la maquina (codigo <span data-code-instance>{generatedCode || '-'}</span>)</h2>
 
 				<div class="buttons">
-					<button id="step-btn" type="button" class="secondary" on:click={stepMachine} disabled={runningUI || machineHalted}>Paso</button>
-					<button id="run-btn" type="button" class="secondary" on:click={runMachine} disabled={runningUI || machineHalted}>Ejecutar</button>
-					<button id="pause-btn" type="button" class="secondary" on:click={pauseMachine} disabled={!runningUI}>Pausar</button>
-					<button id="reset-btn" type="button" class="secondary" on:click={resetMachine}>Reiniciar</button>
+					<button id="step-btn" type="button" class="secondary" onclick={stepMachine} disabled={runningUI || machineHalted}>Paso</button>
+					<button id="run-btn" type="button" class="secondary" onclick={runMachine} disabled={runningUI || machineHalted}>Ejecutar</button>
+					<button id="pause-btn" type="button" class="secondary" onclick={pauseMachine} disabled={!runningUI}>Pausar</button>
+					<button id="reset-btn" type="button" class="secondary" onclick={resetMachine}>Reiniciar</button>
 				</div>
 
 				<dl class="state-grid">
@@ -475,13 +474,18 @@
                 <li>Usa Paso para avanzar manualmente o Ejecutar para verlo seguido.</li>
                 <li>Consulta la traza y el mensaje final para verificar el resultado.</li>
             </ol>
-            <p class="diagram-note">Pulsa el botón para abrir el diagrama gráfico de la máquina en una nueva pestaña.</p>
-            <div class="diagram-actions">
-                <button id="toggle-diagram-btn" type="button" on:click={openDiagram}>
-                    Diagrama
-                </button>
-            </div>
 		</section>
+
+			<section class="card">
+				<h2>Diagrama de estados</h2>
+				<TuringDiagram
+					currentState={currentState}
+					headIndex={machineHead}
+					encryptedTape={machineEncryptedTape}
+					decodedTape={machineDecodedTape}
+					halted={machineHalted}
+				/>
+			</section>
 	</aside>
 	</div>
 </main>
@@ -830,35 +834,6 @@
 		background: var(--card);
 	}
 
-	.diagram-actions {
-		margin-top: 1.5rem;
-		display: flex;
-		justify-content: center;
-	}
-
-	.diagram-actions button {
-		min-width: 220px;
-		padding: 0.95rem 1.2rem;
-		font-weight: 700;
-		font-size: 1rem;
-		border-radius: 14px;
-		border: none;
-		background: var(--accent);
-		color: #fff;
-		box-shadow: 0 12px 26px rgba(15, 118, 110, 0.18);
-		cursor: pointer;
-	}
-
-	.diagram-actions button:hover {
-		background: #0d665c;
-	}
-
-	.diagram-note {
-		margin: 1rem 0 0;
-		font-size: 0.98rem;
-		line-height: 1.7;
-		color: var(--muted);
-	}
 
 	:global(.guide-card p) {
 		margin: 0 0 1rem;
@@ -877,10 +852,6 @@
 
 	:global(.guide-list li) {
 		margin-bottom: 0.45rem;
-	}
-
-	.diagram-actions {
-		margin-top: 0.75rem;
 	}
 
 	.plain-list {
