@@ -108,7 +108,7 @@
 	}
 
 	.layout {
-		width: min(1200px, 95vw);
+		width: min(1400px, 98vw);
 		margin: 1.6rem auto 2rem;
 	}
 
@@ -146,7 +146,7 @@
 
 	.diagram-container {
 		display: grid;
-		grid-template-columns: 1fr 1.1fr;
+		grid-template-columns: 1fr 1fr;
 		gap: 2rem;
 		align-items: start;
 	}
