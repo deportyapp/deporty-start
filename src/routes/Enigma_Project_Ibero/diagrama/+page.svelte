@@ -81,8 +81,8 @@
 				<!-- Leer → Descifrar -->
 				<path d="M 640,310 Q 820,330 890,410" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)" />
 				<text x="780" y="325" class="edge-label" text-anchor="middle">
-					<tspan x="780" dy="0">Mira la letra señalada</tspan>
-					<tspan x="780" dy="20" class="edge-action">y pasa a descifrarla</tspan>
+					<tspan x="880" dy="0">Mira la letra señalada</tspan>
+					<tspan x="880" dy="20" class="edge-action">y pasa a descifrarla</tspan>
 				</text>
 
 				<!-- Descifrar → Escribir -->
@@ -102,8 +102,8 @@
 				<!-- Avanzar → Leer (loop back) -->
 				<path d="M 285,695 Q 240,510 460,315" fill="none" stroke="#0ca678" stroke-width="2.5" stroke-dasharray="8,4" marker-end="url(#arrow)" />
 				<text x="290" y="520" class="edge-label loop-label" text-anchor="end">
-					<tspan x="290" dy="0">¿Hay más letras?</tspan>
-					<tspan x="290" dy="20" class="edge-action">Sí → vuelve a Leer</tspan>
+					<tspan x="320" dy="-130">¿Hay más letras?</tspan>
+					<tspan x="320" dy="20" class="edge-action">Sí → vuelve a Leer</tspan>
 				</text>
 
 				<!-- Avanzar → Fin (halt condition) -->
