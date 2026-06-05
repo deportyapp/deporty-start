@@ -148,11 +148,13 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 2rem;
-		align-items: start;
+		align-items: stretch;
 	}
 
 	.diagram-left {
 		min-width: 0;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.diagram-right {
@@ -164,16 +166,20 @@
 	}
 
 	.diagram-visual {
-		margin: 1.6rem 0;
-		overflow: auto;
+		margin: 1.6rem 0 0 0;
+		flex: 1;
+		overflow: hidden;
 		background: #eef7ff;
 		border-radius: 18px;
-		padding: 1.4rem;
+		padding: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	svg {
 		width: 100%;
-		min-height: 820px;
+		height: 100%;
 	}
 
 	.node {
