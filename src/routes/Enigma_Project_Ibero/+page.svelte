@@ -38,6 +38,10 @@
 
 	let runningUI = false;
 
+	const openDiagram = () => {
+		window.open('/Enigma_Project_Ibero/diagrama', '_blank', 'noopener');
+	};
+
 	const getTodayUtcStartMs = () => {
 		const now = new Date();
 		return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
@@ -463,16 +467,22 @@
 				</ul>
 
 				<h3>Como usarlo</h3>
-				<ol class="guide-list">
-					<li>Introduce la fecha y pulsa Generar codigo.</li>
-					<li>Escribe el mensaje original.</li>
-					<li>Pulsa Encriptar para producir el texto cifrado.</li>
-					<li>Pulsa Cargar en maquina para preparar la cinta.</li>
-					<li>Usa Paso para avanzar manualmente o Ejecutar para verlo seguido.</li>
-					<li>Consulta la traza y el mensaje final para verificar el resultado.</li>
-				</ol>
-			</section>
-		</aside>
+            <ol class="guide-list">
+                <li>Introduce la fecha y pulsa Generar codigo.</li>
+                <li>Escribe el mensaje original.</li>
+                <li>Pulsa Encriptar para producir el texto cifrado.</li>
+                <li>Pulsa Cargar en maquina para preparar la cinta.</li>
+                <li>Usa Paso para avanzar manualmente o Ejecutar para verlo seguido.</li>
+                <li>Consulta la traza y el mensaje final para verificar el resultado.</li>
+            </ol>
+            <p class="diagram-note">Pulsa el botón para abrir el diagrama gráfico de la máquina en una nueva pestaña.</p>
+            <div class="diagram-actions">
+                <button id="toggle-diagram-btn" type="button" on:click={openDiagram}>
+                    Diagrama
+                </button>
+            </div>
+		</section>
+	</aside>
 	</div>
 </main>
 
@@ -683,12 +693,6 @@
 		outline-offset: 2px;
 	}
 
-	.help {
-		margin: 0.5rem 0 0;
-		color: var(--muted);
-		font-size: 0.92rem;
-	}
-
 	.buttons {
 		margin-top: 0.75rem;
 		display: flex;
@@ -822,6 +826,38 @@
 	.guide-card {
 		position: sticky;
 		top: 1rem;
+		z-index: 2;
+		background: var(--card);
+	}
+
+	.diagram-actions {
+		margin-top: 1.5rem;
+		display: flex;
+		justify-content: center;
+	}
+
+	.diagram-actions button {
+		min-width: 220px;
+		padding: 0.95rem 1.2rem;
+		font-weight: 700;
+		font-size: 1rem;
+		border-radius: 14px;
+		border: none;
+		background: var(--accent);
+		color: #fff;
+		box-shadow: 0 12px 26px rgba(15, 118, 110, 0.18);
+		cursor: pointer;
+	}
+
+	.diagram-actions button:hover {
+		background: #0d665c;
+	}
+
+	.diagram-note {
+		margin: 1rem 0 0;
+		font-size: 0.98rem;
+		line-height: 1.7;
+		color: var(--muted);
 	}
 
 	:global(.guide-card p) {
@@ -841,6 +877,10 @@
 
 	:global(.guide-list li) {
 		margin-bottom: 0.45rem;
+	}
+
+	.diagram-actions {
+		margin-top: 0.75rem;
 	}
 
 	.plain-list {
