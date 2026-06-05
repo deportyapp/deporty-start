@@ -2,10 +2,10 @@
 	<section class="card">
 		<h1 id="diagram-title">¿Cómo funciona nuestra máquina descifrado?</h1>
 
+		<p class="intro-text">Este diagrama muestra paso a paso cómo la máquina toma un mensaje cifrado y lo convierte de vuelta al mensaje original. Cada círculo es una tarea que la máquina realiza, y las flechas indican el orden en que las ejecuta.</p>
+
 		<div class="diagram-container">
 			<div class="diagram-left">
-				<p>Este diagrama muestra paso a paso cómo la máquina toma un mensaje cifrado y lo convierte de vuelta al mensaje original. Cada círculo es una tarea que la máquina realiza, y las flechas indican el orden en que las ejecuta.</p>
-
 				<div class="diagram-visual" role="img" aria-label="Diagrama de estados de la máquina de Turing">
 			<svg viewBox="0 0 1100 1000" aria-hidden="true">
 				<defs>
@@ -237,13 +237,15 @@
 		align-items: start;
 	}
 
-	.diagram-left {
-		min-width: 0;
+	.intro-text {
+		margin-bottom: 2rem;
+		font-size: 0.95rem;
+		color: #45546e;
+		max-width: 900px;
 	}
 
-	.diagram-left > p {
-		font-size: 0.88rem;
-		margin-bottom: 0.3rem;
+	.diagram-left {
+		min-width: 0;
 	}
 
 	.diagram-right {
@@ -255,7 +257,7 @@
 	}
 
 	.diagram-visual {
-		margin: 0.6rem 0 0;
+		margin: 0;
 		overflow: hidden;
 		background: #ffffff;
 		border: 1px solid #e2e8f0;
