@@ -7,7 +7,7 @@
 				<p>Este diagrama muestra cómo la máquina procesa cada símbolo del mensaje encriptado usando los estados internos qRead, qDecode, qWrite, qMove y qH.</p>
 
 				<div class="diagram-visual" role="img" aria-label="Diagrama de estados de la máquina de Turing">
-			<svg viewBox="0 0 1020 820" aria-hidden="true">
+			<svg viewBox="50 10 900 800" aria-hidden="true">
 				<defs>
 					<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto">
 						<path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e" />
@@ -192,22 +192,22 @@
 	}
 
 	.node-label {
-		font: 700 22px "Inter", sans-serif;
+		font: 700 28px "Inter", sans-serif;
 		fill: #0f766e;
 	}
 
 	.node-sub {
-		font: 400 16px "Inter", sans-serif;
+		font: 400 20px "Inter", sans-serif;
 		fill: #134e4a;
 	}
 
 	.arrow-text {
-		font: 600 15px "Inter", sans-serif;
+		font: 600 18px "Inter", sans-serif;
 		fill: #115e59;
 	}
 
 	.arrow-text-lg {
-		font: 700 16px "Inter", sans-serif;
+		font: 700 20px "Inter", sans-serif;
 		fill: #0d665c;
 		font-weight: 700;
 	}
