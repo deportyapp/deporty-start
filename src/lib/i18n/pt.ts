@@ -21,7 +21,12 @@ const pt: Record<string, string> = {
 	'landing.subtitleHighlight': 'Tudo o que você precisa',
 	'landing.subtitleEnd': 'para levar sua paixão ao próximo nível.',
 	'landing.ctaStart': 'Começar Grátis',
+	'landing.ctaStartDesc': 'Crie sua conta e comece a organizar torneios.',
 	'landing.ctaLogin': 'Entrar',
+	'landing.ctaLoginDesc': 'Acesse sua conta e suas organizações.',
+	'landing.ctaCalendar': 'Calendário Esportivo',
+	'landing.ctaCalendarDesc': 'Consulte eventos por país, esporte e data.',
+	'landing.optionsTitle': 'O que você quer fazer hoje?',
 
 	// ─── Login ────────────────────────────────────────
 	'login.title': 'Bem-vindo de volta',

@@ -185,25 +185,82 @@
 					{$t('landing.subtitleEnd')}
 				</p>
 
-				<!-- ★ HERO CARD — Calendario Deportivo ★ -->
-				<a
-					href="/calendariodeportivo"
-					class="group relative mx-auto mb-8 block w-full max-w-lg overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-900/40 via-slate-800/60 to-cyan-900/40 p-6 backdrop-blur-md transition-all hover:scale-[1.02] hover:border-blue-400/50 hover:shadow-2xl hover:shadow-blue-500/20 sm:p-8"
+				<p
+					class="mb-4 text-xs font-semibold tracking-[0.2em] text-slate-400 uppercase sm:text-sm"
 				>
-					<!-- Glow effect -->
-					<div
-						class="pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-500/20 blur-2xl transition-all group-hover:bg-blue-400/30"
-					></div>
-					<div
-						class="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-cyan-500/15 blur-2xl transition-all group-hover:bg-cyan-400/25"
-					></div>
+					{$t('landing.optionsTitle')}
+				</p>
 
-					<div class="relative flex items-center gap-4 sm:gap-5">
+				<!-- ★ 3 opciones al mismo nivel: Registrarse / Iniciar sesión / Calendario ★ -->
+				<div class="mx-auto grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+					<!-- Opción 1: Registrarme (primaria) -->
+					<a
+						href="/register"
+						class="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-blue-400/40 bg-gradient-to-br from-blue-600 to-cyan-500 p-6 text-center shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 active:scale-[0.99]"
+					>
 						<div
-							class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg shadow-blue-500/30 sm:h-16 sm:w-16"
+							class="mb-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-sm"
 						>
 							<svg
-								class="h-7 w-7 text-white sm:h-8 sm:w-8"
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+								/>
+							</svg>
+						</div>
+						<h2 class="font-brand text-lg font-bold text-white">{$t('landing.ctaStart')}</h2>
+						<p class="mt-1 text-xs leading-relaxed text-blue-50/90">
+							{$t('landing.ctaStartDesc')}
+						</p>
+					</a>
+
+					<!-- Opción 2: Iniciar sesión -->
+					<a
+						href="/login"
+						class="group relative flex flex-col items-center rounded-2xl border border-slate-600 bg-slate-800/40 p-6 text-center backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-slate-500 hover:bg-slate-700/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 active:scale-[0.99]"
+					>
+						<div
+							class="mb-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-700/60 text-slate-200"
+						>
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+								/>
+							</svg>
+						</div>
+						<h2 class="font-brand text-lg font-bold text-white">{$t('landing.ctaLogin')}</h2>
+						<p class="mt-1 text-xs leading-relaxed text-slate-400">
+							{$t('landing.ctaLoginDesc')}
+						</p>
+					</a>
+
+					<!-- Opción 3: Calendario Deportivo -->
+					<a
+						href="/calendariodeportivo"
+						class="group relative flex flex-col items-center rounded-2xl border border-slate-600 bg-slate-800/40 p-6 text-center backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-slate-500 hover:bg-slate-700/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 active:scale-[0.99]"
+					>
+						<div
+							class="mb-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-700/60 text-slate-200"
+						>
+							<svg
+								class="h-6 w-6"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -217,78 +274,10 @@
 								/>
 							</svg>
 						</div>
-						<div class="text-left">
-							<h2 class="font-brand text-xl font-bold text-white sm:text-2xl">
-								{$t('calendar.heroTitle')}
-							</h2>
-							<p class="mt-1 text-sm leading-relaxed text-slate-300 sm:text-base">
-								{$t('calendar.heroDesc')}
-							</p>
-						</div>
-					</div>
-
-					<div
-						class="relative mt-5 flex items-center justify-end gap-2 text-sm font-semibold text-blue-400 transition-colors group-hover:text-blue-300"
-					>
-						{$t('calendar.heroCta')}
-						<svg
-							class="h-4 w-4 transition-transform group-hover:translate-x-1"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							aria-hidden="true"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 7l5 5m0 0l-5 5m5-5H6"
-							/>
-						</svg>
-					</div>
-				</a>
-
-				<!-- CTA Buttons -->
-				<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
-					<a
-						href="/register"
-						class="group relative inline-flex w-full min-w-[12rem] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-500/40 transition-all hover:scale-[1.02] hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 active:scale-[0.99] sm:w-auto"
-					>
-						<svg
-							class="h-4 w-4 shrink-0"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							aria-hidden="true"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 7l5 5m0 0l-5 5m5-5H6"
-							/>
-						</svg>
-						{$t('landing.ctaStart')}
-					</a>
-					<a
-						href="/login"
-						class="group relative inline-flex w-full min-w-[12rem] items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-800/30 px-6 py-3.5 text-base font-semibold text-slate-200 backdrop-blur-sm transition-all hover:border-slate-500 hover:bg-slate-700/40 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 active:scale-[0.99] sm:w-auto"
-					>
-						<svg
-							class="h-4 w-4 shrink-0"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							aria-hidden="true"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-							/>
-						</svg>
-						{$t('landing.ctaLogin')}
+						<h2 class="font-brand text-lg font-bold text-white">{$t('landing.ctaCalendar')}</h2>
+						<p class="mt-1 text-xs leading-relaxed text-slate-400">
+							{$t('landing.ctaCalendarDesc')}
+						</p>
 					</a>
 				</div>
 			</div>

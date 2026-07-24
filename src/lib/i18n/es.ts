@@ -21,7 +21,12 @@ const es = {
 	'landing.subtitleHighlight': 'Todo lo que necesitas',
 	'landing.subtitleEnd': 'para llevar tu pasión al siguiente nivel.',
 	'landing.ctaStart': 'Registrarme',
+	'landing.ctaStartDesc': 'Crea tu cuenta y empieza a organizar torneos.',
 	'landing.ctaLogin': 'Iniciar Sesión',
+	'landing.ctaLoginDesc': 'Accede a tu cuenta y a tus organizaciones.',
+	'landing.ctaCalendar': 'Calendario Deportivo',
+	'landing.ctaCalendarDesc': 'Consulta eventos por país, deporte y fecha.',
+	'landing.optionsTitle': '¿Qué quieres hacer hoy?',
 
 	// ─── Login ────────────────────────────────────────
 	'login.title': 'Bienvenido de vuelta',
