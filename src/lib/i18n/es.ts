@@ -14,6 +14,19 @@ const es = {
 	'nav.register': 'Registrarse',
 	// nav.dashboard y nav.logout ya estaban agregados al final del archivo
 
+	// ─── Coming Soon ──────────────────────────────────
+	'comingSoon.badge': 'Muy pronto',
+	'comingSoon.title1': 'Gestiona tus torneos',
+	'comingSoon.title2': 'como un profesional',
+	'comingSoon.subtitle':
+		'Estamos preparando la plataforma para organizar ligas, equipos y resultados deportivos en toda Latinoamérica.',
+	'comingSoon.feature1Title': 'Torneos',
+	'comingSoon.feature1Desc': 'Organiza ligas y torneos con categorías y calendarios propios.',
+	'comingSoon.feature2Title': 'Equipos',
+	'comingSoon.feature2Desc': 'Gestiona tus equipos, jugadores y roles en un solo lugar.',
+	'comingSoon.feature3Title': 'Resultados',
+	'comingSoon.feature3Desc': 'Sigue los resultados y estadísticas en tiempo real.',
+
 	// ─── Landing Page ─────────────────────────────────
 	'landing.heroTitle1': 'Gestiona tus torneos',
 	'landing.heroTitle2': 'como un profesional',

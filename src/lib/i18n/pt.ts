@@ -14,6 +14,19 @@ const pt: Record<string, string> = {
 	'nav.register': 'Cadastrar',
 	// nav.dashboard e nav.logout já existiam no final do arquivo
 
+	// ─── Coming Soon ──────────────────────────────────
+	'comingSoon.badge': 'Em breve',
+	'comingSoon.title1': 'Gerencie seus torneios',
+	'comingSoon.title2': 'como um profissional',
+	'comingSoon.subtitle':
+		'Estamos preparando a plataforma para organizar ligas, equipes e resultados esportivos em toda a América Latina.',
+	'comingSoon.feature1Title': 'Torneios',
+	'comingSoon.feature1Desc': 'Organize ligas e torneios com categorias e calendários próprios.',
+	'comingSoon.feature2Title': 'Equipes',
+	'comingSoon.feature2Desc': 'Gerencie suas equipes, jogadores e funções em um só lugar.',
+	'comingSoon.feature3Title': 'Resultados',
+	'comingSoon.feature3Desc': 'Acompanhe os resultados e estatísticas em tempo real.',
+
 	// ─── Landing Page ─────────────────────────────────
 	'landing.heroTitle1': 'Gerencie seus torneios',
 	'landing.heroTitle2': 'como um profissional',
