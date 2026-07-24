@@ -185,9 +185,7 @@
 					{$t('landing.subtitleEnd')}
 				</p>
 
-				<p
-					class="mb-4 text-xs font-semibold tracking-[0.2em] text-slate-400 uppercase sm:text-sm"
-				>
+				<p class="mb-4 text-xs font-semibold tracking-[0.2em] text-slate-400 uppercase sm:text-sm">
 					{$t('landing.optionsTitle')}
 				</p>
 
