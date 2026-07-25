@@ -57,7 +57,7 @@ jobs:
       - name: Smoke test (local preview)
         shell: bash
         run: |
-          pnpm run preview -- --host 127.0.0.1 --port 4173 > preview.log 2>&1 &
+          pnpm run preview --host 127.0.0.1 --port 4173 > preview.log 2>&1 &
           PREVIEW_PID=$!
 
           cleanup() {
