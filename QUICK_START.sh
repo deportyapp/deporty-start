@@ -7,30 +7,30 @@ echo ""
 
 # Desarrollo
 echo "📦 Development"
-echo "  npm run dev              # Start dev server"
-echo "  npm run dev:docker       # Start with Docker Compose"
+echo "  pnpm run dev              # Start dev server"
+echo "  pnpm run dev:docker       # Start with Docker Compose"
 echo "  docker-compose up        # Same as above"
 echo ""
 
 # Testing
 echo "🧪 Testing"
-echo "  npm run test             # Run all tests"
-echo "  npm run test:watch       # Watch mode"
-echo "  npm run test -- --coverage  # With coverage report"
+echo "  pnpm run test             # Run all tests"
+echo "  pnpm run test:watch       # Watch mode"
+echo "  pnpm run test -- --coverage  # With coverage report"
 echo ""
 
 # Linting
 echo "🔍 Code Quality"
-echo "  npm run lint             # Lint check"
-echo "  npm run format           # Auto-format code"
-echo "  npm run check            # Type check"
-echo "  npm run check:watch      # Type check watch"
+echo "  pnpm run lint             # Lint check"
+echo "  pnpm run format           # Auto-format code"
+echo "  pnpm run check            # Type check"
+echo "  pnpm run check:watch      # Type check watch"
 echo ""
 
 # Build & Preview
 echo "🏗️  Build & Production"
-echo "  npm run build            # Build for production"
-echo "  npm run preview          # Preview production build"
+echo "  pnpm run build            # Build for production"
+echo "  pnpm run preview          # Preview production build"
 echo ""
 
 # Docker
@@ -48,8 +48,8 @@ echo ""
 echo "⚙️  Environment Setup"
 echo "  1. Copy .env.example to .env.local"
 echo "  2. Add your Supabase credentials"
-echo "  3. npm install (if needed)"
-echo "  4. npm run dev"
+echo "  3. pnpm install (if needed)"
+echo "  4. pnpm run dev"
 echo ""
 
 # Useful patterns

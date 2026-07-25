@@ -31,10 +31,10 @@ Nota: el proyecto usa callback en `/auth/callback`.
 ## Scripts
 
 ```bash
-npm run dev
-npm run build
-npm run preview
-npm run check
-npm run lint
-npm run format
+pnpm run dev
+pnpm run build
+pnpm run preview
+pnpm run check
+pnpm run lint
+pnpm run format
 ```
